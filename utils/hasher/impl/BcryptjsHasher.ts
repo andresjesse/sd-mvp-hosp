@@ -6,8 +6,8 @@ import HasherError from "../errors/HasherError";
 class BcryptjsHasher implements Hasher {
 
     MethodExceptionMessages = {
-        HASH_ASYNC_EXCEPTION: "Unexpected error happened at 'BCryptHasher.hashAsync' call.",
-        COMPARE_ASYNC_EXCEPTION: "Unexpected error happened at 'BCryptHasher.compareAsync' call.",
+        HASH_ASYNC_EXCEPTION: "Unexpected error happened at 'BcryptjsHasher.hashAsync' call.",
+        COMPARE_ASYNC_EXCEPTION: "Unexpected error happened at 'BcryptjsHasher.compareAsync' call.",
         UNEXPECTED_ERROR_TYPE_MESSAGE: "Unable to collect proper error message."
     } as const
 
