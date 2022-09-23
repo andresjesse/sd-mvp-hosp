@@ -1,4 +1,7 @@
-import HasherError from "../errors/HasherError";
+export type HasherError = {
+    resume: string,
+    errorMessage: string
+}
 
 export type HashResponse = {
     hashedInput: string
