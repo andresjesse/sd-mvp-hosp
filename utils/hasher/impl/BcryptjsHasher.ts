@@ -1,7 +1,6 @@
-import Hasher, { CompareResponse, HashResponse } from "../interfaces/Hasher";
+import Hasher, { CompareResponse, HasherError, HashResponse } from "../interfaces/Hasher";
 import bcrypt from "bcryptjs";
 import BcryptConfig from "../config/BcryptConfig";
-import HasherError from "../errors/HasherError";
 
 class BcryptjsHasher implements Hasher {
 

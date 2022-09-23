@@ -1,6 +1,5 @@
 import bcryptHasher from "../../impl/BcryptjsHasher";
-import HasherError from '../../errors/HasherError';
-import Hasher, { CompareResponse, HashResponse } from '../../interfaces/Hasher';
+import Hasher, { CompareResponse, HasherError, HashResponse } from '../../interfaces/Hasher';
 
 test('CompareAsync_OnSameInput_ReturnsTrue', async () => {
   // Arrange

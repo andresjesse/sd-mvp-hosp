@@ -1,6 +1,5 @@
 import bcryptHasher from "../../impl/BcryptjsHasher";
-import HasherError from '../../errors/HasherError';
-import Hasher, {HashResponse } from '../../interfaces/Hasher';
+import Hasher, {HasherError, HashResponse } from '../../interfaces/Hasher';
 
 test('HashAsync_OnValidInput_ReturnsTransformedOutput', async () => {
   // Arrange
