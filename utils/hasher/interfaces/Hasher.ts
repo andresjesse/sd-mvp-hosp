@@ -1,5 +1,5 @@
 export type HasherError = {
-    resume: string,
+    ok: false,
     errorMessage: string
 }
 
