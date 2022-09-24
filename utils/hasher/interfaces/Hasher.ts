@@ -4,10 +4,12 @@ export type HasherError = {
 }
 
 export type HashResponse = {
+    ok: true,
     hashedInput: string
 }
 
 export type CompareResponse = {
+    ok: true, 
     isSameInput: Boolean
 }
 
