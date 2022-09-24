@@ -2,13 +2,7 @@ import Hasher, { CompareResponse, HasherError, HashResponse } from "../interface
 import bcrypt from "bcryptjs";
 import BcryptConfig from "../config/BcryptConfig";
 
-class BcryptjsHasher implements Hasher {
-
-    MethodExceptionMessages = {
-        HASH_ASYNC_EXCEPTION: "Unexpected error happened at 'BcryptjsHasher.hashAsync' call.",
-        COMPARE_ASYNC_EXCEPTION: "Unexpected error happened at 'BcryptjsHasher.compareAsync' call.",
-    } as const
-
+const bcryptjshasher: Hasher = {
     async hashAsync(toHashInput: string): Promise<HasherError | HashResponse> {
         try {
             const hashedInput: string = await bcrypt.hash(
@@ -19,7 +13,8 @@ class BcryptjsHasher implements Hasher {
                 hashedInput
             }
         } catch (e) {
-            const errorMessage: string = e instanceof Error ? e.message : this.MethodExceptionMessages.HASH_ASYNC_EXCEPTION;
+            const HASH_ASYNC_EXCEPTION: string = "Unexpected error happened at 'BcryptjsHasher.hashAsync' call.";
+            const errorMessage: string = e instanceof Error ? e.message : HASH_ASYNC_EXCEPTION;
             const error: HasherError = {
                 ok: false,
                 errorMessage
@@ -27,8 +22,7 @@ class BcryptjsHasher implements Hasher {
 
             return error;
         }
-    }
-
+    },
     async compareAsync(unhashedInput: string, hashForComparison: string): Promise<HasherError | CompareResponse> {
         try {
             const isSameInput: Boolean = await bcrypt.compare(unhashedInput, hashForComparison);
@@ -38,7 +32,8 @@ class BcryptjsHasher implements Hasher {
                 isSameInput
             }
         } catch (e) {
-            const errorMessage: string = e instanceof Error ? e.message : this.MethodExceptionMessages.COMPARE_ASYNC_EXCEPTION;
+            const COMPARE_ASYNC_EXCEPTION: string = "Unexpected error happened at 'BcryptjsHasher.compareAsync' call."
+            const errorMessage: string = e instanceof Error ? e.message : COMPARE_ASYNC_EXCEPTION;
             const error: HasherError = {
                 ok: false,
                 errorMessage
@@ -49,4 +44,4 @@ class BcryptjsHasher implements Hasher {
     }
 }
 
-export default BcryptjsHasher; 
+export default bcryptjshasher; 
