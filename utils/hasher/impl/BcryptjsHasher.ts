@@ -15,12 +15,13 @@ class BcryptjsHasher implements Hasher {
                 toHashInput, BcryptConfig.BCRYPT_HASH_ROUNDS);
 
             return {
+                ok: true,
                 hashedInput
             }
         } catch (e) {
-            const errorMessage: string = e instanceof Error ? e.message : this.MethodExceptionMessages.UNEXPECTED_ERROR_TYPE_MESSAGE;
+            const errorMessage: string = e instanceof Error ? e.message : this.MethodExceptionMessages.HASH_ASYNC_EXCEPTION;
             const error: HasherError = {
-                resume: this.MethodExceptionMessages.HASH_ASYNC_EXCEPTION,
+                ok: false,
                 errorMessage
             }
 
@@ -33,12 +34,13 @@ class BcryptjsHasher implements Hasher {
             const isSameInput: Boolean = await bcrypt.compare(unhashedInput, hashForComparison);
 
             return {
+                ok: true,
                 isSameInput
             }
         } catch (e) {
-            const errorMessage: string = e instanceof Error ? e.message : this.MethodExceptionMessages.UNEXPECTED_ERROR_TYPE_MESSAGE;
+            const errorMessage: string = e instanceof Error ? e.message : this.MethodExceptionMessages.COMPARE_ASYNC_EXCEPTION;
             const error: HasherError = {
-                resume: this.MethodExceptionMessages.COMPARE_ASYNC_EXCEPTION,
+                ok: false,
                 errorMessage
             }
 
