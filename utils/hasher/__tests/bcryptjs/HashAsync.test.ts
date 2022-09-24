@@ -16,3 +16,15 @@ test('HashAsync_OnValidInput_ReturnsTransformedOutput', async () => {
   const doOutputStringDiffersFromInput: Boolean = response.hashedInput != inputTest;
   expect(doOutputStringDiffersFromInput).toBeTruthy();
 });
+
+test('HashAsync_OnNullInput_ReturnsFalse', async () => {
+  // Arrange
+  const hasher: Hasher = new bcryptHasher();
+  const inputTest = null;
+
+  // Act
+  let response: HasherError | HashResponse = await hasher.hashAsync(inputTest as any);
+  
+  // Assert
+  expect(response.ok).toBeFalsy;
+});
