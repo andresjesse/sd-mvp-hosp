@@ -7,12 +7,12 @@ test('HashAsync_OnValidInput_ReturnsTransformedOutput', async () => {
   const inputTest = "p@ssw0rd";
 
   // Act
-  const response: HasherError | HashResponse = await hasher.hashAsync(inputTest);
+  let response: HasherError | HashResponse = await hasher.hashAsync(inputTest);
   
   // Assert
-  const isSuccessfulResponse: Boolean = (response as HashResponse).hashedInput != undefined;
-  expect(isSuccessfulResponse).toBeTruthy;
-
-  const doOutputStringDiffersFromInput: Boolean = (response as HashResponse).hashedInput != inputTest;
+  expect(response.ok).toBeTruthy;
+  
+  response = (response as HashResponse);
+  const doOutputStringDiffersFromInput: Boolean = response.hashedInput != inputTest;
   expect(doOutputStringDiffersFromInput).toBeTruthy();
 });
