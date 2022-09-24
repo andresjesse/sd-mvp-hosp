@@ -3,6 +3,9 @@
   "version": "0.1.0",
   "private": true,
   "packageManager": "yarn@3.1.0",
+  "prisma": {
+    "seed": "ts-node --compiler-options {\"module\":\"CommonJS\"} utils/admingen/Generate.ts"
+  },
   "scripts": {
     "dev": "next dev",
     "build": "next build",
