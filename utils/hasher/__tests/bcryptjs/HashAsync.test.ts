@@ -9,7 +9,7 @@ test('HashAsync_OnValidInput_ReturnsTransformedOutput', async () => {
   let response: HasherError | HashResponse = await hasher.hashAsync(inputTest);
   
   // Assert
-  expect(response.ok).toBeTruthy;
+  expect(response.ok).toBeTruthy();
   
   response = (response as HashResponse);
   const doOutputStringDiffersFromInput: Boolean = response.hashedInput != inputTest;
@@ -24,5 +24,5 @@ test('HashAsync_OnNullInput_ReturnsFalse', async () => {
   let response: HasherError | HashResponse = await hasher.hashAsync(inputTest as any);
   
   // Assert
-  expect(response.ok).toBeFalsy;
+  expect(response.ok).toBeFalsy();
 });
