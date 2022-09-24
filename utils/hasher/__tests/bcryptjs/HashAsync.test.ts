@@ -1,9 +1,8 @@
-import bcryptHasher from "../../impl/BcryptjsHasher";
-import Hasher, {HasherError, HashResponse } from '../../interfaces/Hasher';
+import hasher from "../../impl/BcryptjsHasher";
+import {HasherError, HashResponse } from '../../interfaces/Hasher';
 
 test('HashAsync_OnValidInput_ReturnsTransformedOutput', async () => {
   // Arrange
-  const hasher: Hasher = new bcryptHasher();
   const inputTest = "p@ssw0rd";
 
   // Act
@@ -19,7 +18,6 @@ test('HashAsync_OnValidInput_ReturnsTransformedOutput', async () => {
 
 test('HashAsync_OnNullInput_ReturnsFalse', async () => {
   // Arrange
-  const hasher: Hasher = new bcryptHasher();
   const inputTest = null;
 
   // Act

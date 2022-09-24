@@ -1,9 +1,8 @@
-import bcryptHasher from "../../impl/BcryptjsHasher";
-import Hasher, { CompareResponse, HasherError, HashResponse } from '../../interfaces/Hasher';
+import hasher from "../../impl/BcryptjsHasher";
+import { CompareResponse, HasherError, HashResponse } from '../../interfaces/Hasher';
 
 test('CompareAsync_OnSameInput_ReturnsTrue', async () => {
   // Arrange
-  const hasher: Hasher = new bcryptHasher();
   const inputTest = "p@ssw0rd";
   const hashResponse: HasherError | HashResponse = await hasher.hashAsync(inputTest);
   const hashedInput: string = (hashResponse as HashResponse).hashedInput;
@@ -17,7 +16,6 @@ test('CompareAsync_OnSameInput_ReturnsTrue', async () => {
 
 test('CompareAsync_OnDiff_ReturnsFalse', async () => {
   // Arrange
-  const hasher: Hasher = new bcryptHasher();
   const inputTest = "p@ssw0rd";
   const divergentInput = "password";
   const hashResponse: HasherError | HashResponse = await hasher.hashAsync(inputTest);
@@ -32,7 +30,6 @@ test('CompareAsync_OnDiff_ReturnsFalse', async () => {
 
 test('CompareAsync_OnNonHashedArg_ReturnsFalse', async () => {
   // Arrange
-  const hasher: Hasher = new bcryptHasher();
   const inputTest = "p@ssw0rd";
 
   // Act
