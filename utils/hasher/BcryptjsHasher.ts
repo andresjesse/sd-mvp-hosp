@@ -4,14 +4,16 @@ import Hasher, {
   THashResponse,
 } from "./HasherTypes";
 import bcrypt from "bcryptjs";
-import BcryptConfig from "./config/BcryptConfig";
 
 const bcryptjshasher: Hasher = {
   async hashAsync(toHashInput: string): Promise<THasherError | THashResponse> {
     try {
+      if (process.env.BCRYPT_HASH_ROUNDS == undefined)
+        throw new Error("BCRYPT_HASH_ROUNDS does not exist in .env!");
+
       const hashedInput: string = await bcrypt.hash(
         toHashInput,
-        BcryptConfig.BCRYPT_HASH_ROUNDS
+        parseInt(process.env.BCRYPT_HASH_ROUNDS || "")
       );
 
       return {
