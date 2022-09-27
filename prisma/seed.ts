@@ -1,4 +1,4 @@
-import {prisma} from "../lib/prisma";
+import { prisma } from "../lib/prisma";
 import AdminSeed from "./seeders/admin";
 
 async function main() {
