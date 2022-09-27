@@ -1,7 +1,7 @@
 import { User } from "@prisma/client";
 import hasher from "../../utils/hasher/BcryptjsHasher";
 import { THasherError, THashResponse } from "../../utils/hasher/HasherTypes";
-import {prisma} from "../../lib/prisma";
+import { prisma } from "../../lib/prisma";
 
 type TAdminProps = {
   ADMIN_NAME: string | undefined;
@@ -55,12 +55,4 @@ async function admin() {
   });
 }
 
-admin()
-  .then(async () => {
-    await prisma.$disconnect();
-  })
-  .catch(async (e) => {
-    console.error(e);
-    await prisma.$disconnect();
-    process.exit(1);
-  });
+export default admin;
