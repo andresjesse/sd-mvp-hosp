@@ -1,9 +1,7 @@
 import { User } from '@prisma/client';
 import hasher from '../../utils/hasher/BcryptjsHasher'
 import { THasherError, THashResponse } from '../../utils/hasher/HasherTypes';
-
-import { PrismaClient } from '@prisma/client'
-const prisma = new PrismaClient()
+import prisma from "../../lib/prisma";
 
 type TAdminProps = {
     ADMIN_NAME: string | undefined,
