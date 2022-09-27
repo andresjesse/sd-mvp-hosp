@@ -23,7 +23,7 @@ enum Role {
 model User {
   id           Int      @id @default(autoincrement())
   name         String
-  email        String
+  email        String   @unique
   passwordHash String   @map("password_hash")
   role         Role     @default(DOCTOR)
   createdAt    DateTime @default(now()) @map("created_at")
