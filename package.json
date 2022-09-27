@@ -4,7 +4,7 @@
   "private": true,
   "packageManager": "yarn@3.1.0",
   "prisma": {
-    "seed": ""
+    "seed": "ts-node --compiler-options {\"module\":\"CommonJS\"} prisma/seed.ts"
   },
   "scripts": {
     "dev": "next dev",
