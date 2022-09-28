@@ -1,7 +1,7 @@
 export const sectors = [
   {
     abbreviation: "UTI",
-    description: "UTI",
+    description: "Unidade de Terapia Intensiva",
   },
   {
     abbreviation: "ENF",
