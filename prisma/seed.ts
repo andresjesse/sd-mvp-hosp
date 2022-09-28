@@ -1,5 +1,5 @@
 import { prisma } from "../lib/prisma";
-import AdminSeed from "./seeders/admin";
+import AdminSeed from "./seeds/admin";
 
 async function main() {
   await AdminSeed();
