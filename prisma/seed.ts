@@ -1,8 +1,11 @@
 import { prisma } from "../lib/prisma";
-import AdminSeed from "./seeds/admin";
+import AdminSeedFunction from "./seeds/admin";
 
 async function main() {
-  await AdminSeed();
+  const adminSeedData = await AdminSeedFunction();
+  await prisma.user.create({
+    data: adminSeedData,
+  });
 }
 
 main()
