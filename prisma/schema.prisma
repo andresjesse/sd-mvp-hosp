@@ -12,3 +12,10 @@ datasource db {
   shadowDatabaseUrl = env("SHADOW_DATABASE_URL")
   referentialIntegrity = "prisma"
 }
+
+model Sector {
+  id    Int     @id @default(autoincrement())
+  abbreviation String?
+  description String?
+}
+
