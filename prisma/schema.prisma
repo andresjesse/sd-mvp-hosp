@@ -14,9 +14,9 @@ datasource db {
 }
 
 model Sector {
-  id    Int     @id @default(autoincrement())
+  id           Int     @id @default(autoincrement())
   abbreviation String?
-  description String?
+  description  String?
 }
 
 enum Role {
