@@ -1136,6 +1136,15 @@ __metadata:
   languageName: node
   linkType: hard
 
+"@testing-library/user-event@npm:^14.4.2":
+  version: 14.4.3
+  resolution: "@testing-library/user-event@npm:14.4.3"
+  peerDependencies:
+    "@testing-library/dom": ">=7.21.4"
+  checksum: 852c48ea6db1c9471b18276617c84fec4320771e466cd58339a732ca3fd73ad35e5a43ae14f51af51a8d0a150dcf60fcaab049ef367871207bea8f92c4b8195e
+  languageName: node
+  linkType: hard
+
 "@tootallnate/once@npm:2":
   version: 2.0.0
   resolution: "@tootallnate/once@npm:2.0.0"
@@ -1596,15 +1605,16 @@ __metadata:
   languageName: node
   linkType: hard
 
-"antd@npm:^4.23.2":
-  version: 4.23.2
-  resolution: "antd@npm:4.23.2"
+"antd@npm:^4.23.3":
+  version: 4.23.3
+  resolution: "antd@npm:4.23.3"
   dependencies:
     "@ant-design/colors": ^6.0.0
     "@ant-design/icons": ^4.7.0
     "@ant-design/react-slick": ~0.29.1
     "@babel/runtime": ^7.18.3
     "@ctrl/tinycolor": ^3.4.0
+    "@testing-library/user-event": ^14.4.2
     classnames: ^2.2.6
     copy-to-clipboard: ^3.2.0
     lodash: ^4.17.21
@@ -1619,7 +1629,7 @@ __metadata:
     rc-field-form: ~1.27.0
     rc-image: ~5.7.0
     rc-input: ~0.1.2
-    rc-input-number: ~7.3.5
+    rc-input-number: ~7.3.9
     rc-mentions: ~1.9.1
     rc-menu: ~9.6.3
     rc-motion: ^2.6.1
@@ -1647,7 +1657,7 @@ __metadata:
   peerDependencies:
     react: ">=16.9.0"
     react-dom: ">=16.9.0"
-  checksum: fe35176d0da0075321968c8cd2ec60c11ce910303c7ae2203456f9144ba29c48ae5df8e3a1bfc0b01a34c5ac999d3ef09d119ce7d4814dcaa686df9e33831d14
+  checksum: e6cc635c54f9cf3736572a2242c7ee0105bab06577c3898e2358c3b3d50b37e853e0e8df327af1a2c6f2db52e1323175307b41a01797480cb18431fc4b9c0877
   languageName: node
   linkType: hard
 
@@ -5409,7 +5419,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"rc-input-number@npm:~7.3.5":
+"rc-input-number@npm:~7.3.9":
   version: 7.3.9
   resolution: "rc-input-number@npm:7.3.9"
   dependencies:
@@ -6116,7 +6126,7 @@ __metadata:
     "@types/node": ^18.7.23
     "@types/react": 18.0.20
     "@types/react-dom": 18.0.6
-    antd: ^4.23.2
+    antd: ^4.23.3
     bcryptjs: ^2.4.3
     eslint: 8.23.1
     eslint-config-next: 12.3.1
