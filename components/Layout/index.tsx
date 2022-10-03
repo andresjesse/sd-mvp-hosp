@@ -1,9 +1,14 @@
-import { UserOutlined, FieldTimeOutlined } from "@ant-design/icons";
-import type { MenuProps } from "antd";
-import { Breadcrumb, Layout, Menu } from "antd";
-import React, { ReactNode, useState } from "react";
+import {
+  FieldTimeOutlined,
+  LogoutOutlined,
+  UserOutlined,
+} from "@ant-design/icons";
+import { Layout, Menu } from "antd";
+import { ReactNode, useState } from "react";
 
 const { Header, Content, Sider, Footer } = Layout;
+
+import styles from "./styles.module.css";
 
 interface PageLayoutProps {
   children: ReactNode;
@@ -26,10 +31,14 @@ export default function PageLayout({ children }: PageLayoutProps) {
   const [collapsed, setCollapsed] = useState(false);
   return (
     <Layout>
-      <Header className="header">
-        <div style={{ color: "white" }}>LOGO AQUI</div>
+      <Header className={`header ${styles.header}`}>
+        <div>LOGO AQUI</div>
+        <div>
+          Logout <LogoutOutlined />
+        </div>
       </Header>
-      <Layout style={{ minHeight: "100vh" }}>
+
+      <Layout className={styles.layoutMain}>
         <Sider
           collapsible
           collapsed={collapsed}
@@ -37,22 +46,11 @@ export default function PageLayout({ children }: PageLayoutProps) {
         >
           <Menu mode="inline" defaultSelectedKeys={["1"]} items={siderItems} />
         </Sider>
-        <Layout style={{ padding: "0 24px 24px" }}>
-          <Breadcrumb style={{ margin: "16px 0" }}>
-            <Breadcrumb.Item>Home</Breadcrumb.Item>
-            <Breadcrumb.Item>List</Breadcrumb.Item>
-            <Breadcrumb.Item>App</Breadcrumb.Item>
-          </Breadcrumb>
-          <Content
-            style={{
-              padding: 24,
-              margin: 0,
-              minHeight: 280,
-            }}
-          >
-            {children}
-          </Content>
-          <Footer style={{ textAlign: "center" }}>
+
+        <Layout className={styles.layoutContent}>
+          <Content className={styles.content}>{children}</Content>
+
+          <Footer className={styles.footer}>
             Hospital MVP ©2022 Created by TSI
           </Footer>
         </Layout>

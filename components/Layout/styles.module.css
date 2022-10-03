@@ -1,0 +1,25 @@
+.header {
+  padding-left: 24px;
+  padding-right: 24px;
+  color: white !important;
+  display: flex;
+  justify-content: space-between;
+}
+
+.layoutMain {
+  min-height: 100vh;
+}
+
+.layoutContent {
+  padding: 0 24px 24px;
+}
+
+.content {
+  padding: 24;
+  margin: 0;
+  min-height: 280;
+}
+
+.footer {
+  text-align: center;
+}
