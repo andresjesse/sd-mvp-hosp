@@ -45,6 +45,7 @@ const App: React.FC = () => {
           labelCol={{ flex: "120px" }}
           wrapperCol={{ flex: 1 }}
           colon={false}
+          style={{ width: "100%" }}
         >
           <Form.Item label="Nome">
             <Input name="nameDoctor" />
