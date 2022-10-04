@@ -8,8 +8,6 @@ import { ReactNode, useState } from "react";
 
 const { Header, Content, Sider, Footer } = Layout;
 
-import styles from "./styles.module.css";
-
 interface PageLayoutProps {
   children: ReactNode;
 }
@@ -31,14 +29,23 @@ export default function PageLayout({ children }: PageLayoutProps) {
   const [collapsed, setCollapsed] = useState(false);
   return (
     <Layout>
-      <Header className={`header ${styles.header}`}>
+      <Header
+        className="header"
+        style={{
+          paddingLeft: "24px",
+          paddingRight: "24px",
+          color: "white !important",
+          display: "flex",
+          justifyContent: "space-between",
+        }}
+      >
         <div>LOGO AQUI</div>
         <div>
           Logout <LogoutOutlined />
         </div>
       </Header>
 
-      <Layout className={styles.layoutMain}>
+      <Layout style={{ minHeight: "100vh" }}>
         <Sider
           collapsible
           collapsed={collapsed}
@@ -47,10 +54,12 @@ export default function PageLayout({ children }: PageLayoutProps) {
           <Menu mode="inline" defaultSelectedKeys={["1"]} items={siderItems} />
         </Sider>
 
-        <Layout className={styles.layoutContent}>
-          <Content className={styles.content}>{children}</Content>
+        <Layout style={{ padding: "0 24px 24px" }}>
+          <Content style={{ padding: 24, margin: 0, minHeight: 280 }}>
+            {children}
+          </Content>
 
-          <Footer className={styles.footer}>
+          <Footer style={{ textAlign: "center" }}>
             Hospital MVP ©2022 Created by TSI
           </Footer>
         </Layout>
