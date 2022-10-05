@@ -23,9 +23,15 @@ const App: React.FC = () => {
         autoComplete="off"
       >
         <Form.Item
-          label="Usuario"
-          name="username"
-          rules={[{ required: true, message: "Insira seu usuario!" }]}
+          label="Email"
+          name="email"
+          rules={[
+            {
+              required: true,
+              message: "Insira um email válido!",
+              type: "email",
+            },
+          ]}
         >
           <Input />
         </Form.Item>
@@ -38,7 +44,7 @@ const App: React.FC = () => {
           <Input.Password />
         </Form.Item>
 
-        <Form.Item
+        {/* <Form.Item
           name="remember"
           valuePropName="checked"
           wrapperCol={{ offset: 8, span: 16 }}
@@ -48,7 +54,7 @@ const App: React.FC = () => {
 
         <Form.Item name="forgot" wrapperCol={{ offset: 8, span: 16 }}>
           <Link href="/">Esquecia a senha</Link>
-        </Form.Item>
+        </Form.Item> */}
 
         <Form.Item wrapperCol={{ offset: 8, span: 16 }}>
           <Button type="primary" htmlType="submit">
