@@ -24,3 +24,49 @@ a {
     background: black;
   }
 }
+
+/*layout menu
+  PALETA VERDE
+    #216651;
+    #3e9278;
+    #74baa0;
+    #b8d8c0;
+    #d0e0d3;
+*/
+
+.ant-layout-header {
+  background: linear-gradient(
+    90deg,
+    rgba(33, 102, 81, 1) 0%,
+    rgba(62, 146, 120, 1) 33%,
+    rgba(116, 186, 160, 1) 70%
+  ) !important;
+}
+
+.ant-layout-sider {
+  background: #74baa0 !important;
+}
+
+.ant-menu {
+  background: #74baa0 !important;
+}
+
+.ant-menu-item-selected {
+  color: black !important;
+}
+
+.ant-menu-item::after {
+  border-right: 3px solid #216651 !important;
+}
+
+.ant-menu-item-active {
+  color: black !important;
+}
+
+.ant-menu-inline {
+  border-right: 0 !important;
+}
+
+.ant-layout-sider-trigger {
+  background: #216651 !important;
+}
