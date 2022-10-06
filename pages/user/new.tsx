@@ -1,6 +1,7 @@
 import {
   Button,
   Card,
+  ConfigProvider,
   DatePicker,
   Form,
   Input,
@@ -11,15 +12,10 @@ import {
 
 import React from 'react'
 const { Title } = Typography
-// type SizeType = Parameters<typeof Form>[0]["size"];
+const dateFormatList = ['DD/MM/YYYY', 'DD/MM/YY']
 
-{
-  /**import enUS from 'antd/es/locale/en_US';
-import moment from 'moment';
-import 'moment/locale/zh-cn';
-
-moment.locale('en'); */
-}
+import locale from 'antd/es/locale/pt_BR'
+import 'moment/locale/pt-br'
 
 {
   /**FAZER***
@@ -62,8 +58,12 @@ const App: React.FC = () => {
         </Form.Item>
         */}
 
+          {/*DATAPICKER  ARUMAR BUG */}
+
           <Form.Item label="Data de Nascimento: ">
-            <DatePicker />
+            <ConfigProvider locale={locale}>
+              <DatePicker format={dateFormatList[0]} />
+            </ConfigProvider>
           </Form.Item>
 
           <Form.Item label="CRM: ">
