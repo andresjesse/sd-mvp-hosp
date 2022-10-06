@@ -22,8 +22,8 @@ const App: React.FC = () => {
 
     if (!res?.ok) {
       console.log(res);
-      console.log(res?.error);
-      setError(res?.error);
+      console.log(res!.error);
+      setError(res!.error!);
       return;
     }
 
