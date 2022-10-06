@@ -1,10 +1,34 @@
 import { Button, Card, Checkbox, Form, Input } from "antd";
 import Link from "next/link";
 import React from "react";
+import type { NextPage } from "next";
+import Head from "next/head";
+import { signIn } from "next-auth/react";
+import Router from "next/router";
+import { useState } from "react";
 
 const App: React.FC = () => {
-  const onFinish = (values: any) => {
-    console.log("Success:", values);
+  const [error, setError] = useState("");
+
+  const onFinish = async (values: any) => {
+    const email: string = values.email;
+    const password: string = values.password;
+
+    const res = await signIn("credentials", {
+      email,
+      password,
+      redirect: false,
+    });
+
+    if (!res?.ok) {
+      console.log(res);
+      console.log(res?.error);
+      setError(res?.error);
+      return;
+    }
+
+    console.log(res);
+    await Router.push("/welcome");
   };
 
   const onFinishFailed = (errorInfo: any) => {
@@ -62,6 +86,8 @@ const App: React.FC = () => {
           </Button>
         </Form.Item>
       </Form>
+
+      {error}
     </Card>
   );
 };
