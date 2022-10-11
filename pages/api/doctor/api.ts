@@ -1,4 +1,5 @@
 // Next.js API route support: https://nextjs.org/docs/api-routes/introduction
+import { create } from 'domain';
 import type { NextApiRequest, NextApiResponse } from 'next'
 import { prisma } from "../../../lib/prisma";
 
@@ -14,34 +15,40 @@ export default async function handler(
 if(req.method === 'POST'){
 
 try {
-  const{name,email,passwordHash, userId, crm, crmUf} = req.body;
+  const{name,email,passwordHash, crm, crmUf} = req.body;
 
 
-  const user = await prisma.user.create({
-    data:{
-      id: undefined, //pensando em como pegar esse id
-      name,
-      email,
-      passwordHash,
-      role: undefined,
-      createdAt: Date(),
-      updatedAt: Date(),
-      admin: undefined,
-      doctor: undefined   
-    }
-  });
+  // const user = await prisma.user.create({
+  //   data:{
+  //     id: undefined, //pensando em como pegar esse id
+  //     name,
+  //     email,
+  //     passwordHash,
+      
+  //   }
+  // });
 
   
 
   const doctor = await prisma.doctor.create({
     data:{
-      //user: user,
-      userId: user.id,    
+      user: 
+      {create: {
+        name,
+        email,
+        passwordHash,
+        createdAt: Date(),
+      updatedAt: Date(),
+      }
+         },  
       crm,       
       crmUf,    
       isActive: false,  
       createdAt: Date(), 
       updatedAt: Date()
+    },
+    include:{
+      user: true
     }
   });
   res.status(201).json({name: 'Doctor Created'});
