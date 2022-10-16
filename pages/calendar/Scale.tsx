@@ -1,5 +1,5 @@
+import { Tag } from "antd";
 import React from "react";
-import { Badge, Tag, Button } from "antd";
 
 interface ScaleProps {
   data: any; // verificar tipo a utilizar aqui
@@ -12,7 +12,7 @@ export default function Scale({ data }: ScaleProps) {
         style={{ minWidth: "90%", textAlign: "right", fontWeight: "bold" }}
         color={data.color}
       >
-        {data.doctor}
+        {data.doctorName}
       </Tag>
     </div>
   );

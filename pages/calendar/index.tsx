@@ -1,31 +1,34 @@
 import { Calendar } from "antd";
 import { Moment } from "moment";
 import { GetStaticProps } from "next";
-import React from "react";
 import { fakeScales, TScale } from "../../services/fakeData";
 import Scale from "./Scale";
-
 import styles from "./styles.module.css";
+import React from "react";
 
 const getListData = (value: Moment, scales: Array<TScale>) => {
-  const colors = ["#a0d911", "#13c2c2", "#1890ff", "#2f54eb"];
+  const colors = ["#7cb305", "#13c2c2", "#1890ff", "#2f54eb"];
+
   let colorCounter = 0;
   let listData = new Array();
 
-  scales.forEach(async (element) => {
-    const date = new Date(element.date);
-
-    if (date.getDate() == value.date() && date.getMonth() == value.month()) {
-      if (!element.idDoctor) {
+  scales.forEach(async (scale) => {
+    const date = new Date(scale.date);
+    if (
+      date.getDate() == value.date() &&
+      date.getMonth() == value.month() &&
+      date.getFullYear() == value.year()
+    ) {
+      if (!scale.idDoctor) {
         listData.push({
-          id: element.id,
-          doctor: "Vago",
+          id: scale.id,
+          doctorName: "Vago",
           color: "warning",
         });
       } else {
         listData.push({
-          id: element.id,
-          doctor: element.nameDoctor,
+          id: scale.id,
+          doctorName: scale.nameDoctor,
           color: colors[colorCounter++],
         });
       }
@@ -39,23 +42,7 @@ interface CalendarProps {
   scales: Array<TScale>;
 }
 
-// const getMonthData = (value: Moment) => {
-//   if (value.month() === 8) {
-//     return 1394;
-//   }
-// };
-
 export default function calendar({ scales }: CalendarProps) {
-  // const monthCellRender = (value: Moment) => {
-  //   const num = getMonthData(value);
-  //   return num ? (
-  //     <div className={styles.notesMonth}>
-  //       {section>{num}</section>
-  //       <span>Backlog number</span>}
-  //     </div>
-  //   ) : null;
-  // };
-
   const dateCellRender = (value: Moment) => {
     const listData = getListData(value, scales);
     return (
@@ -69,7 +56,7 @@ export default function calendar({ scales }: CalendarProps) {
     );
   };
 
-  return <Calendar dateCellRender={dateCellRender} mode={"month"} />;
+  return <Calendar dateCellRender={dateCellRender} />;
 }
 
 export const getStaticProps: GetStaticProps = async (context) => {
