@@ -10,17 +10,25 @@ import styles from "./styles.module.css";
 const getListData = (value: Moment, scales: Array<TScale>) => {
   const colors = ["#a0d911", "#13c2c2", "#1890ff", "#2f54eb"];
   let colorCounter = 0;
-  let listData = new Array<Object>();
+  let listData = new Array();
 
   scales.forEach(async (element) => {
     const date = new Date(element.date);
 
     if (date.getDate() == value.date() && date.getMonth() == value.month()) {
-      listData.push({
-        id: element.id,
-        doctor: element.nameDoctor,
-        color: colors[colorCounter++],
-      });
+      if (!element.idDoctor) {
+        listData.push({
+          id: element.id,
+          doctor: "Vago",
+          color: "warning",
+        });
+      } else {
+        listData.push({
+          id: element.id,
+          doctor: element.nameDoctor,
+          color: colors[colorCounter++],
+        });
+      }
     }
   });
 
@@ -31,22 +39,22 @@ interface CalendarProps {
   scales: Array<TScale>;
 }
 
-const getMonthData = (value: Moment) => {
-  if (value.month() === 8) {
-    return 1394;
-  }
-};
+// const getMonthData = (value: Moment) => {
+//   if (value.month() === 8) {
+//     return 1394;
+//   }
+// };
 
 export default function calendar({ scales }: CalendarProps) {
-  const monthCellRender = (value: Moment) => {
-    const num = getMonthData(value);
-    return num ? (
-      <div className={styles.notesMonth}>
-        {/* <section>{num}</section>
-        <span>Backlog number</span> */}
-      </div>
-    ) : null;
-  };
+  // const monthCellRender = (value: Moment) => {
+  //   const num = getMonthData(value);
+  //   return num ? (
+  //     <div className={styles.notesMonth}>
+  //       {section>{num}</section>
+  //       <span>Backlog number</span>}
+  //     </div>
+  //   ) : null;
+  // };
 
   const dateCellRender = (value: Moment) => {
     const listData = getListData(value, scales);
@@ -61,12 +69,7 @@ export default function calendar({ scales }: CalendarProps) {
     );
   };
 
-  return (
-    <Calendar
-      dateCellRender={dateCellRender}
-      monthCellRender={monthCellRender}
-    />
-  );
+  return <Calendar dateCellRender={dateCellRender} mode={"month"} />;
 }
 
 export const getStaticProps: GetStaticProps = async (context) => {

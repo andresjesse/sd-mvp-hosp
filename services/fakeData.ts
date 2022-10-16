@@ -47,8 +47,8 @@ export type TScale = {
   date: string;
   hourStart: number;
   hourEnd: number;
-  idDoctor: number;
-  nameDoctor: string;
+  idDoctor?: number;
+  nameDoctor?: string;
   idSector: number;
   isFixed: boolean;
 };
@@ -100,7 +100,15 @@ export const fakeScales: Array<TScale> = [
     hourStart: 19,
     hourEnd: 7,
     idDoctor: 2,
-    nameDoctor: "Heloisa",
+    nameDoctor: "William",
+    idSector: 1,
+    isFixed: true,
+  },
+  {
+    id: 6,
+    date: "2022-10-3",
+    hourStart: 19,
+    hourEnd: 7,
     idSector: 1,
     isFixed: true,
   },
