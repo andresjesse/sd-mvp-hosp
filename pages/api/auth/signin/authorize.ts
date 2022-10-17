@@ -13,7 +13,10 @@ export type TSessionUser = {
   doctor: Doctor | null;
 };
 
-const authorize = async (credentials: any, req: any): Promise<TSessionUser> => {
+const authorize = async (
+  credentials: any,
+  req: any
+): Promise<TSessionUser | null> => {
   try {
     const { email, password } = credentials;
 
@@ -55,12 +58,13 @@ const authorize = async (credentials: any, req: any): Promise<TSessionUser> => {
 
     return sessionUser;
   } catch (e) {
-    const { message } =
-      e instanceof InvalidCredentials
-        ? { message: (e as InvalidCredentials).message }
-        : { message: "Unexpected error occourred. Try again or contact us." };
+    // const { message } =
+    //   e instanceof InvalidCredentials
+    //     ? { message: (e as InvalidCredentials).message }
+    //     : { message: "Unexpected error occourred. Try again or contact us." };
 
-    throw new Error(message);
+    // throw new Error(message);
+    return null;
   }
 };
 
