@@ -13,10 +13,7 @@ export type TSessionUser = {
   doctor: Doctor | null;
 };
 
-const authorize = async (
-  credentials: any,
-  req: any
-): Promise<TSessionUser | null> => {
+const authorize = async (credentials: any, req: any): Promise<TSessionUser> => {
   try {
     const { email, password } = credentials;
 
