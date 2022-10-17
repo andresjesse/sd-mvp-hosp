@@ -55,7 +55,7 @@ model Doctor {
   isActive  Boolean  @default(false)
   createdAt DateTime @default(now()) @map("created_at")
   updatedAt DateTime @updatedAt @map("updated_at")
-  Interest  Interest?
+  Interest  Interest[]
 }
 
 model Interest {
@@ -63,6 +63,6 @@ model Interest {
   doctor     Doctor   @relation(fields: [idDoctor], references: [id], onDelete: Cascade)
   idDoctor   Int      @unique
   weekday    Int      
-  hourStart  Int
-  hourEnd    Int
+  hourStart  DateTime
+  hourEnd    DateTime
 }
