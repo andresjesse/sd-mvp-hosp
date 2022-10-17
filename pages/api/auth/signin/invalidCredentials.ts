@@ -1,5 +1,12 @@
 export class InvalidCredentials extends Error {
   constructor() {
-    super("Invalid credentials.");
+    const message: string = "Invalid credentials.";
+    super(message);
+
+    Object.setPrototypeOf(this, InvalidCredentials.prototype);
+  }
+
+  getErrorMessage() {
+    return this.message;
   }
 }
