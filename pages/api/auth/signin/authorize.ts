@@ -3,6 +3,31 @@ import hasher from "../../../../utils/hasher/BcryptjsHasher";
 import { prisma } from "../../../../lib/prisma";
 import { InvalidCredentials } from "./invalidCredentials";
 
+type TSignInCredentials = {
+  email: string;
+  password: string;
+};
+
+function validate(credentials: TSignInCredentials): TSignInCredentials {
+  const hasExpectedProperties: Boolean =
+    Object.prototype.hasOwnProperty.call(credentials, "email") &&
+    Object.prototype.hasOwnProperty.call(credentials, "password");
+
+  if (!hasExpectedProperties) {
+    throw new InvalidCredentials();
+  }
+
+  for (const key in credentials) {
+    const credential: string = credentials[key as keyof TSignInCredentials];
+
+    if (credential === null || credential.trim() === "") {
+      throw new InvalidCredentials();
+    }
+  }
+
+  return credentials;
+}
+
 // public user object
 export type TSessionUser = {
   id: number;
@@ -13,12 +38,9 @@ export type TSessionUser = {
   doctor: Doctor | null;
 };
 
-const authorize = async (
-  credentials: any,
-  req: any
-): Promise<TSessionUser> => {
+const authorize = async (credentials: any, req: any): Promise<TSessionUser> => {
   try {
-    const { email, password } = credentials;
+    const { email, password }: TSignInCredentials = validate(credentials);
 
     type CompositeUser =
       | (User & {
