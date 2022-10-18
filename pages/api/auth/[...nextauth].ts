@@ -1,10 +1,18 @@
-import NextAuth, { NextAuthOptions, RequestInternal } from 'next-auth'
+import NextAuth, { NextAuthOptions } from 'next-auth'
 import CredentialsProvider from 'next-auth/providers/credentials'
-import { TSessionUser } from './signin/authorize'
-import { Admin, Doctor, User } from '@prisma/client'
+import { Admin, Doctor, User, Role } from '@prisma/client'
 import hasher from './../../../utils/hasher/BcryptjsHasher'
 import { prisma } from './../../../lib/prisma'
 import { InvalidCredentials } from './signin/invalidCredentials'
+
+export type TSessionUser = {
+  id: number
+  name: string
+  email: string
+  role: Role
+  admin: Admin | null
+  doctor: Doctor | null
+}
 
 export const authOptions: NextAuthOptions = {
   session: {
@@ -19,12 +27,8 @@ export const authOptions: NextAuthOptions = {
         password: { label: 'Password', type: 'password' },
       },
       authorize: async (
-        credentials: Record<'email' | 'password', string> | undefined,
-        // eslint-disable-next-line @typescript-eslint/no-unused-vars
-        req: Pick<RequestInternal, 'headers' | 'body' | 'query' | 'method'>
-      ): Promise<
-        Omit<TSessionUser, 'id'> | { id?: string | undefined } | null
-      > => {
+        credentials: Record<'email' | 'password', string> | undefined
+      ): Promise<TSessionUser> => {
         try {
           const email = credentials?.email
           const password = credentials?.password
