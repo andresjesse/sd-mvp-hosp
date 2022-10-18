@@ -28,7 +28,7 @@ export const authOptions: NextAuthOptions = {
       },
       authorize: async (
         credentials: Record<'email' | 'password', string> | undefined
-      ): Promise<TSessionUser> => {
+      ): Promise<TSessionUser | null> => {
         try {
           const email = credentials?.email
           const password = credentials?.password
