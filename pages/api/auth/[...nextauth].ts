@@ -22,7 +22,9 @@ export const authOptions: NextAuthOptions = {
         credentials: Record<'email' | 'password', string> | undefined,
         // eslint-disable-next-line @typescript-eslint/no-unused-vars
         req: Pick<RequestInternal, 'headers' | 'body' | 'query' | 'method'>
-      ): Promise<TSessionUser> => {
+      ): Promise<
+        Omit<TSessionUser, 'id'> | { id?: string | undefined } | null
+      > => {
         try {
           const email = credentials?.email
           const password = credentials?.password
