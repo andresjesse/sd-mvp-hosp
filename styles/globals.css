@@ -70,3 +70,18 @@ a {
 .ant-layout-sider-trigger {
   background: #216651 !important;
 }
+
+
+/*Login page*/
+
+.formCenter{
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  height: 100%;
+  background-color: black;
+}
+
+.formLoginItem{
+  width: max-content;
+}

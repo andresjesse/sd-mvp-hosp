@@ -14,16 +14,8 @@ import React from 'react'
 const { Title } = Typography
 const dateFormatList = ['DD/MM/YYYY', 'DD/MM/YY']
 
-import locale from 'antd/es/locale/pt_BR'
-import 'moment/locale/pt-br'
-
-{
-  /**FAZER***
-RESPONSIVO.
-LINGUAGEM DO ELEMENTO DATAPICKER EM PORTUGUES.
-IDENTAR CODE.
- */
-}
+/*TODO: use global locale with ConfigProvider*/
+import locale from 'antd/lib/locale/pt_BR'
 
 const App: React.FC = () => {
   return (
@@ -41,24 +33,13 @@ const App: React.FC = () => {
           colon={false}
           style={{ width: '100%' }}
         >
-          <Form.Item label="Nome">
+          <Form.Item label="Nome: ">
             <Input name="nameDoctor" />
           </Form.Item>
 
-          <Form.Item label="Sobrenome">
+          <Form.Item label="Sobrenome: ">
             <Input name="lastNameDoctor" />
           </Form.Item>
-
-          {/* => Pode remover isso, a princípio não vamos usar.
-        <Form.Item label="Função: ">
-          <Select>
-            <Select.Option value="doctor">Medico(a)</Select.Option>
-            <Select.Option value="enf">Enfermeiro(a)</Select.Option>
-          </Select>
-        </Form.Item>
-        */}
-
-          {/*DATAPICKER  ARUMAR BUG */}
 
           <Form.Item label="Data de Nascimento: ">
             <ConfigProvider locale={locale}>
@@ -70,6 +51,7 @@ const App: React.FC = () => {
             <Input name="crm" />
           </Form.Item>
 
+          {/**fazer a fake uf's */}
           <Form.Item label="CRM UF: ">
             <Select>
               <Select.Option value="pr">Paraná</Select.Option>
