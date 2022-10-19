@@ -2,12 +2,15 @@ import { LoginOutlined, SelectOutlined } from '@ant-design/icons'
 import { Button, Checkbox, Form, Input, Typography } from 'antd'
 import { signIn } from 'next-auth/react'
 import Link from 'next/link'
-import { Router } from 'next/router'
+import { useRouter } from 'next/router'
 import { ValidateErrorEntity } from 'rc-field-form/lib/interface'
 import React, { useState } from 'react'
-const { Title } = Typography
+
+const { Title, Text } = Typography
 
 const App: React.FC = () => {
+  const router = useRouter()
+
   const [error, setError] = useState('')
 
   const onFinish = async (values: { [key: string]: string }) => {
@@ -27,7 +30,7 @@ const App: React.FC = () => {
     }
 
     console.log(res)
-    await Router.push('/welcome')
+    await router.push('/welcome')
   }
 
   const onFinishFailed = (
@@ -83,10 +86,10 @@ const App: React.FC = () => {
                 required: true,
                 message: 'Por favor insira sua senha.',
               },
-              {
-                min: 6,
-                message: 'A senha deve conter no minimo 8 caracteres.',
-              },
+              // {
+              //   min: 6,
+              //   message: 'A senha deve conter no minimo 8 caracteres.',
+              // },
             ]}
           >
             <Input.Password placeholder="Senha" size="large" />
@@ -94,13 +97,15 @@ const App: React.FC = () => {
 
           <Form.Item>
             <Form.Item name="remember" valuePropName="checked" noStyle>
-              <Checkbox>Lembre-me</Checkbox>
+              <Checkbox disabled>Lembre-me</Checkbox>
             </Form.Item>
 
-            <a className="login-form-forgot-right" href="#">
+            {/* <a className="login-form-forgot-right" href="#">
               Esqueceu a senha?
-            </a>
+            </a> */}
           </Form.Item>
+
+          {error && <Text type="danger">{error}</Text>}
 
           <Button
             type="primary"

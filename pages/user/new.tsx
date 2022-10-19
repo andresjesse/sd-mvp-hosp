@@ -11,6 +11,9 @@ import {
 } from 'antd'
 
 import React from 'react'
+
+import { fakeCrmUf } from '../../services/fakeCrmUf'
+
 const { Title } = Typography
 const dateFormatList = ['DD/MM/YYYY', 'DD/MM/YY']
 
@@ -54,8 +57,11 @@ const App: React.FC = () => {
           {/**fazer a fake uf's */}
           <Form.Item label="CRM UF: ">
             <Select>
-              <Select.Option value="pr">Paraná</Select.Option>
-              <Select.Option value="sp">São Paulo</Select.Option>
+              {fakeCrmUf.map((uf) => (
+                <Select.Option key={uf} value={uf}>
+                  {uf}
+                </Select.Option>
+              ))}
             </Select>
           </Form.Item>
 
