@@ -20,7 +20,7 @@ const siderItems = [
   },
   {
     label: "Escala",
-    key: "scale",
+    key: "schedule",
     icon: <FieldTimeOutlined style={{ color: "black" }} />,
   },
 ];
