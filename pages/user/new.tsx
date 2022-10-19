@@ -1,19 +1,17 @@
 import {
   Button,
+  Card,
   DatePicker,
   Form,
   Input,
-  Select,
-  Col,
   Row,
-  Divider,
+  Select,
   Typography,
-  Card,
-} from "antd";
+} from 'antd'
 
-import React, { useState } from "react";
-const { Title } = Typography;
-type SizeType = Parameters<typeof Form>[0]["size"];
+import React from 'react'
+const { Title } = Typography
+// type SizeType = Parameters<typeof Form>[0]["size"];
 
 {
   /**import enUS from 'antd/es/locale/en_US';
@@ -38,14 +36,14 @@ const App: React.FC = () => {
         <Title level={3}>Cadastro Novo usuario</Title>
       </Row>
 
-      <Row justify="center" style={{ padding: "5%" }}>
+      <Row justify="center" style={{ padding: '5%' }}>
         <Form
           layout="horizontal"
           labelWrap
-          labelCol={{ flex: "120px" }}
+          labelCol={{ flex: '120px' }}
           wrapperCol={{ flex: 1 }}
           colon={false}
-          style={{ width: "100%" }}
+          style={{ width: '100%' }}
         >
           <Form.Item label="Nome">
             <Input name="nameDoctor" />
@@ -103,7 +101,7 @@ const App: React.FC = () => {
         </Form>
       </Row>
     </Card>
-  );
-};
+  )
+}
 
-export default App;
+export default App

@@ -1,39 +1,39 @@
-import { Button, Card, Checkbox, Form, Input } from "antd";
-import Link from "next/link";
-import React from "react";
-import type { NextPage } from "next";
-import Head from "next/head";
-import { signIn } from "next-auth/react";
-import Router from "next/router";
-import { useState } from "react";
+import { Button, Card, Form, Input } from 'antd'
+import { signIn } from 'next-auth/react'
+import Router from 'next/router'
+import { ValidateErrorEntity } from 'rc-field-form/lib/interface'
+import React, { useState } from 'react'
 
 const App: React.FC = () => {
-  const [error, setError] = useState("");
+  const [error, setError] = useState('')
 
-  const onFinish = async (values: any) => {
-    const email: string = values.email;
-    const password: string = values.password;
+  const onFinish = async (values: { [key: string]: string }) => {
+    const email: string = values.email
+    const password: string = values.password
 
-    const res = await signIn("credentials", {
+    const res = await signIn('credentials', {
       email,
       password,
       redirect: false,
-    });
+    })
 
-    if (!res?.ok) {
-      console.log(res);
-      console.log(res!.error);
-      setError(res!.error!);
-      return;
+    if (res?.error) {
+      console.log(res)
+      setError(res.error)
+      return
     }
 
-    console.log(res);
-    await Router.push("/welcome");
-  };
+    console.log(res)
+    await Router.push('/welcome')
+  }
 
-  const onFinishFailed = (errorInfo: any) => {
-    console.log("Failed:", errorInfo);
-  };
+  const onFinishFailed = (
+    errorInfo: ValidateErrorEntity<{
+      [key: string]: string
+    }>
+  ) => {
+    console.log('Failed:', errorInfo)
+  }
 
   return (
     <Card>
@@ -52,8 +52,8 @@ const App: React.FC = () => {
           rules={[
             {
               required: true,
-              message: "Insira um email válido!",
-              type: "email",
+              message: 'Insira um email válido!',
+              type: 'email',
             },
           ]}
         >
@@ -63,7 +63,7 @@ const App: React.FC = () => {
         <Form.Item
           label="Senha"
           name="password"
-          rules={[{ required: true, message: "Preencha sua senha!" }]}
+          rules={[{ required: true, message: 'Preencha sua senha!' }]}
         >
           <Input.Password />
         </Form.Item>
@@ -89,7 +89,7 @@ const App: React.FC = () => {
 
       {error}
     </Card>
-  );
-};
+  )
+}
 
-export default App;
+export default App
