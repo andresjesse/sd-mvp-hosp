@@ -5,6 +5,7 @@ import {
 } from "@ant-design/icons";
 import { Layout, Menu } from "antd";
 import { ReactNode, useState } from "react";
+import Link from "next/link";
 
 const { Header, Content, Sider, Footer } = Layout;
 
@@ -14,13 +15,21 @@ interface PageLayoutProps {
 
 const siderItems = [
   {
-    label: "Médico",
+    label: (
+      <Link href="/profile">
+        <a>Médico</a>
+      </Link>
+    ),
     key: "doctor",
     icon: <UserOutlined style={{ color: "black" }} />,
   },
   {
-    label: "Escala",
-    key: "scale",
+    label: (
+      <Link href="/schedule">
+        <a>Escala</a>
+      </Link>
+    ),
+    key: "schedule",
     icon: <FieldTimeOutlined style={{ color: "black" }} />,
   },
 ];
@@ -39,7 +48,11 @@ export default function PageLayout({ children }: PageLayoutProps) {
           justifyContent: "space-between",
         }}
       >
-        <div>LOGO AQUI</div>
+        <div>
+          <Link href="/">
+            <a>LOGO AQUI</a>
+          </Link>
+        </div>
         <div>
           Logout <LogoutOutlined />
         </div>
