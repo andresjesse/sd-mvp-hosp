@@ -1,10 +1,11 @@
-import { Button, Form, Input } from 'antd'
-import Checkbox from 'antd/lib/checkbox/Checkbox'
+import { LoginOutlined, SelectOutlined } from '@ant-design/icons'
+import { Button, Checkbox, Form, Input, Typography } from 'antd'
 import { signIn } from 'next-auth/react'
 import Link from 'next/link'
-import Router from 'next/router'
+import { Router } from 'next/router'
 import { ValidateErrorEntity } from 'rc-field-form/lib/interface'
 import React, { useState } from 'react'
+const { Title } = Typography
 
 const App: React.FC = () => {
   const [error, setError] = useState('')
@@ -38,63 +39,86 @@ const App: React.FC = () => {
   }
 
   return (
-    /* tag <Card> aqui*/
-    <Form
-      className="formCenter"
-      name="basic"
-      labelCol={{ span: 8 }}
-      wrapperCol={{ span: 16 }}
-      initialValues={{ remember: true }}
-      onFinish={onFinish}
-      onFinishFailed={onFinishFailed}
-      autoComplete="off"
-    >
-      <Form.Item
-        label="E-mail"
-        name="email"
-        rules={[
-          { required: true, message: 'Insira um email válido!', type: 'email' },
-        ]}
-      >
-        <Input />
-      </Form.Item>
+    <div className="auth-page-wrapper">
+      <div className="form-container sign-in-container">
+        <Form
+          name="singin"
+          initialValues={{ remember: true }}
+          onFinish={onFinish}
+          onFinishFailed={onFinishFailed}
+          autoComplete="off"
+        >
+          <Title level={2} className="text-center">
+            Login
+          </Title>
 
-      <Form.Item
-        label="Senha"
-        name="password"
-        rules={[{ required: true, message: 'Preencha sua senha!' }]}
-      >
-        <Input.Password />
-      </Form.Item>
+          <Form.Item
+            name="email"
+            hasFeedback
+            label="E-mail"
+            labelCol={{ span: 24 }}
+            wrapperCol={{ span: 24 }}
+            rules={[
+              {
+                required: true,
+                message: 'Por favor insira seu e-mail.',
+              },
+              {
+                type: 'email',
+                message: 'E-mail invalido.',
+              },
+            ]}
+          >
+            <Input placeholder="E-mail" size="large" />
+          </Form.Item>
 
-      <Form.Item
-        name="remember"
-        valuePropName="checked"
-        wrapperCol={{ offset: 8, span: 16 }}
-      >
-        <Checkbox disabled>Lembrar</Checkbox>
-      </Form.Item>
+          <Form.Item
+            name="password"
+            hasFeedback
+            label="Senha"
+            labelCol={{ span: 24 }}
+            wrapperCol={{ span: 24 }}
+            rules={[
+              {
+                required: true,
+                message: 'Por favor insira sua senha.',
+              },
+              {
+                min: 6,
+                message: 'A senha deve conter no minimo 8 caracteres.',
+              },
+            ]}
+          >
+            <Input.Password placeholder="Senha" size="large" />
+          </Form.Item>
 
-      <Form.Item wrapperCol={{ offset: 8, span: 16 }}>
-        <Link href="/">Esquecia a senha</Link>
-      </Form.Item>
+          <Form.Item>
+            <Form.Item name="remember" valuePropName="checked" noStyle>
+              <Checkbox>Lembre-me</Checkbox>
+            </Form.Item>
 
-      <Form.Item wrapperCol={{ offset: 8, span: 16 }}>
-        <Button type="primary" htmlType="submit">
-          Login
-        </Button>
-      </Form.Item>
-    </Form>
+            <a className="login-form-forgot-right" href="#">
+              Esqueceu a senha?
+            </a>
+          </Form.Item>
+
+          <Button
+            type="primary"
+            htmlType="submit"
+            shape="round"
+            icon={<LoginOutlined />}
+            size="large"
+          >
+            Login
+          </Button>
+
+          <Button shape="round" icon={<SelectOutlined />} size="large">
+            <Link href="user/new"> Criar uma conta</Link>
+          </Button>
+        </Form>
+      </div>
+    </div>
   )
 }
 
 export default App
-
-{
-  /*
-
-*to do
-*disabled esqueci senha
-* usar o login na pagina inteira 
- */
-}
