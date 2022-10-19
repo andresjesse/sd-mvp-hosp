@@ -1,6 +1,7 @@
 import {
   Button,
   Card,
+  ConfigProvider,
   DatePicker,
   Form,
   Input,
@@ -10,24 +11,14 @@ import {
 } from 'antd'
 
 import React from 'react'
+
+import { fakeCrmUf } from '../../services/fakeCrmUf'
+
 const { Title } = Typography
-// type SizeType = Parameters<typeof Form>[0]["size"];
+const dateFormatList = ['DD/MM/YYYY', 'DD/MM/YY']
 
-{
-  /**import enUS from 'antd/es/locale/en_US';
-import moment from 'moment';
-import 'moment/locale/zh-cn';
-
-moment.locale('en'); */
-}
-
-{
-  /**FAZER***
-RESPONSIVO.
-LINGUAGEM DO ELEMENTO DATAPICKER EM PORTUGUES.
-IDENTAR CODE.
- */
-}
+/*TODO: use global locale with ConfigProvider*/
+import locale from 'antd/lib/locale/pt_BR'
 
 const App: React.FC = () => {
   return (
@@ -45,35 +36,32 @@ const App: React.FC = () => {
           colon={false}
           style={{ width: '100%' }}
         >
-          <Form.Item label="Nome">
+          <Form.Item label="Nome: ">
             <Input name="nameDoctor" />
           </Form.Item>
 
-          <Form.Item label="Sobrenome">
+          <Form.Item label="Sobrenome: ">
             <Input name="lastNameDoctor" />
           </Form.Item>
 
-          {/* => Pode remover isso, a princípio não vamos usar.
-        <Form.Item label="Função: ">
-          <Select>
-            <Select.Option value="doctor">Medico(a)</Select.Option>
-            <Select.Option value="enf">Enfermeiro(a)</Select.Option>
-          </Select>
-        </Form.Item>
-        */}
-
           <Form.Item label="Data de Nascimento: ">
-            <DatePicker />
+            <ConfigProvider locale={locale}>
+              <DatePicker format={dateFormatList[0]} />
+            </ConfigProvider>
           </Form.Item>
 
           <Form.Item label="CRM: ">
             <Input name="crm" />
           </Form.Item>
 
+          {/**fazer a fake uf's */}
           <Form.Item label="CRM UF: ">
             <Select>
-              <Select.Option value="pr">Paraná</Select.Option>
-              <Select.Option value="sp">São Paulo</Select.Option>
+              {fakeCrmUf.map((uf) => (
+                <Select.Option key={uf} value={uf}>
+                  {uf}
+                </Select.Option>
+              ))}
             </Select>
           </Form.Item>
 
