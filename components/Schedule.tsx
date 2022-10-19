@@ -1,11 +1,11 @@
 import { Tag } from "antd";
 import React from "react";
 
-interface ScaleProps {
+interface ScheduleProps {
   data: any; // verificar tipo a utilizar aqui
 }
 
-export default function Scale({ data }: ScaleProps) {
+export default function Schedule({ data }: ScheduleProps) {
   return (
     <div>
       <Tag

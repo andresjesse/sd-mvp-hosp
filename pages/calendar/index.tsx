@@ -1,34 +1,34 @@
 import { Calendar } from "antd";
 import { Moment } from "moment";
 import { GetStaticProps } from "next";
-import { fakeScales, TScale } from "../../services/fakeData";
-import Scale from "./Scale";
+import { fakeSchedules, TSchedule } from "../../services/fakeData";
+import Schedule from "../../components/Schedule";
 import styles from "./styles.module.css";
 import React from "react";
 
-const getListData = (value: Moment, scales: Array<TScale>) => {
+const getListData = (value: Moment, schedules: Array<TSchedule>) => {
   const colors = ["#7cb305", "#13c2c2", "#1890ff", "#2f54eb"];
 
   let colorCounter = 0;
   let listData = new Array();
 
-  scales.forEach(async (scale) => {
-    const date = new Date(scale.date);
+  schedules.forEach(async (schedule) => {
+    const date = new Date(schedule.date);
     if (
       date.getDate() == value.date() &&
       date.getMonth() == value.month() &&
       date.getFullYear() == value.year()
     ) {
-      if (!scale.idDoctor) {
+      if (!schedule.idDoctor) {
         listData.push({
-          id: scale.id,
+          id: schedule.id,
           doctorName: "Vago",
           color: "warning",
         });
       } else {
         listData.push({
-          id: scale.id,
-          doctorName: scale.nameDoctor,
+          id: schedule.id,
+          doctorName: schedule.nameDoctor,
           color: colors[colorCounter++],
         });
       }
@@ -39,17 +39,17 @@ const getListData = (value: Moment, scales: Array<TScale>) => {
 };
 
 interface CalendarProps {
-  scales: Array<TScale>;
+  schedules: Array<TSchedule>;
 }
 
-export default function calendar({ scales }: CalendarProps) {
+export default function calendar({ schedules }: CalendarProps) {
   const dateCellRender = (value: Moment) => {
-    const listData = getListData(value, scales);
+    const listData = getListData(value, schedules);
     return (
       <ul className={styles.events}>
-        {listData?.map((scale) => (
-          <li key={scale.id}>
-            <Scale data={scale} />
+        {listData?.map((schedule) => (
+          <li key={schedule.id}>
+            <Schedule data={schedule} />
           </li>
         ))}
       </ul>
@@ -59,11 +59,12 @@ export default function calendar({ scales }: CalendarProps) {
   return <Calendar dateCellRender={dateCellRender} />;
 }
 
-export const getStaticProps: GetStaticProps = async (context) => {
-  const scales = fakeScales;
+export const getStaticProps: GetStaticProps = async () => {
+  const schedules = fakeSchedules;
+
   return {
     props: {
-      scales,
+      schedules,
     },
     revalidate: 10,
   };

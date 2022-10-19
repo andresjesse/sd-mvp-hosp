@@ -42,7 +42,7 @@ export const fakeDoctors: Array<Doctor> = [
   },
 ];
 
-export type TScale = {
+export type TSchedule = {
   id: number;
   date: string;
   hourStart: number;
@@ -53,7 +53,7 @@ export type TScale = {
   isFixed: boolean;
 };
 
-export const fakeScales: Array<TScale> = [
+export const fakeSchedules: Array<TSchedule> = [
   {
     id: 1,
     date: "2022-10-1",
