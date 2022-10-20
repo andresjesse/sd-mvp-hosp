@@ -6,6 +6,7 @@ import {
 } from '@ant-design/icons'
 import { Button, Layout, Menu } from 'antd'
 import { signOut, useSession } from 'next-auth/react'
+import Image from 'next/image'
 import Link from 'next/link'
 import { ReactNode, useState } from 'react'
 
@@ -53,7 +54,22 @@ export default function PageLayout({ children }: PageLayoutProps) {
         }}
       >
         <Link href="/">
-          <a>LOGO AQUI</a>
+          <div style={{ display: 'flex', cursor: 'pointer' }}>
+            <div
+              style={{
+                position: 'relative',
+                width: '56px',
+              }}
+            >
+              <Image
+                alt="Image Alt"
+                src="/logo.png"
+                layout="fill"
+                objectFit="contain" // Scale your image down to fit into the container
+              />
+            </div>
+            <span style={{ marginLeft: 10, fontWeight: 'bold' }}>MVP SD</span>
+          </div>
         </Link>
 
         {status === 'authenticated' ? (
