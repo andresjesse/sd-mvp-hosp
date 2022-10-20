@@ -1,10 +1,11 @@
 import {
   FieldTimeOutlined,
+  LoginOutlined,
   LogoutOutlined,
   UserOutlined,
 } from '@ant-design/icons'
 import { Button, Layout, Menu } from 'antd'
-import { signOut } from 'next-auth/react'
+import { signOut, useSession } from 'next-auth/react'
 import Link from 'next/link'
 import { ReactNode, useState } from 'react'
 
@@ -22,7 +23,7 @@ const siderItems = [
       </Link>
     ),
     key: 'doctor',
-    icon: <UserOutlined style={{ color: 'black' }} />,
+    icon: <UserOutlined />,
   },
   {
     label: (
@@ -31,12 +32,14 @@ const siderItems = [
       </Link>
     ),
     key: 'schedule',
-    icon: <FieldTimeOutlined style={{ color: 'black' }} />,
+    icon: <FieldTimeOutlined />,
   },
 ]
 
 export default function PageLayout({ children }: PageLayoutProps) {
+  const { data: session, status } = useSession()
   const [collapsed, setCollapsed] = useState(false)
+
   return (
     <Layout>
       <Header
@@ -53,31 +56,51 @@ export default function PageLayout({ children }: PageLayoutProps) {
           <a>LOGO AQUI</a>
         </Link>
 
-        <div>
-          <Button
-            type="text"
-            onClick={() => signOut({ callbackUrl: '/' })}
-            style={{ color: 'white', fontWeight: 'bold' }}
+        {status === 'authenticated' ? (
+          <div
+            style={{
+              display: 'flex',
+              alignItems: 'center',
+              whiteSpace: 'nowrap',
+            }}
           >
-            Logout
-            <LogoutOutlined />
-          </Button>
-        </div>
+            Logado como {session?.user?.name}
+            <Button
+              type="text"
+              onClick={() => signOut({ callbackUrl: '/' })}
+              style={{ fontWeight: 'bold' }}
+            >
+              Deslogar-se
+              <LogoutOutlined />
+            </Button>
+          </div>
+        ) : (
+          <Link href="/login">
+            <div style={{ fontWeight: 'bold' }}>
+              <span style={{ marginRight: 10, cursor: 'pointer' }}>
+                Fazer Login
+              </span>
+              <LoginOutlined />
+            </div>
+          </Link>
+        )}
       </Header>
 
       <Layout style={{ minHeight: '100vh' }}>
-        <Sider
-          collapsible
-          collapsed={collapsed}
-          onCollapse={(value) => setCollapsed(value)}
-        >
-          <Menu
-            mode="inline"
-            defaultSelectedKeys={['1']}
-            items={siderItems}
-            theme="dark"
-          />
-        </Sider>
+        {status === 'authenticated' && (
+          <Sider
+            collapsible
+            collapsed={collapsed}
+            onCollapse={(value) => setCollapsed(value)}
+          >
+            <Menu
+              mode="inline"
+              defaultSelectedKeys={['1']}
+              items={siderItems}
+              theme="dark"
+            />
+          </Sider>
+        )}
 
         <Layout style={{ padding: '0 24px 24px' }}>
           <Content style={{ padding: 24, margin: 0, minHeight: 280 }}>

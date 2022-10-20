@@ -44,6 +44,10 @@ a {
   ) !important;
 }
 
+.ant-layout-header * {
+  color: white !important;
+}
+
 .ant-layout-sider {
   background: #74baa0 !important;
 }
