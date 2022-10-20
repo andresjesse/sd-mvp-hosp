@@ -1,33 +1,25 @@
-import hasher from "../../../utils/hasher/BcryptjsHasher";
-import { THasherError, THashResponse } from "../../../utils/hasher/HasherTypes";
+import hasher from '../../../utils/hasher/BcryptjsHasher'
 
-test("HashAsync_OnValidInput_ReturnsTransformedOutput", async () => {
+test('HashAsync_OnValidInput_ReturnsTransformedOutput', async () => {
   // Arrange
-  const inputTest = "p@ssw0rd";
+  const inputTest = 'p@ssw0rd'
 
   // Act
-  let response: THasherError | THashResponse = await hasher.hashAsync(
-    inputTest
-  );
+  const response = await hasher.hashAsync(inputTest)
 
-  // Assert
-  expect(response.ok).toBeTruthy();
+  const doOutputStringDiffersFromInput = response != inputTest
 
-  response = response as THashResponse;
-  const doOutputStringDiffersFromInput: Boolean =
-    response.hashedInput != inputTest;
-  expect(doOutputStringDiffersFromInput).toBeTruthy();
-});
+  expect(doOutputStringDiffersFromInput).toBeTruthy()
+})
 
-test("HashAsync_OnNullInput_ReturnsFalse", async () => {
-  // Arrange
-  const inputTest = null;
+// -> Null will never happen. hashAsync requires a valid string (ts-check)
+// test('HashAsync_OnNullInput_ThrowsError', async () => {
+//   // Arrange
+//   const inputTest = null
 
-  // Act
-  let response: THasherError | THashResponse = await hasher.hashAsync(
-    inputTest as any
-  );
+//   // Act
+//   const errorFunc = async () => await hasher.hashAsync(inputTest as any)
 
-  // Assert
-  expect(response.ok).toBeFalsy();
-});
+//   // Assert
+//   await expect(errorFunc).rejects.toThrowError()
+// })

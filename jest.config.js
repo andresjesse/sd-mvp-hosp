@@ -1,4 +1,5 @@
 // jest.config.js
+/* eslint-disable */
 const nextJest = require('next/jest')
 
 const createJestConfig = nextJest({

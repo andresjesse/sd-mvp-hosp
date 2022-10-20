@@ -13,27 +13,36 @@
 // }
 
 // export default MyApp;
-import type { AppProps } from "next/app";
-import Layout from "../components/Layout";
-import { ConfigProvider } from "antd";
+import type { AppProps } from 'next/app'
+import Layout from '../components/Layout'
+import { ConfigProvider } from 'antd'
+import { SessionProvider } from 'next-auth/react'
+import { Session } from 'next-auth'
 
-import "../styles/globals.css";
-import "antd/dist/antd.variable.min.css";
+import '../styles/globals.css'
+import 'antd/dist/antd.variable.min.css'
 
 ConfigProvider.config({
   theme: {
-    primaryColor: "#3e9278",
+    primaryColor: '#3e9278',
   },
-});
+})
 
-function MyApp({ Component, pageProps }: AppProps) {
+function MyApp({
+  Component,
+  pageProps,
+}: AppProps<{
+  session: Session
+}>) {
   return (
-    <ConfigProvider>
-      <Layout>
-        <Component {...pageProps} />
-      </Layout>
-    </ConfigProvider>
-  );
+    <SessionProvider session={pageProps.session}>
+      <ConfigProvider>
+        <Layout>
+          <Component {...pageProps} />
+        </Layout>
+      </ConfigProvider>
+    </SessionProvider>
+  )
 }
 
-export default MyApp;
+export default MyApp
