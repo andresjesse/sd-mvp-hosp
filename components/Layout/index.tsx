@@ -3,10 +3,10 @@ import {
   LogoutOutlined,
   UserOutlined,
 } from '@ant-design/icons'
-import { Layout, Menu } from 'antd'
-import { ReactNode, useState } from 'react'
-import Link from 'next/link'
+import { Button, Layout, Menu } from 'antd'
 import { signOut } from 'next-auth/react'
+import Link from 'next/link'
+import { ReactNode, useState } from 'react'
 
 const { Header, Content, Sider, Footer } = Layout
 
@@ -49,19 +49,19 @@ export default function PageLayout({ children }: PageLayoutProps) {
           justifyContent: 'space-between',
         }}
       >
+        <Link href="/">
+          <a>LOGO AQUI</a>
+        </Link>
+
         <div>
-          <Link href="/">
-            <a>LOGO AQUI</a>
-          </Link>
-        </div>
-        <div>
-          <button
+          <Button
+            type="text"
             onClick={() => signOut({ callbackUrl: '/' })}
-            style={{ background: 'none', border: 'none' }}
+            style={{ color: 'white', fontWeight: 'bold' }}
           >
             Logout
             <LogoutOutlined />
-          </button>
+          </Button>
         </div>
       </Header>
 
@@ -71,7 +71,12 @@ export default function PageLayout({ children }: PageLayoutProps) {
           collapsed={collapsed}
           onCollapse={(value) => setCollapsed(value)}
         >
-          <Menu mode="inline" defaultSelectedKeys={['1']} items={siderItems} />
+          <Menu
+            mode="inline"
+            defaultSelectedKeys={['1']}
+            items={siderItems}
+            theme="dark"
+          />
         </Sider>
 
         <Layout style={{ padding: '0 24px 24px' }}>
