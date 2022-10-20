@@ -36,10 +36,16 @@ a {
 */
 
 .ant-layout-header {
-  background: linear-gradient(90deg,
-      rgba(33, 102, 81, 1) 0%,
-      rgba(62, 146, 120, 1) 33%,
-      rgba(116, 186, 160, 1) 70%) !important;
+  background: linear-gradient(
+    90deg,
+    rgba(33, 102, 81, 1) 0%,
+    rgba(62, 146, 120, 1) 33%,
+    rgba(116, 186, 160, 1) 70%
+  ) !important;
+}
+
+.ant-layout-header * {
+  color: white !important;
 }
 
 .ant-layout-sider {
@@ -50,16 +56,13 @@ a {
   background: #74baa0 !important;
 }
 
-.ant-menu-item-selected {
-  color: black !important;
+.ant-menu * {
+  color: white !important;
+  font-weight: bold;
 }
 
 .ant-menu-item::after {
   border-right: 3px solid #216651 !important;
-}
-
-.ant-menu-item-active {
-  color: black !important;
 }
 
 .ant-menu-inline {
@@ -69,7 +72,6 @@ a {
 .ant-layout-sider-trigger {
   background: #216651 !important;
 }
-
 
 /*Login page*/
 
@@ -110,13 +112,12 @@ a {
   text-align: center;
 }
 
-
-.login-form-forgot-right{
+.login-form-forgot-right {
   position: absolute;
   right: 0;
 }
 
-.form-container button{
+.form-container button {
   margin-bottom: 5%;
 }
 
