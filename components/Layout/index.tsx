@@ -118,10 +118,8 @@ export default function PageLayout({ children }: PageLayoutProps) {
           </Sider>
         )}
 
-        <Layout style={{ padding: '0 24px 24px' }}>
-          <Content style={{ padding: 24, margin: 0, minHeight: 280 }}>
-            {children}
-          </Content>
+        <Layout>
+          <Content style={{ padding: 10, minHeight: 280 }}>{children}</Content>
 
           <Footer style={{ textAlign: 'center' }}>
             Hospital MVP ©2022 Created by TSI
