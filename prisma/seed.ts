@@ -1,6 +1,6 @@
-import { sectors } from './seeds/sectors'
 import { prisma } from '../lib/prisma'
 import AdminSeedFunction from './seeds/admin'
+import { sectors } from './seeds/sectors'
 
 async function main() {
   const adminSeedData = await AdminSeedFunction()
@@ -9,6 +9,7 @@ async function main() {
   await prisma.$transaction([
     prisma.sector.createMany({
       data: sectors,
+      skipDuplicates: true,
     }),
     prisma.user.create({
       data: adminSeedData,
