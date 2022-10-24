@@ -1,7 +1,6 @@
 import {
   Button,
   Card,
-  ConfigProvider,
   DatePicker,
   Form,
   Input,
@@ -16,9 +15,6 @@ import { fakeCrmUf } from '../../services/fakeCrmUf'
 
 const { Title } = Typography
 const dateFormatList = ['DD/MM/YYYY', 'DD/MM/YY']
-
-/*TODO: use global locale with ConfigProvider*/
-import locale from 'antd/lib/locale/pt_BR'
 
 const App: React.FC = () => {
   return (
@@ -45,9 +41,7 @@ const App: React.FC = () => {
           </Form.Item>
 
           <Form.Item label="Data de Nascimento: ">
-            <ConfigProvider locale={locale}>
-              <DatePicker format={dateFormatList[0]} />
-            </ConfigProvider>
+            <DatePicker format={dateFormatList[0]} />
           </Form.Item>
 
           <Form.Item label="CRM: ">
