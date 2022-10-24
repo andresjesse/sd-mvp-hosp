@@ -1,26 +1,13 @@
-// import type { AppProps } from "next/app";
-// import Layout from "../components/Layout";
-
-// import "../styles/globals.css";
-// import "antd/dist/antd.css"; // or 'antd/dist/antd.less'
-
-// function MyApp({ Component, pageProps }: AppProps) {
-//   return (
-//     <Layout>
-//       <Component {...pageProps} />
-//     </Layout>
-//   );
-// }
-
-// export default MyApp;
+import { ConfigProvider } from 'antd'
+import { Session } from 'next-auth'
+import { SessionProvider } from 'next-auth/react'
 import type { AppProps } from 'next/app'
 import Layout from '../components/Layout'
-import { ConfigProvider } from 'antd'
-import { SessionProvider } from 'next-auth/react'
-import { Session } from 'next-auth'
 
-import '../styles/globals.css'
+import locale from 'antd/lib/locale/pt_BR'
+
 import 'antd/dist/antd.variable.min.css'
+import '../styles/globals.css'
 
 ConfigProvider.config({
   theme: {
@@ -36,7 +23,7 @@ function MyApp({
 }>) {
   return (
     <SessionProvider session={pageProps.session}>
-      <ConfigProvider>
+      <ConfigProvider locale={locale}>
         <Layout>
           <Component {...pageProps} />
         </Layout>
