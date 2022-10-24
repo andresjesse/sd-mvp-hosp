@@ -1,17 +1,30 @@
-import { sectors } from './seeds/sectors'
 import { prisma } from '../lib/prisma'
 import AdminSeedFunction from './seeds/admin'
+import { sectors } from './seeds/sectors'
 
 async function main() {
   const adminSeedData = await AdminSeedFunction()
 
-  // const [sectorsResult, adminResult] = await prisma.$transaction([
   await prisma.$transaction([
-    prisma.sector.createMany({
-      data: sectors,
-    }),
-    prisma.user.create({
-      data: adminSeedData,
+    ...sectors.map((sector) =>
+      prisma.sector.upsert({
+        where: {
+          abbreviation: sector.abbreviation,
+        },
+        create: {
+          ...sector,
+        },
+        update: {},
+      })
+    ),
+    prisma.user.upsert({
+      where: {
+        email: process.env.ADMIN_EMAIL,
+      },
+      create: {
+        ...adminSeedData,
+      },
+      update: {},
     }),
   ])
 }
