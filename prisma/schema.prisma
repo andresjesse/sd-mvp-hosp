@@ -17,6 +17,7 @@ model Sector {
   id           Int     @id @default(autoincrement())
   abbreviation String  @unique
   description  String
+  Shift  Shift[]
 }
 
 enum Role {
@@ -56,6 +57,7 @@ model Doctor {
   createdAt DateTime @default(now()) @map("created_at")
   updatedAt DateTime @updatedAt @map("updated_at")
   Interest  Interest[]
+  Shift  Shift[]
 }
 
 model Interest {
@@ -65,4 +67,17 @@ model Interest {
   weekday    Int      
   hourStart  DateTime
   hourEnd    DateTime
+}
+
+model Shift {
+  id         Int      @id @default(autoincrement())
+  startDate  DateTime
+  endDate    DateTime
+  doctor     Doctor   @relation(fields: [idDoctor], references: [id], onDelete: Cascade)
+  idDoctor   Int      @unique
+  sector     Sector   @relation(fields: [idSector], references: [id], onDelete: Cascade)
+  idSector   Int      @unique
+  isFixed    Int
+  createdAt DateTime @default(now()) @map("created_at")
+  updatedAt DateTime @updatedAt @map("updated_at")
 }
