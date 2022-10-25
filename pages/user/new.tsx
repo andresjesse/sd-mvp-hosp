@@ -1,3 +1,4 @@
+import { Role } from '@prisma/client'
 import {
   Button,
   Card,
@@ -8,10 +9,17 @@ import {
   Select,
   Typography,
 } from 'antd'
+import {
+  GetServerSideProps,
+  GetServerSidePropsContext,
+  NextApiRequest,
+  NextApiResponse,
+} from 'next'
 
 import React from 'react'
 
 import { fakeCrmUf } from '../../services/fakeCrmUf'
+import { hasRoleCheck } from '../../utils/auth/authorizationHelper'
 
 const { Title } = Typography
 const dateFormatList = ['DD/MM/YYYY', 'DD/MM/YY']
@@ -84,6 +92,18 @@ const App: React.FC = () => {
       </Row>
     </Card>
   )
+}
+
+export const getServerSideProps: GetServerSideProps = async (
+  context: GetServerSidePropsContext
+) => {
+  const req = context.req as NextApiRequest
+  const res = context.res as NextApiResponse
+  const authorizationResponse = await hasRoleCheck(req, res, Role.ADMIN)
+
+  return {
+    props: {}, // will be passed to the page component as props
+  }
 }
 
 export default App
