@@ -1,4 +1,3 @@
-import { Role } from '@prisma/client'
 import { withAuth } from 'next-auth/middleware'
 import { TSessionUser } from './pages/api/auth/[...nextauth]'
 
@@ -13,14 +12,14 @@ export default withAuth(
   {
     callbacks: {
       authorized: ({ token }) => {
-        const isNotAuthenticated: boolean = token === null
-        if (isNotAuthenticated) {
-          return false
-        }
+        // const isNotAuthenticated: boolean = token === null
+        // if (isNotAuthenticated) {
+        //   return false
+        // }
 
-        const user: TSessionUser = token?.user as TSessionUser
-        console.log('is Admin?')
-        console.log(user.role === Role.ADMIN)
+        // const user: TSessionUser = token?.user as TSessionUser
+        // console.log('is Admin?')
+        // console.log(user.role === Role.ADMIN)
         return true
       },
     },
