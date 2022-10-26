@@ -9,12 +9,7 @@ import {
   Select,
   Typography,
 } from 'antd'
-import {
-  GetServerSideProps,
-  GetServerSidePropsContext,
-  NextApiRequest,
-  NextApiResponse,
-} from 'next'
+import { GetServerSideProps, GetServerSidePropsContext } from 'next'
 
 import React from 'react'
 
@@ -97,12 +92,10 @@ const App: React.FC = () => {
 export const getServerSideProps: GetServerSideProps = async (
   context: GetServerSidePropsContext
 ) => {
-  const req = context.req as NextApiRequest
-  const res = context.res as NextApiResponse
-  const authorizationResponse = await hasRoleCheck(req, res, Role.ADMIN)
+  await hasRoleCheck(context.req, context.res, Role.ADMIN)
 
   return {
-    props: {}, // will be passed to the page component as props
+    props: {},
   }
 }
 
