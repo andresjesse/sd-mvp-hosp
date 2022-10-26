@@ -5,7 +5,7 @@ import Link from 'next/link'
 import { useRouter } from 'next/router'
 import { ValidateErrorEntity } from 'rc-field-form/lib/interface'
 import React, { useState } from 'react'
-import login from './login.module.css'
+import login from '../styles/login.module.css'
 const { Title, Text } = Typography
 
 const App: React.FC = () => {
