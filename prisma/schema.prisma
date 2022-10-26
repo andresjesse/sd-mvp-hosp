@@ -17,6 +17,7 @@ model Sector {
   id           Int     @id @default(autoincrement())
   abbreviation String  @unique
   description  String
+  Shift        Shift[]
 }
 
 enum Role {
@@ -47,22 +48,36 @@ model Admin {
 }
 
 model Doctor {
-  id        Int      @id @default(autoincrement())
-  user      User     @relation(fields: [userId], references: [id], onDelete: Cascade)
-  userId    Int      @unique
+  id        Int        @id @default(autoincrement())
+  user      User       @relation(fields: [userId], references: [id], onDelete: Cascade)
+  userId    Int        @unique
   crm       String
   crmUf     String
-  isActive  Boolean  @default(false)
-  createdAt DateTime @default(now()) @map("created_at")
-  updatedAt DateTime @updatedAt @map("updated_at")
+  isActive  Boolean    @default(false)
+  createdAt DateTime   @default(now()) @map("created_at")
+  updatedAt DateTime   @updatedAt @map("updated_at")
   Interest  Interest[]
+  Shift     Shift[]
 }
 
 model Interest {
-  id         Int      @id @default(autoincrement())
-  doctor     Doctor   @relation(fields: [idDoctor], references: [id], onDelete: Cascade)
-  idDoctor   Int      @unique
-  weekday    Int      
-  hourStart  DateTime
-  hourEnd    DateTime
+  id        Int      @id @default(autoincrement())
+  doctor    Doctor   @relation(fields: [idDoctor], references: [id], onDelete: Cascade)
+  idDoctor  Int
+  weekday   Int
+  hourStart DateTime
+  hourEnd   DateTime
+}
+
+model Shift {
+  id        Int      @id @default(autoincrement())
+  startDate DateTime
+  endDate   DateTime
+  doctor    Doctor   @relation(fields: [idDoctor], references: [id], onDelete: Cascade)
+  idDoctor  Int
+  sector    Sector   @relation(fields: [idSector], references: [id], onDelete: Cascade)
+  idSector  Int
+  isFixed   Boolean
+  createdAt DateTime @default(now()) @map("created_at")
+  updatedAt DateTime @updatedAt @map("updated_at")
 }
