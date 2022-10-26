@@ -11,7 +11,7 @@ export default withAuth(
   },
   {
     callbacks: {
-      authorized: ({ token }) => {
+      authorized: () => {
         // const isNotAuthenticated: boolean = token === null
         // if (isNotAuthenticated) {
         //   return false
