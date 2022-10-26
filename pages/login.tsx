@@ -42,8 +42,8 @@ const App: React.FC = () => {
   }
 
   return (
-    <div className={login.auth-page-wrapper}>
-      <div className="form-container sign-in-container">
+    <div className={login.authPageWrapper}>
+      <div className={login.formContainer}>
         <Form
           name="singin"
           initialValues={{ remember: true }}
@@ -51,7 +51,7 @@ const App: React.FC = () => {
           onFinishFailed={onFinishFailed}
           autoComplete="off"
         >
-          <Title level={2} className="text-center">
+          <Title level={2} className={login.texCenter}>
             Login
           </Title>
 
@@ -100,7 +100,7 @@ const App: React.FC = () => {
               <Checkbox disabled>Lembre-me</Checkbox>
             </Form.Item>
 
-            {/* <a className="login-form-forgot-right" href="#">
+            {/* <a className={login.forgotRight} href="#">
               Esqueceu a senha?
             </a> */}
           </Form.Item>
@@ -113,11 +113,12 @@ const App: React.FC = () => {
             shape="round"
             icon={<LoginOutlined />}
             size="large"
+            className={login.button}
           >
             Login
           </Button>
 
-          <Button shape="round" icon={<SelectOutlined />} size="large">
+          <Button className={login.button} shape="round" icon={<SelectOutlined />} size="large">
             <Link href="user/new"> Criar uma conta</Link>
           </Button>
         </Form>

@@ -1,8 +1,8 @@
-.text-center {
+.textCenter {
     text-align: center;
   }
   
-  .auth-page-wrapper {
+  .authPageWrapper {
     display: flex;
     flex-direction: column;
     justify-content: center;
@@ -10,41 +10,38 @@
     height: 100%;
   }
   
-  .form-container {
+  .formContainer {
     position: relative;
     height: 100%;
-  }
-  
-  .sign-in-container {
     width: 50%;
     z-index: 2;
   }
-  
-  .form-container input {
+   
+  .formContainer input {
     font-size: 14px;
   }
   
-  .form-container form {
+  .formContainer form {
     background: #fff;
     padding: 50px;
     height: 100%;
   }
   
-  .form-container form h1 {
+  .formContainer form h1 {
     color: var(--text-color);
     text-align: center;
   }
   
-  .login-form-forgot-right {
+  .forgotRight {
     position: absolute;
     right: 0;
   }
   
-  .form-container button {
+  .formContainer button {
     margin-bottom: 5%;
   }
   
-  button {
+  .button {
     color: #fff;
     font-size: 12px;
     letter-spacing: 1px;
@@ -54,10 +51,10 @@
     width: 100%;
   }
   
-  button:active {
+  .button:active {
     transform: scale(0.95);
   }
   
-  button:focus {
+  .button:focus {
     outline: none;
   }
