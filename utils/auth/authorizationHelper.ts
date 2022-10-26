@@ -1,11 +1,15 @@
 import { Role } from '@prisma/client'
-import { NextApiRequest, NextApiResponse } from 'next'
+import { IncomingMessage, ServerResponse } from 'http'
 import { Session, unstable_getServerSession } from 'next-auth'
 import { authOptions, TSessionUser } from '../../pages/api/auth/[...nextauth]'
 
 export async function isAuthenticatedCheck(
-  req: NextApiRequest,
-  res: NextApiResponse,
+  req: IncomingMessage & {
+    cookies: Partial<{
+      [key: string]: string
+    }>
+  },
+  res: ServerResponse<IncomingMessage>,
   unauthenticatedCallback?: () => unknown
 ): Promise<Session | null> {
   const session: Session | null = await unstable_getServerSession(
@@ -19,19 +23,24 @@ export async function isAuthenticatedCheck(
     if (hasCustomCallback) {
       await unauthenticatedCallback()
     } else {
-      res.redirect('/login')
+      res.writeHead(301, {
+        location: '/login',
+      })
+      res.end()
     }
-
-    return null
   }
 
   return session
 }
 
 export async function hasRoleCheck(
-  req: NextApiRequest,
-  res: NextApiResponse,
-  role: Role,
+  req: IncomingMessage & {
+    cookies: Partial<{
+      [key: string]: string
+    }>
+  },
+  res: ServerResponse<IncomingMessage>,
+  expectedRole: Role,
   unauthorizedCallback?: () => unknown
 ): Promise<TSessionUser | null> {
   const session: Session | null = await isAuthenticatedCheck(req, res)
@@ -42,12 +51,14 @@ export async function hasRoleCheck(
 
   const user = session.user as TSessionUser
 
-  if (user.role != role) {
+  if (user.role != expectedRole) {
     const hasCustomCallback = unauthorizedCallback != undefined
     if (hasCustomCallback) {
       await unauthorizedCallback()
     } else {
-      res.redirect('/login')
+      res.writeHead(301, {
+        location: '/login',
+      })
     }
 
     return null
