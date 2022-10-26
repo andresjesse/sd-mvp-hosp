@@ -5,7 +5,7 @@ import Link from 'next/link'
 import { useRouter } from 'next/router'
 import { ValidateErrorEntity } from 'rc-field-form/lib/interface'
 import React, { useState } from 'react'
-
+import login from './login.module.css'
 const { Title, Text } = Typography
 
 const App: React.FC = () => {
@@ -42,7 +42,7 @@ const App: React.FC = () => {
   }
 
   return (
-    <div className="auth-page-wrapper">
+    <div className={login.auth-page-wrapper}>
       <div className="form-container sign-in-container">
         <Form
           name="singin"

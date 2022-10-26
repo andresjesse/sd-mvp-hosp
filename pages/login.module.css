@@ -1,0 +1,63 @@
+.text-center {
+    text-align: center;
+  }
+  
+  .auth-page-wrapper {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    height: 100%;
+  }
+  
+  .form-container {
+    position: relative;
+    height: 100%;
+  }
+  
+  .sign-in-container {
+    width: 50%;
+    z-index: 2;
+  }
+  
+  .form-container input {
+    font-size: 14px;
+  }
+  
+  .form-container form {
+    background: #fff;
+    padding: 50px;
+    height: 100%;
+  }
+  
+  .form-container form h1 {
+    color: var(--text-color);
+    text-align: center;
+  }
+  
+  .login-form-forgot-right {
+    position: absolute;
+    right: 0;
+  }
+  
+  .form-container button {
+    margin-bottom: 5%;
+  }
+  
+  button {
+    color: #fff;
+    font-size: 12px;
+    letter-spacing: 1px;
+    transition: transform 20ms ease-in;
+    cursor: pointer;
+    margin: 8px 0;
+    width: 100%;
+  }
+  
+  button:active {
+    transform: scale(0.95);
+  }
+  
+  button:focus {
+    outline: none;
+  }

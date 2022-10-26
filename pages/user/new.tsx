@@ -6,7 +6,7 @@ import {
   Input,
   Row,
   Select,
-  Typography,
+  Typography
 } from 'antd'
 
 import React from 'react'
@@ -48,7 +48,6 @@ const App: React.FC = () => {
             <Input name="crm" />
           </Form.Item>
 
-          {/**fazer a fake uf's */}
           <Form.Item label="CRM UF: ">
             <Select>
               {fakeCrmUf.map((uf) => (
