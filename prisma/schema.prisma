@@ -63,7 +63,7 @@ model Doctor {
 model Interest {
   id        Int      @id @default(autoincrement())
   doctor    Doctor   @relation(fields: [idDoctor], references: [id], onDelete: Cascade)
-  idDoctor  Int      @unique
+  idDoctor  Int
   weekday   Int
   hourStart DateTime
   hourEnd   DateTime
@@ -74,9 +74,9 @@ model Shift {
   startDate DateTime
   endDate   DateTime
   doctor    Doctor   @relation(fields: [idDoctor], references: [id], onDelete: Cascade)
-  idDoctor  Int      @unique
+  idDoctor  Int
   sector    Sector   @relation(fields: [idSector], references: [id], onDelete: Cascade)
-  idSector  Int      @unique
+  idSector  Int
   isFixed   Boolean
   createdAt DateTime @default(now()) @map("created_at")
   updatedAt DateTime @updatedAt @map("updated_at")
