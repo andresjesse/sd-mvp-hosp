@@ -40,7 +40,7 @@ export async function hasRoleCheck(
     }>
   },
   res: ServerResponse<IncomingMessage>,
-  expectedRole: Role,
+  expectedRoles: Array<Role>,
   unauthorizedCallback?: () => unknown
 ): Promise<TSessionUser | null> {
   const session: Session | null = await isAuthenticatedCheck(req, res)
@@ -51,7 +51,16 @@ export async function hasRoleCheck(
 
   const user = session.user as TSessionUser
 
-  if (user.role != expectedRole) {
+  const failedRoleChecks: Role[] = expectedRoles.filter((role) => {
+    const expectedRoleKey = role.toLowerCase() as 'admin' | 'doctor'
+    const expectedRole = user[expectedRoleKey]
+
+    if (expectedRole === null) {
+      return role
+    }
+  })
+
+  if (failedRoleChecks.length >= 1) {
     const hasCustomCallback = unauthorizedCallback != undefined
     if (hasCustomCallback) {
       await unauthorizedCallback()

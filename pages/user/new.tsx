@@ -92,7 +92,7 @@ const App: React.FC = () => {
 export const getServerSideProps: GetServerSideProps = async (
   context: GetServerSidePropsContext
 ) => {
-  await hasRoleCheck(context.req, context.res, Role.ADMIN)
+  await hasRoleCheck(context.req, context.res, [Role.ADMIN])
 
   return {
     props: {},
