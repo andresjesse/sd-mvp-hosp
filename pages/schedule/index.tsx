@@ -1,6 +1,7 @@
 import { Calendar } from 'antd'
 import { Moment } from 'moment'
 import { GetServerSideProps } from 'next'
+import AppButton from '../../components/AppButton'
 import Schedule from '../../components/Shift'
 import { fakeSchedules, TShift } from '../../services/fakeData'
 import styles from './styles.module.css'
@@ -40,7 +41,14 @@ export default function SchedulePage({ schedules }: SchedulePageProps) {
     )
   }
 
-  return <Calendar dateCellRender={dateCellRender} />
+  return (
+    <div>
+      <div className={styles.buttonSchedulesGenerate}>
+        <AppButton title="Gerar escalas do mês" />
+      </div>
+      <Calendar dateCellRender={dateCellRender} />
+    </div>
+  )
 }
 
 export const getServerSideProps: GetServerSideProps = async () => {
