@@ -1,22 +1,29 @@
 import { Shift } from '@prisma/client'
 import { NextApiRequest, NextApiResponse } from 'next'
-import { prisma } from '../../../lib/prisma'
 
 export default async function handler(
   req: NextApiRequest,
   res: NextApiResponse<Shift | null>
 ) {
+  const getDaysInMonth = (month: number, year: number) => {
+    const date = new Date(year, month, 1)
+    const days = []
+    while (date.getMonth() === month) {
+      days.push(new Date(date))
+      date.setDate(date.getDate() + 1)
+    }
+    return days
+  }
+
   if (req.method === 'POST') {
     try {
-      const data = JSON.parse(req.body)
+      const body = JSON.parse(req.body)
 
-      const shift = await prisma.shift.create({
-        data: data,
-      })
+      // console.log(body)
+      console.log(getDaysInMonth(body.month, body.year))
 
-      res.status(201).json(shift)
+      res.status(201).json(body)
     } catch (error) {
-      //TODO: migate to error handler
       console.log(error)
       res.status(500).json(null)
     }

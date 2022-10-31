@@ -1,4 +1,3 @@
-import { Shift } from '@prisma/client'
 import { Button, Calendar, Form } from 'antd'
 import { Moment } from 'moment'
 import { GetServerSideProps } from 'next'
@@ -25,10 +24,9 @@ const getListData = (value: Moment, schedules: Array<TShift>) => {
 
 interface SchedulePageProps {
   schedules: Array<TShift>
-  shifts: Array<Shift>
 }
 
-export default function SchedulePage({ schedules, shifts }: SchedulePageProps) {
+export default function SchedulePage({ schedules }: SchedulePageProps) {
   const dateCellRender = (value: Moment) => {
     const listData = getListData(value, schedules)
     return (
@@ -42,14 +40,16 @@ export default function SchedulePage({ schedules, shifts }: SchedulePageProps) {
     )
   }
 
-  const handleSubmited = () => {
-    shifts.map(async (shift) => {
-      const response = await fetch('/api/schedule', {
-        method: 'POST',
-        body: JSON.stringify(shift),
-      })
-      return response.json()
+  const handleSubmited = async () => {
+    const month = new Date().getMonth()
+    const year = new Date().getFullYear()
+
+    const response = await fetch('/api/schedule', {
+      method: 'POST',
+      body: JSON.stringify({ month, year }),
     })
+
+    response.json()
   }
 
   return (
@@ -67,27 +67,26 @@ export default function SchedulePage({ schedules, shifts }: SchedulePageProps) {
 export const getServerSideProps: GetServerSideProps = async () => {
   const schedules = fakeSchedules
 
-  const shifts = [
-    {
-      startDate: JSON.parse(JSON.stringify(new Date('2022-10-10'))),
-      endDate: JSON.parse(JSON.stringify(new Date('2022-10-10'))),
-      idDoctor: 1,
-      idSector: 91,
-      isFixed: true,
-    },
-    {
-      startDate: JSON.parse(JSON.stringify(new Date('2022-10-10'))),
-      endDate: JSON.parse(JSON.stringify(new Date('2022-10-10'))),
-      idDoctor: 2,
-      idSector: 92,
-      isFixed: true,
-    },
-  ]
+  // const shifts = [
+  //   {
+  //     startDate: JSON.parse(JSON.stringify(new Date('2022-10-10'))),
+  //     endDate: JSON.parse(JSON.stringify(new Date('2022-10-10'))),
+  //     idDoctor: 1,
+  //     idSector: 91,
+  //     isFixed: true,
+  //   },
+  //   {
+  //     startDate: JSON.parse(JSON.stringify(new Date('2022-10-10'))),
+  //     endDate: JSON.parse(JSON.stringify(new Date('2022-10-10'))),
+  //     idDoctor: 2,
+  //     idSector: 92,
+  //     isFixed: true,
+  //   },
+  // ]
 
   return {
     props: {
       schedules,
-      shifts,
     },
   }
 }
