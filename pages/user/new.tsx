@@ -4,79 +4,131 @@ import {
   Input, Select,
   Typography
 } from 'antd'
-
-import React from 'react'
-
+import axios from 'axios'
+import moment from 'moment'
+import { NextPage } from 'next'
+import { useRouter } from 'next/router'
+import { useState } from 'react'
 import { fakeCrmUf } from '../../services/fakeCrmUf'
 import newStyles from './new.module.css'
-
-
-
 const { Title } = Typography
 const dateFormatList = ['DD/MM/YYYY', 'DD/MM/YY']
 
-const App: React.FC = () => {
-  return (
+/**
+ * FORMULARIO DE CADASTRO
+ */
+const Login: NextPage = () => {
 
-    <div className={newStyles.authPageWrapper}>
-      <div className={newStyles.formContainer}>
-        <Form
-            layout="horizontal"
-            labelWrap
-            labelCol={{ flex: '120px' }}
-            wrapperCol={{ flex: 1 }}
-            colon={false}
-            style={{ width: '100%' }}
-          >
-          <Title className={newStyles.textCenter} level={3}>Cadastro Novo Usuario</Title>
+  const initialValues = {
+    nameDoctor: '',
+    birthday: '',
+    crm: '',
+    crmUf: '',
+    email: '',
+    confEmail: '',
+    password: '',
+    confPassword: '',
+  }
 
-            <Form.Item label="Nome: ">
-              <Input name="nameDoctor" />
-            </Form.Item>
+  const [formValue, setValor] = useState(initialValues);
 
-            <Form.Item label="Data de Nascimento: ">
-              <DatePicker className={newStyles.formBorderRadius} format={dateFormatList[0]} />
-            </Form.Item>
+  function handleChange(event: { target: { name: any; value: any } }){
+    const {name, value } = event.target;
+    setValor({...formValue, [name]: value});
+    //console.log(formValue);
+  }
+  
+  const router = useRouter();
 
-            <Form.Item label="CRM: ">
-              <Input name="crm" />
-            </Form.Item>
+  /*function handleSubmit(event: { preventDefaut: () => void }){
+    event.preventDefaut();
+    axios
+    .post("../api/doctor/create.ts", formValue)
+    //.then((resp) => {router.push("/");})
+    //.catch(() => {console.log("deu errado");});
+  }*/
 
-            <Form.Item label="CRM UF: ">
-              <Select className={newStyles.formBorderRadius}>
-                {fakeCrmUf.map((uf) => (
-                  <Select.Option key={uf} value={uf}>
-                    {uf}
-                  </Select.Option>
-                ))}
-              </Select>
-            </Form.Item>
+  function handleSubmit(){
+    axios
+    .post("../api/doctor/create.ts", formValue)
+    //.then((resp) => {router.push("/");})
+    //.catch(() => {console.log("deu errado");});
+  } 
 
-            <Form.Item label="Email: ">
-              <Input name="email" alt="Seu E-mail" />
-            </Form.Item>
+  function validete(){
+    console.log("validando email...")
+    if(formValue.email == formValue.confEmail){
+      console.log("email validado...")
+    }else{
+      console.log("email errado...")
+    }
 
-            <Form.Item label="Confirme o Email: ">
-              <Input name="confEmail" alt="Confirme seu E-mail" />
-            </Form.Item>
-
-            <Form.Item label="Senha: ">
-              <Input name="password" alt="Senha" />
-            </Form.Item>
-
-            <Form.Item label="Confirme sua Senha: ">
-              <Input name="confPassword" alt="Confirme a Senha" />
-            </Form.Item>
-
-            <Form.Item label=" ">
-              <Button className={newStyles.button} shape="round" size="large" type="primary" htmlType="submit">
-                Cadastrar
-              </Button>
-            </Form.Item>
-          </Form>
+    return "";
+  }
+    return (
+      <div className={newStyles.authPageWrapper}>
+        <div className={newStyles.formContainer}>
+          <Form
+              layout="horizontal"
+              labelWrap
+              labelCol={{ flex: '120px' }}
+              wrapperCol={{ flex: 1 }}
+              colon={false}
+              style={{ width: '100%' }}
+            >
+            <Title className={newStyles.textCenter} level={3}>Cadastro Novo Usuario</Title>
+  
+              <Form.Item label="Nome: ">
+                <Input id="nameDoctor" name="nameDoctor" onChange={handleChange}/>
+              </Form.Item>
+  
+              <Form.Item label="Data de Nascimento: ">
+                <DatePicker onChange={(date) => {
+                  setValor({...formValue, ['birthday']: moment(date).format('DD-MM-YYYY')});
+                }} id="birthday" name="birthday" className={newStyles.formBorderRadius} format={dateFormatList[0]} />
+              </Form.Item>
+  
+              <Form.Item label="CRM: ">
+                <Input id="crm" name="crm" onChange={handleChange}/>
+              </Form.Item>
+  
+              <Form.Item name="crmUf" label="CRM UF: ">
+                <Select onChange={(uf) =>{
+                  setValor({...formValue, ['crmUf']: uf});
+                }} id="crmUf" className={newStyles.formBorderRadius}>
+                  {fakeCrmUf.map((uf) => (
+                    <Select.Option key={uf} value={uf}>
+                      {uf}
+                    </Select.Option>
+                  ))}
+                </Select>
+              </Form.Item>
+  
+              <Form.Item label="Email: ">
+                <Input id="email" name="email" alt="Seu E-mail" onChange={handleChange}/>
+              </Form.Item>
+  
+              <Form.Item label="Confirme o Email: ">
+                <Input id="confEmail" name="confEmail" alt="Confirme seu E-mail" onChange={handleChange}/>
+              </Form.Item>
+  
+              <Form.Item label="Senha: ">
+                <Input.Password id="password" name="password" alt="Senha" onChange={handleChange}/>
+              </Form.Item>
+  
+              <Form.Item label="Confirme sua Senha: ">
+                <Input.Password id="confPassword" name="confPassword" alt="Confirme a Senha" onChange={handleChange}/>
+              </Form.Item>
+  
+              <Form.Item label=" ">
+                <Button onClick={handleSubmit} className={newStyles.button} shape="round" size="large" type="primary" htmlType="submit">
+                  Cadastrar
+                </Button>
+              </Form.Item>
+            </Form>
+        </div>
       </div>
-    </div>
-  )
+    );  
 }
 
-export default App
+export default Login;

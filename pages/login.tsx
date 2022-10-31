@@ -1,14 +1,15 @@
 import { LoginOutlined, SelectOutlined } from '@ant-design/icons'
 import { Button, Checkbox, Form, Input, Typography } from 'antd'
+import { NextPage } from 'next'
 import { signIn } from 'next-auth/react'
 import Link from 'next/link'
 import { useRouter } from 'next/router'
 import { ValidateErrorEntity } from 'rc-field-form/lib/interface'
-import React, { useState } from 'react'
+import { useState } from 'react'
 import login from '../styles/login.module.css'
 const { Title, Text } = Typography
 
-const App: React.FC = () => {
+const Login: NextPage = () => {
   const router = useRouter()
 
   const [error, setError] = useState('')
@@ -127,4 +128,4 @@ const App: React.FC = () => {
   )
 }
 
-export default App
+export default Login
