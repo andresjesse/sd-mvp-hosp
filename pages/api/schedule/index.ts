@@ -9,17 +9,20 @@ export default async function handler(
     try {
       const body = JSON.parse(req.body)
 
-      const getDaysInMonth = (month: number, year: number) => {
+      const shiftsOfMonth = (month: number, year: number) => {
         const date = new Date(year, month, 1)
-        const days = []
+        const shifts = []
         while (date.getMonth() === month) {
-          days.push(new Date(date))
+          // percorre os 4 turnos
+          for (let i = 1; i <= 4; i++) {
+            shifts.push(`turno ${i}, dia ${date}`)
+          }
           date.setDate(date.getDate() + 1)
         }
-        return days
+        return shifts
       }
 
-      console.log(getDaysInMonth(body.month, body.year))
+      console.log(shiftsOfMonth(body.month, body.year))
 
       res.status(201).json(body)
     } catch (error) {
