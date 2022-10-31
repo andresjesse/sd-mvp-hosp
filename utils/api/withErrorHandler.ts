@@ -10,6 +10,10 @@ export default function withErrorHandler(
     } catch (error) {
       const isApiError = error instanceof ApiHandleError
 
+      if (process.env.NODE_ENV === 'development') {
+        console.log(error)
+      }
+
       if (!isApiError) {
         res.status(500).json({
           data: 'Something went wrong on server side. Try again or contact us.',
