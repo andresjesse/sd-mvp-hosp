@@ -44,7 +44,7 @@ export default function SchedulePage({ schedules }: SchedulePageProps) {
     const month = new Date().getMonth()
     const year = new Date().getFullYear()
 
-    const response = await fetch('/api/schedule', {
+    const response = await fetch('/api/shifts', {
       method: 'POST',
       body: JSON.stringify({ month, year }),
     })
