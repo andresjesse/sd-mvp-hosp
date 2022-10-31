@@ -13,7 +13,7 @@ const handlerFunction = async (
   if (req.method === 'POST') {
     const { name, email, password, crm, crmUf } = req.body
 
-    let errors: { [key: string]: string | Iterable<string> } = {}
+    const errors: { [key: string]: string | Iterable<string> } = {}
     if (!name) errors['name'] = ["Name can't be empty!"]
     if (!email) errors['email'] = ["Email can't be empty!"]
     if (!password) errors['password'] = ["Password can't be empty!"]
