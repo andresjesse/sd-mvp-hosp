@@ -1,18 +1,16 @@
 import {
-  Button, DatePicker,
-  Form,
+  Button, Form,
   Input, Select,
   Typography
 } from 'antd'
 import axios from 'axios'
-import moment from 'moment'
 import { NextPage } from 'next'
 import { useRouter } from 'next/router'
 import { useState } from 'react'
 import { fakeCrmUf } from '../../services/fakeCrmUf'
 import newStyles from './new.module.css'
 const { Title } = Typography
-const dateFormatList = ['DD/MM/YYYY', 'DD/MM/YY']
+const dateFormat = ('DD/MM/YYYY')
 
 /**
  * FORMULARIO DE CADASTRO
@@ -21,7 +19,6 @@ const Login: NextPage = () => {
 
   const initialValues = {
     nameDoctor: '',
-    birthday: '',
     crm: '',
     crmUf: '',
     email: '',
@@ -35,36 +32,42 @@ const Login: NextPage = () => {
   function handleChange(event: { target: { name: any; value: any } }){
     const {name, value } = event.target;
     setValor({...formValue, [name]: value});
-    //console.log(formValue);
   }
   
   const router = useRouter();
 
-  /*function handleSubmit(event: { preventDefaut: () => void }){
-    event.preventDefaut();
-    axios
-    .post("../api/doctor/create.ts", formValue)
-    //.then((resp) => {router.push("/");})
-    //.catch(() => {console.log("deu errado");});
-  }*/
 
-  function handleSubmit(){
+  function handleSubmit(req: any){
     axios
-    .post("../api/doctor/create.ts", formValue)
-    //.then((resp) => {router.push("/");})
-    //.catch(() => {console.log("deu errado");});
+    .post("/api/doctor/create", req)
+    .then((resp) => {router.push("/");})
+    .catch((e) => {console.log(e, "   deu errado");});
   } 
 
   function validete(){
-    console.log("validando email...")
+    console.log("validando...")
+    
+    const aux = {
+      name: formValue.nameDoctor, 
+      email: formValue.email,
+      password: formValue.password,
+      crm: formValue.crm,
+      crmUf: formValue.crmUf,
+    };
+
+    /*console.log("validando email...")
     if(formValue.email == formValue.confEmail){
       console.log("email validado...")
     }else{
       console.log("email errado...")
-    }
+    }*/
 
-    return "";
+    handleSubmit(aux);
   }
+
+
+
+  
     return (
       <div className={newStyles.authPageWrapper}>
         <div className={newStyles.formContainer}>
@@ -75,18 +78,20 @@ const Login: NextPage = () => {
               wrapperCol={{ flex: 1 }}
               colon={false}
               style={{ width: '100%' }}
+              onFinish={validete}
             >
             <Title className={newStyles.textCenter} level={3}>Cadastro Novo Usuario</Title>
   
               <Form.Item label="Nome: ">
                 <Input id="nameDoctor" name="nameDoctor" onChange={handleChange}/>
               </Form.Item>
-  
-              <Form.Item label="Data de Nascimento: ">
+
+              {/*DATA DE NASCIMENTO DESATIVADA PARA FUTURA IMPLANTAÇÃO*/}
+              {/*<Form.Item label="Data de Nascimento: ">
                 <DatePicker onChange={(date) => {
-                  setValor({...formValue, ['birthday']: moment(date).format('DD-MM-YYYY')});
-                }} id="birthday" name="birthday" className={newStyles.formBorderRadius} format={dateFormatList[0]} />
-              </Form.Item>
+                  setValor({...formValue, ['birthday']: moment(date).format(dateFormat)});
+                }} id="birthday" name="birthday" className={newStyles.formBorderRadius} format={dateFormat} />
+              </Form.Item>*/}
   
               <Form.Item label="CRM: ">
                 <Input id="crm" name="crm" onChange={handleChange}/>
@@ -121,7 +126,7 @@ const Login: NextPage = () => {
               </Form.Item>
   
               <Form.Item label=" ">
-                <Button onClick={handleSubmit} className={newStyles.button} shape="round" size="large" type="primary" htmlType="submit">
+                <Button className={newStyles.button} shape="round" size="large" type="primary" htmlType="submit">
                   Cadastrar
                 </Button>
               </Form.Item>
