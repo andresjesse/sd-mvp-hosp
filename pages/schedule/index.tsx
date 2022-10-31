@@ -1,7 +1,7 @@
-import { Calendar } from 'antd'
+import { Shift } from '@prisma/client'
+import { Button, Calendar, Form } from 'antd'
 import { Moment } from 'moment'
 import { GetServerSideProps } from 'next'
-import AppButton from '../../components/AppButton'
 import Schedule from '../../components/Shift'
 import { fakeSchedules, TShift } from '../../services/fakeData'
 import styles from './styles.module.css'
@@ -25,9 +25,10 @@ const getListData = (value: Moment, schedules: Array<TShift>) => {
 
 interface SchedulePageProps {
   schedules: Array<TShift>
+  shifts: Array<Shift>
 }
 
-export default function SchedulePage({ schedules }: SchedulePageProps) {
+export default function SchedulePage({ schedules, shifts }: SchedulePageProps) {
   const dateCellRender = (value: Moment) => {
     const listData = getListData(value, schedules)
     return (
@@ -41,11 +42,23 @@ export default function SchedulePage({ schedules }: SchedulePageProps) {
     )
   }
 
+  const handleSubmited = () => {
+    shifts.map(async (shift) => {
+      const response = await fetch('/api/schedule', {
+        method: 'POST',
+        body: JSON.stringify(shift),
+      })
+      return response.json()
+    })
+  }
+
   return (
     <div>
-      <div className={styles.buttonSchedulesGenerate}>
-        <AppButton title="Gerar escalas do mês" />
-      </div>
+      <Form onFinish={handleSubmited}>
+        <div className={styles.buttonSchedulesGenerate}>
+          <Button htmlType="submit">Gerar escalas do mês</Button>
+        </div>
+      </Form>
       <Calendar dateCellRender={dateCellRender} />
     </div>
   )
@@ -54,9 +67,27 @@ export default function SchedulePage({ schedules }: SchedulePageProps) {
 export const getServerSideProps: GetServerSideProps = async () => {
   const schedules = fakeSchedules
 
+  const shifts = [
+    {
+      startDate: JSON.parse(JSON.stringify(new Date('2022-10-10'))),
+      endDate: JSON.parse(JSON.stringify(new Date('2022-10-10'))),
+      idDoctor: 1,
+      idSector: 91,
+      isFixed: true,
+    },
+    {
+      startDate: JSON.parse(JSON.stringify(new Date('2022-10-10'))),
+      endDate: JSON.parse(JSON.stringify(new Date('2022-10-10'))),
+      idDoctor: 2,
+      idSector: 92,
+      isFixed: true,
+    },
+  ]
+
   return {
     props: {
       schedules,
+      shifts,
     },
   }
 }
