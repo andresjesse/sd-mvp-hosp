@@ -31,8 +31,13 @@ export default async function handler(
       // Collect every sector who needs new shifts
       const sectors = await prisma.sector.findMany()
 
-      // Generate an array to store our result
-      const generatedShifts = []
+      // Generate an array to store prisma data
+      const shiftsToGenerate: Array<{
+        startDate: Date
+        endDate: Date
+        isFixed: boolean
+        idSector: number
+      }> = []
 
       // Define consts (for now shifts are fixed)
       const SHIFTS = [
@@ -58,11 +63,12 @@ export default async function handler(
             const startDate = createDateUTC(date, shift.START_UTC)
             const endDate = createDateUTC(date, shift.END_UTC)
 
-            // generatedShifts.push({
-            //   startDate,
-            //   endDate,
-            //   isFixed: false,
-            // })
+            shiftsToGenerate.push({
+              startDate,
+              endDate,
+              idSector: sector.id,
+              isFixed: false,
+            })
 
             // Debug prints (you can comment if you want)
             console.log('generating: ', sector.abbreviation, startDate)
@@ -82,9 +88,13 @@ export default async function handler(
         date.setDate(date.getDate() + 1)
       }
 
+      const generatedShifts = await prisma.shift.createMany({
+        data: shiftsToGenerate,
+      })
+
       //TODO: clean next line, I just returned am operation summary
       // res.status(201).json(body)
-      res.status(201).json(`generated ${generatedShifts.length} shifts!`)
+      res.status(201).json(`generated ${generatedShifts.count} shifts!`)
     } catch (error) {
       console.log(error)
       res.status(500).json(null)

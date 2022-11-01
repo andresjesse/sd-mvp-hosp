@@ -73,8 +73,8 @@ model Shift {
   id        Int      @id @default(autoincrement())
   startDate DateTime
   endDate   DateTime
-  doctor    Doctor   @relation(fields: [idDoctor], references: [id], onDelete: Cascade)
-  idDoctor  Int
+  doctor    Doctor?  @relation(fields: [idDoctor], references: [id], onDelete: Cascade)
+  idDoctor  Int?
   sector    Sector   @relation(fields: [idSector], references: [id], onDelete: Cascade)
   idSector  Int
   isFixed   Boolean
