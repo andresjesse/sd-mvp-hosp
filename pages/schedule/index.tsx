@@ -2,6 +2,7 @@ import { Button, Calendar, Form } from 'antd'
 import { Moment } from 'moment'
 import { GetServerSideProps } from 'next'
 import Schedule from '../../components/Shift'
+import axiosApi from '../../services/axiosApi'
 import { fakeSchedules, TShift } from '../../services/fakeData'
 import styles from './styles.module.css'
 
@@ -44,12 +45,26 @@ export default function SchedulePage({ schedules }: SchedulePageProps) {
     const month = new Date().getMonth()
     const year = new Date().getFullYear()
 
-    const response = await fetch('/api/shifts', {
-      method: 'POST',
-      body: JSON.stringify({ month, year }),
-    })
+    //TODO: clean this, I left it here just to you see the difference between fetch and axios
+    // const response = await fetch('/api/shifts', {
+    //   method: 'POST',
+    //   body: JSON.stringify({ month, year }),
+    // })
+    // response.json()
 
-    response.json()
+    try {
+      const response = await axiosApi.post('/api/shifts/generate-month', {
+        month,
+        year,
+      })
+
+      const { status, data } = response
+
+      //TODO: show user feedback
+      console.log(status, data)
+    } catch (error) {
+      //TODO: show user feedback (e.g. https://ant.design/components/notification/ )
+    }
   }
 
   return (
