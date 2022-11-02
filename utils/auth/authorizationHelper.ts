@@ -9,8 +9,7 @@ export async function isAuthenticatedCheck(
       [key: string]: string
     }>
   },
-  res: ServerResponse<IncomingMessage>,
-  unauthenticatedCallback?: () => unknown
+  res: ServerResponse<IncomingMessage>
 ): Promise<Session | null> {
   const session: Session | null = await unstable_getServerSession(
     req,
@@ -19,15 +18,10 @@ export async function isAuthenticatedCheck(
   )
 
   if (session === null) {
-    const hasCustomCallback = unauthenticatedCallback != undefined
-    if (hasCustomCallback) {
-      await unauthenticatedCallback()
-    } else {
-      res.writeHead(301, {
-        location: '/login',
-      })
-      res.end()
-    }
+    res.writeHead(301, {
+      location: '/login',
+    })
+    res.end()
   }
 
   return session
