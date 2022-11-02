@@ -34,8 +34,8 @@ export async function hasRoleCheck(
     }>
   },
   res: ServerResponse<IncomingMessage>,
-  expectedRoles: Array<Role>,
-  unauthorizedCallback?: () => unknown
+  expectedRoles: Role[],
+  unauthorizedRedirectURL = '/login'
 ): Promise<TSessionUser | null> {
   const session: Session | null = await isAuthenticatedCheck(req, res)
 
@@ -43,29 +43,20 @@ export async function hasRoleCheck(
     return null
   }
 
-  const user = session.user as TSessionUser
+  // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
+  const user = session!.user as TSessionUser
 
-  const failedRoleChecks: Role[] = expectedRoles.filter((role) => {
-    const expectedRoleKey = role.toLowerCase() as 'admin' | 'doctor'
+  expectedRoles.forEach(async (role) => {
+    const expectedRoleKey = (role as string).toLowerCase() as 'admin' | 'doctor'
     const expectedRole = user[expectedRoleKey]
 
     if (expectedRole === null) {
-      return role
+      res.writeHead(301, {
+        location: unauthorizedRedirectURL,
+      })
+      res.end()
     }
   })
-
-  if (failedRoleChecks.length >= 1) {
-    const hasCustomCallback = unauthorizedCallback != undefined
-    if (hasCustomCallback) {
-      await unauthorizedCallback()
-    } else {
-      res.writeHead(301, {
-        location: '/login',
-      })
-    }
-
-    return null
-  }
 
   return user
 }
