@@ -1,5 +1,6 @@
 import { NextApiRequest, NextApiResponse } from 'next'
 import { prisma } from '../../../lib/prisma'
+import formatHashShift from '../../../services/formatHashShift'
 import { ApiHandleError } from '../../../utils/api/apiHandleError'
 
 // helper function
@@ -20,23 +21,20 @@ export default async function handler(
 ) {
   if (req.method === 'POST') {
     try {
-      // TODO: clean next line, body is now JSON (no need to parse):
-      // const body = JSON.parse(req.body)
       const { month, year } = req.body
 
       //check params (you can also return a single ApiHandleError with an array of erros, check /api/doctor/create for details)
       if (!month) throw new ApiHandleError(400, 'month is required!')
       if (!year) throw new ApiHandleError(400, 'year is required!')
 
-      // Collect every sector who needs new shifts
       const sectors = await prisma.sector.findMany()
 
-      // Generate an array to store prisma data
       const shiftsToGenerate: Array<{
         startDate: Date
         endDate: Date
         isFixed: boolean
         idSector: number
+        hash: string
       }> = []
 
       // Define consts (for now shifts are fixed)
@@ -53,11 +51,6 @@ export default async function handler(
 
       const date = new Date(year, month, 1)
       while (date.getMonth() === month) {
-        // // percorre os 4 turnos (remove this, I left just to you compare solutions)
-        // for (let i = 1; i <= 4; i++) {
-        //   shifts.push(`turno ${i}, dia ${date}`)
-        // }
-
         sectors.forEach((sector) => {
           SHIFTS.forEach((shift) => {
             const startDate = createDateUTC(date, shift.START_UTC)
@@ -68,10 +61,11 @@ export default async function handler(
               endDate,
               idSector: sector.id,
               isFixed: false,
+              hash: formatHashShift(startDate, sector.id),
             })
 
-            // Debug prints (you can comment if you want)
             console.log('generating: ', sector.abbreviation, startDate)
+
             console.log(
               '\t',
               startDate.toLocaleString('pt-BR', {
@@ -81,20 +75,27 @@ export default async function handler(
                 timeZone: 'America/Sao_Paulo',
               })
             )
-            // end of Debug prints
-          }) // shifts loop end
-        }) // sectors loop end
+          })
+        })
 
         date.setDate(date.getDate() + 1)
       }
 
-      const generatedShifts = await prisma.shift.createMany({
-        data: shiftsToGenerate,
-      })
+      const generatedShifts = await prisma.$transaction([
+        ...shiftsToGenerate.map((shift) =>
+          prisma.shift.upsert({
+            where: {
+              hash: shift.hash,
+            },
+            create: {
+              ...shift,
+            },
+            update: {},
+          })
+        ),
+      ])
 
-      //TODO: clean next line, I just returned am operation summary
-      // res.status(201).json(body)
-      res.status(201).json(`generated ${generatedShifts.count} shifts!`)
+      res.status(201).json(`generated ${generatedShifts.length} shifts!`)
     } catch (error) {
       console.log(error)
       res.status(500).json(null)
