@@ -45,13 +45,6 @@ export default function SchedulePage({ schedules }: SchedulePageProps) {
     const month = new Date().getMonth()
     const year = new Date().getFullYear()
 
-    //TODO: clean this, I left it here just to you see the difference between fetch and axios
-    // const response = await fetch('/api/shifts', {
-    //   method: 'POST',
-    //   body: JSON.stringify({ month, year }),
-    // })
-    // response.json()
-
     try {
       const response = await axiosApi.post('/api/shifts/generate-month', {
         month,
@@ -81,23 +74,6 @@ export default function SchedulePage({ schedules }: SchedulePageProps) {
 
 export const getServerSideProps: GetServerSideProps = async () => {
   const schedules = fakeSchedules
-
-  // const shifts = [
-  //   {
-  //     startDate: JSON.parse(JSON.stringify(new Date('2022-10-10'))),
-  //     endDate: JSON.parse(JSON.stringify(new Date('2022-10-10'))),
-  //     idDoctor: 1,
-  //     idSector: 91,
-  //     isFixed: true,
-  //   },
-  //   {
-  //     startDate: JSON.parse(JSON.stringify(new Date('2022-10-10'))),
-  //     endDate: JSON.parse(JSON.stringify(new Date('2022-10-10'))),
-  //     idDoctor: 2,
-  //     idSector: 92,
-  //     isFixed: true,
-  //   },
-  // ]
 
   return {
     props: {

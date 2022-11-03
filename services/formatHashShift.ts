@@ -1,5 +1,5 @@
-const format = (date: Date, sectorId: number) => {
+const formatHashShift = (date: Date, sectorId: number) => {
   return `${date.toLocaleDateString()}&${date.getHours()}&${sectorId}`
 }
 
-export default format
+export default formatHashShift
