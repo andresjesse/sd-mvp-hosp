@@ -14,7 +14,7 @@ import { GetServerSideProps, GetServerSidePropsContext } from 'next'
 import React from 'react'
 
 import { fakeCrmUf } from '../../services/fakeCrmUf'
-import { hasRoleCheck } from '../../utils/auth/authorizationHelper'
+import { requireAuthRoles } from '../../utils/auth/requireAuthRoles'
 
 const { Title } = Typography
 const dateFormatList = ['DD/MM/YYYY', 'DD/MM/YY']
@@ -92,10 +92,14 @@ const App: React.FC = () => {
 export const getServerSideProps: GetServerSideProps = async (
   context: GetServerSidePropsContext
 ) => {
-  await hasRoleCheck(context.req, context.res, [Role.ADMIN])
+  try {
+    await requireAuthRoles(context.req, context.res, [Role.DOCTOR])
 
-  return {
-    props: {},
+    return {
+      props: {},
+    }
+  } catch (error) {
+    return { props: {} }
   }
 }
 
