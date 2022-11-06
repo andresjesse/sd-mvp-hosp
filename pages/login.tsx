@@ -1,6 +1,5 @@
 import { LoginOutlined, SelectOutlined } from '@ant-design/icons'
 import { Button, Checkbox, Form, Input, Typography } from 'antd'
-import { NextPage } from 'next'
 import { signIn } from 'next-auth/react'
 import Link from 'next/link'
 import { useRouter } from 'next/router'
@@ -9,10 +8,38 @@ import { useState } from 'react'
 import login from '../styles/login.module.css'
 const { Title, Text } = Typography
 
-const Login: NextPage = () => {
-  const router = useRouter()
+const Login: React.FC = () => {
 
-  const [error, setError] = useState('')
+  const router = useRouter();
+  const [error, setError] = useState('');
+
+  /*CHECK LEMBREME EM OBRA */
+/*
+  const [emailStorage, setEmailStorage] = useState('');
+  const [passwordStorage, setPasswordStorage] = useState('');
+
+ useEffect(() => {
+
+    //localStorage.setItem('email', 'email@teste.com');
+    //localStorage.setItem('pass', 'testepass');
+    console.log("useEffect rodando...")
+
+    let x: unknown = localStorage.getItem('email');
+    //let y: unknown = localStorage.getItem('pass');
+
+    setEmailStorage(x as string)
+
+    console.log("setou x... ", x)
+
+  }, [])
+
+
+  function handleChange(e: { target: { value: any } }){
+    setEmailStorage(e.target.value)
+  }
+  */
+  /*^^^^CHECK LEMBREME EM OBRA */
+
 
   const onFinish = async (values: { [key: string]: string }) => {
     const email: string = values.email
@@ -42,6 +69,9 @@ const Login: NextPage = () => {
     console.log('Failed:', errorInfo)
   }
 
+
+  
+
   return (
     <div className={login.authPageWrapper}>
       <div className={login.formContainer}>
@@ -55,9 +85,8 @@ const Login: NextPage = () => {
           <Title level={2} className={login.texCenter}>
             Login
           </Title>
-
+          
           <Form.Item
-            name="email"
             hasFeedback
             label="E-mail"
             labelCol={{ span: 24 }}
@@ -73,11 +102,10 @@ const Login: NextPage = () => {
               },
             ]}
           >
-            <Input placeholder="E-mail" size="large" />
+            <Input autoFocus id="email" name="email" placeholder="E-mail" /* value={emailStorage} onChange={handleChange}*/ size="large" />
           </Form.Item>
 
           <Form.Item
-            name="password"
             hasFeedback
             label="Senha"
             labelCol={{ span: 24 }}
@@ -93,12 +121,12 @@ const Login: NextPage = () => {
               // },
             ]}
           >
-            <Input.Password placeholder="Senha" size="large" />
+            <Input.Password id="password" name="password" placeholder="Senha" size="large" />
           </Form.Item>
 
           <Form.Item>
             <Form.Item name="remember" valuePropName="checked" noStyle>
-              <Checkbox disabled>Lembre-me</Checkbox>
+              <Checkbox>Lembre-me</Checkbox>
             </Form.Item>
 
             {/* <a className={login.forgotRight} href="#">

@@ -1,9 +1,7 @@
 import { Button, Form, Input, Select, Typography } from 'antd'
-import axios from 'axios'
-import { NextPage } from 'next'
-import { useRouter } from 'next/router'
 import { useState } from 'react'
 import { fakeCrmUf } from '../../services/fakeCrmUf'
+import api from '../api/services/apiAxios'
 import newStyles from './new.module.css'
 const { Title } = Typography
 const dateFormat = 'DD/MM/YYYY'
@@ -18,29 +16,59 @@ const initialValues = {
   confPassword: '',
 }
 
+const initialObjError = {
+  name: '',
+  email: '',
+  password: '',
+  crm: '',
+  crmUf: '',
+}
+
 /**
  * FORMULARIO DE CADASTRO
  */
-const Login: NextPage = () => {
+
+/**TO DO
+ * validatestatus mudar color em cada form.item
+ * colocar label com o err oda cada form.item
+ * verificar erros lado cliente
+ * verificar erros lado servidor
+ * fazer o cadastro funcionar
+ */
+
+//const New: NextPage = () => {
+
+const New: React.FC = () => {
+
+  //const [colorError, setColorError] = useState("validating");
+
+  //function colorError(){}
+
   const [formValue, setValor] = useState(initialValues)
 
-  function handleChange(event: { target: { name: any; value: any } }) {
+  //erro teste
+  const [objError, setObjError] = useState(initialObjError);
+
+
+  function handleChange(event: { target: { name: string; value: string } }) {
     const { name, value } = event.target
     setValor({ ...formValue, [name]: value })
   }
 
-  const router = useRouter()
-
-  function handleSubmit(req: any) {
-    axios
-      .post('/api/doctor/create', req)
-      .then((resp) => {
-        router.push('/')
-      })
+  function handleSubmit(req: object) {
+    api
+      .post('/doctor/create', req)
+      .then((response) => setObjError(response.data))
+      //.then((response) => router.push("/"))
       .catch((e) => {
         console.log(e, e.response.data.data)
+        //erro teste
+        setObjError(e.response.data.data)
+        /*setColorError("error")
+        console.log(colorError)*/
       })
   }
+
 
   function validete() {
     console.log('validando...')
@@ -79,8 +107,9 @@ const Login: NextPage = () => {
             Cadastro Novo Usuario
           </Title>
 
-          <Form.Item label="Nome: ">
-            <Input id="nameDoctor" name="nameDoctor" onChange={handleChange} />
+          <Form.Item validateStatus='validating' label="Nome: ">
+            <Input id="nameDoctor" value={formValue?.nameDoctor} name="nameDoctor" onChange={handleChange} />
+            <label htmlFor="">{objError?.name}</label>
           </Form.Item>
 
           {/*DATA DE NASCIMENTO DESATIVADA PARA FUTURA IMPLANTAÇÃO*/}
@@ -92,6 +121,7 @@ const Login: NextPage = () => {
 
           <Form.Item label="CRM: ">
             <Input id="crm" name="crm" onChange={handleChange} />
+            <label htmlFor="">{objError?.crm}</label>
           </Form.Item>
 
           <Form.Item name="crmUf" label="CRM UF: ">
@@ -163,4 +193,5 @@ const Login: NextPage = () => {
   )
 }
 
-export default Login
+
+export default New
