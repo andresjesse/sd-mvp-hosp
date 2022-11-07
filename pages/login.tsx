@@ -4,7 +4,7 @@ import { signIn } from 'next-auth/react'
 import Link from 'next/link'
 import { useRouter } from 'next/router'
 import { ValidateErrorEntity } from 'rc-field-form/lib/interface'
-import { useState } from 'react'
+import { useEffect, useState } from 'react'
 import login from '../styles/login.module.css'
 const { Title, Text } = Typography
 
@@ -12,34 +12,47 @@ const Login: React.FC = () => {
 
   const router = useRouter();
   const [error, setError] = useState('');
-
-  /*CHECK LEMBREME EM OBRA */
-/*
   const [emailStorage, setEmailStorage] = useState('');
   const [passwordStorage, setPasswordStorage] = useState('');
+  const [checked, setChecked] = useState(false);
 
  useEffect(() => {
-
-    //localStorage.setItem('email', 'email@teste.com');
-    //localStorage.setItem('pass', 'testepass');
     console.log("useEffect rodando...")
+    console.log("checkbox:..: ", checked)
+
+    if(checked == true){
+      console.log("entrou no if true...")
+      localStorage.setItem('email', emailStorage);
+      localStorage.setItem('password', passwordStorage);
+    }/*
+    //** BUG O CHECKED INICIA EM FALSE, O USEEFFECT RODA NO INICIO E PEGA O VALOR FALSE E NESSE IF APAGA O VALOR ASSIM A CADA RELOAD DA PAGINA NÃO SALVA
+    if(checked === false){
+      localStorage.removeItem('email');
+      localStorage.removeItem('password');
+    }*/
 
     let x: unknown = localStorage.getItem('email');
-    //let y: unknown = localStorage.getItem('pass');
+    console.log("x é.. ", typeof x)
+    let y: unknown = localStorage.getItem('password');
 
-    setEmailStorage(x as string)
+    if(x != null){
+      setEmailStorage(x as string)
+      console.log("setou x... ", x)
+    }
+    if(y != null){
+      setPasswordStorage(y as string)
+      console.log("setou y... ", y)
+    }
 
-    console.log("setou x... ", x)
+  }, [checked])
 
-  }, [])
-
-
-  function handleChange(e: { target: { value: any } }){
+  function handleChangeEmail(e: { target: { value: any } }){
     setEmailStorage(e.target.value)
   }
-  */
-  /*^^^^CHECK LEMBREME EM OBRA */
 
+  function handleChangePassword(e: { target: { value: any } }){
+    setPasswordStorage(e.target.value)
+  }
 
   const onFinish = async (values: { [key: string]: string }) => {
     const email: string = values.email
@@ -68,8 +81,6 @@ const Login: React.FC = () => {
   ) => {
     console.log('Failed:', errorInfo)
   }
-
-
   
 
   return (
@@ -102,11 +113,10 @@ const Login: React.FC = () => {
               },
             ]}
           >
-            <Input autoFocus id="email" name="email" placeholder="E-mail" /* value={emailStorage} onChange={handleChange}*/ size="large" />
+            <Input value={emailStorage} onChange={handleChangeEmail} placeholder="E-mail" size="large"/>
           </Form.Item>
 
           <Form.Item
-            hasFeedback
             label="Senha"
             labelCol={{ span: 24 }}
             wrapperCol={{ span: 24 }}
@@ -121,12 +131,12 @@ const Login: React.FC = () => {
               // },
             ]}
           >
-            <Input.Password id="password" name="password" placeholder="Senha" size="large" />
+            <Input.Password value={passwordStorage} onChange={handleChangePassword} placeholder="Senha" size="large" />
           </Form.Item>
 
           <Form.Item>
-            <Form.Item name="remember" valuePropName="checked" noStyle>
-              <Checkbox>Lembre-me</Checkbox>
+            <Form.Item valuePropName="checked" noStyle>
+              <Checkbox onChange={(e)=>{setChecked(e.target.checked)}}>Lembre-me</Checkbox>
             </Form.Item>
 
             {/* <a className={login.forgotRight} href="#">
