@@ -1,4 +1,4 @@
-import { Role } from '@prisma/client'
+import { RolesEnum } from '@prisma/client'
 import {
   Button,
   Card,
@@ -93,13 +93,21 @@ export const getServerSideProps: GetServerSideProps = async (
   context: GetServerSidePropsContext
 ) => {
   try {
-    await requireAuthRoles(context.req, context.res, [Role.DOCTOR])
+    await requireAuthRoles(context.req, context.res, [
+      RolesEnum.ADMIN,
+      //RolesEnum.DOCTOR,
+    ])
 
     return {
       props: {},
     }
   } catch (error) {
-    return { props: {} }
+    return {
+      redirect: {
+        permanent: false,
+        destination: '/login',
+      },
+    }
   }
 }
 

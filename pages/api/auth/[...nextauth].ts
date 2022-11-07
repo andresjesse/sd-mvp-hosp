@@ -1,15 +1,15 @@
+import { Admin, Doctor, Role, RolesEnum, User } from '@prisma/client'
 import NextAuth, { NextAuthOptions } from 'next-auth'
 import CredentialsProvider from 'next-auth/providers/credentials'
-import { Admin, Doctor, User, Role } from '@prisma/client'
-import hasher from './../../../utils/hasher/BcryptjsHasher'
 import { prisma } from './../../../lib/prisma'
+import hasher from './../../../utils/hasher/BcryptjsHasher'
 import { InvalidCredentials } from './signin/invalidCredentials'
 
 export type TSessionUser = {
   id: number
   name: string
   email: string
-  role: Role
+  roles: RolesEnum[] | undefined
   admin: Admin | null
   doctor: Doctor | null
 }
@@ -37,6 +37,7 @@ export const authOptions: NextAuthOptions = {
             | (User & {
                 admin: Admin | null
                 doctor: Doctor | null
+                roles: { role: Role }[] | null
               })
             | null
 
@@ -47,6 +48,7 @@ export const authOptions: NextAuthOptions = {
             include: {
               admin: true,
               doctor: true,
+              roles: { select: { role: true } },
             },
           })
 
@@ -68,7 +70,9 @@ export const authOptions: NextAuthOptions = {
             id: user.id,
             name: user.name,
             email: user.email,
-            role: user.role,
+            roles: user.roles?.map((roleEntry) => {
+              return roleEntry.role.title
+            }),
             admin: user.admin,
             doctor: user.doctor,
           }
