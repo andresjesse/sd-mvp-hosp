@@ -1,7 +1,8 @@
-import { Calendar } from 'antd'
+import { Button, Calendar } from 'antd'
 import { Moment } from 'moment'
 import { GetServerSideProps } from 'next'
 import Schedule from '../../components/Shift'
+import axiosApi from '../../services/axiosApi'
 import { fakeSchedules, TShift } from '../../services/fakeData'
 import styles from './styles.module.css'
 
@@ -40,7 +41,36 @@ export default function SchedulePage({ schedules }: SchedulePageProps) {
     )
   }
 
-  return <Calendar dateCellRender={dateCellRender} />
+  const handleSubmited = async () => {
+    const month = new Date().getMonth()
+    const year = new Date().getFullYear()
+
+    try {
+      const response = await axiosApi.post('/api/shifts/generate-month', {
+        month,
+        year,
+      })
+
+      const { status, data } = response
+
+      //TODO: show user feedback
+      console.log(status, data)
+    } catch (error) {
+      //TODO: show user feedback (e.g. https://ant.design/components/notification/ )
+    }
+  }
+
+  return (
+    <div>
+      <div className={styles.buttonSchedulesGenerate}>
+        <Button onClick={handleSubmited} htmlType="submit">
+          Gerar escalas do mês
+        </Button>
+      </div>
+
+      <Calendar dateCellRender={dateCellRender} />
+    </div>
+  )
 }
 
 export const getServerSideProps: GetServerSideProps = async () => {
