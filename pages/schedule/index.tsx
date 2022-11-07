@@ -1,4 +1,4 @@
-import { Button, Calendar, Form } from 'antd'
+import { Button, Calendar } from 'antd'
 import { Moment } from 'moment'
 import { GetServerSideProps } from 'next'
 import Schedule from '../../components/Shift'
@@ -62,11 +62,12 @@ export default function SchedulePage({ schedules }: SchedulePageProps) {
 
   return (
     <div>
-      <Form onFinish={handleSubmited}>
-        <div className={styles.buttonSchedulesGenerate}>
-          <Button htmlType="submit">Gerar escalas do mês</Button>
-        </div>
-      </Form>
+      <div className={styles.buttonSchedulesGenerate}>
+        <Button onClick={handleSubmited} htmlType="submit">
+          Gerar escalas do mês
+        </Button>
+      </div>
+
       <Calendar dateCellRender={dateCellRender} />
     </div>
   )
