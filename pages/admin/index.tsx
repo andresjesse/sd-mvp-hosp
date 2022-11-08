@@ -1,5 +1,13 @@
-import { Button, Card, DatePicker, DatePickerProps, Form } from 'antd'
+import {
+  Button,
+  Card,
+  DatePicker,
+  DatePickerProps,
+  Form,
+  notification,
+} from 'antd'
 import axiosApi from '../../services/axiosApi'
+
 import styles from './styles.module.css'
 
 export default function Admin() {
@@ -21,23 +29,31 @@ export default function Admin() {
     const year = date.year
 
     try {
+      notification['info']({
+        message: 'Gerando escalas',
+        description: 'Aguarde...',
+      })
+
       const response = await axiosApi.post('/api/shifts/generate-month', {
         month,
         year,
       })
 
-      const { status, data } = response
-
-      //   //TODO: show user feedback
-      console.log(status, data)
+      notification['success']({
+        message: 'Escalas geradas!',
+        description: response.data,
+      })
     } catch (error) {
-      //TODO: show user feedback (e.g. https://ant.design/components/notification/ )
+      notification['error']({
+        message: 'Algo deu errado!',
+        description: `${error}`,
+      })
     }
   }
 
   return (
     <div>
-      <Card title="Gerar escalas do mês">
+      <Card title="Gerar escalas do mês" style={{ width: 300 }}>
         <Form>
           <Form.Item name="month" hasFeedback label="Mês">
             <DatePicker picker="month" onChange={onChange} />

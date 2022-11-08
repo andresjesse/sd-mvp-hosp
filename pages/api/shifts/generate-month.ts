@@ -23,7 +23,6 @@ async function handlerFunction(
   if (req.method === 'POST') {
     const { month, year } = req.body
 
-    //check params (you can also return a single ApiHandleError with an array of erros, check /api/doctor/create for details)
     if (typeof month !== 'number')
       throw new ApiHandleError(400, 'month is required!')
     if (month < 0 || month > 11)
@@ -33,6 +32,9 @@ async function handlerFunction(
       )
     if (typeof year !== 'number')
       throw new ApiHandleError(400, 'year is required!')
+    if (year < 2022) {
+      throw new ApiHandleError(400, 'year must be 2022 or superior')
+    }
 
     const sectors = await prisma.sector.findMany()
 
@@ -70,18 +72,6 @@ async function handlerFunction(
             isFixed: false,
             hash: formatHashShift(startDate, sector.id),
           })
-
-          console.log('generating: ', sector.abbreviation, startDate)
-
-          console.log(
-            '\t',
-            startDate.toLocaleString('pt-BR', {
-              timeZone: 'America/Sao_Paulo',
-            }),
-            endDate.toLocaleString('pt-BR', {
-              timeZone: 'America/Sao_Paulo',
-            })
-          )
         })
       })
 
@@ -102,7 +92,15 @@ async function handlerFunction(
       ),
     ])
 
-    res.status(201).json(`generated ${generatedShifts.length} shifts!`)
+    date.setMonth(date.getMonth() - 1)
+    res
+      .status(201)
+      .json(
+        `Geradas ${generatedShifts.length} escalas para ${date.toLocaleString(
+          'pt-br',
+          { month: 'long', year: 'numeric' }
+        )}`
+      )
   }
 }
 
