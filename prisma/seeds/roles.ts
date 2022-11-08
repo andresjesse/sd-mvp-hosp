@@ -1,10 +1,3 @@
-import { RolesEnum } from '@prisma/client'
+import RolesEnum from '../../utils/auth/RolesEnum'
 
-export const roles = [
-  {
-    title: RolesEnum.ADMIN,
-  },
-  {
-    title: RolesEnum.DOCTOR,
-  },
-]
+export const roles = Object.keys(RolesEnum)

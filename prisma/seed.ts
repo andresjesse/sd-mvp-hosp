@@ -1,5 +1,5 @@
-import { RolesEnum } from '@prisma/client'
 import { prisma } from '../lib/prisma'
+import RolesEnum from '../utils/auth/RolesEnum'
 import AdminSeedFunction from './seeds/admin'
 import { roles } from './seeds/roles'
 import { sectors } from './seeds/sectors'
@@ -24,10 +24,10 @@ async function main() {
     ...roles.map((role) =>
       prisma.role.upsert({
         where: {
-          title: role.title,
+          title: role,
         },
         create: {
-          ...role,
+          title: role,
         },
         update: {},
       })
@@ -38,12 +38,8 @@ async function main() {
       },
       create: {
         roles: {
-          create: {
-            role: {
-              connect: {
-                title: RolesEnum.ADMIN,
-              },
-            },
+          connect: {
+            title: RolesEnum.ADMIN,
           },
         },
         ...adminSeedData,
