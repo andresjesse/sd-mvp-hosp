@@ -1,11 +1,11 @@
 import { Button, Form, Input, Select, Typography } from 'antd'
 import router from 'next/router'
 import { useState } from 'react'
+import axiosApi from '../../services/axiosApi'
 import { fakeCrmUf } from '../../services/fakeCrmUf'
-import api from '../api/services/apiAxios'
-import newStyles from './new.module.css'
 const { Title } = Typography
-const dateFormat = 'DD/MM/YYYY'
+
+import styles from './styles.module.css'
 
 const initialValues = {
   nameDoctor: '',
@@ -26,10 +26,8 @@ const initialObjError = {
 }
 
 const New: React.FC = () => {
-
   const [formValue, setValor] = useState(initialValues)
-  const [objError, setObjError] = useState(initialObjError);
-
+  const [objError, setObjError] = useState(initialObjError)
 
   function handleChange(event: { target: { name: string; value: string } }) {
     const { name, value } = event.target
@@ -37,10 +35,10 @@ const New: React.FC = () => {
   }
 
   function handleSubmit(req: object) {
-    api
-      .post('/doctor/create', req)
+    axiosApi
+      .post('/api/doctor/create', req)
       //.then((response) => setObjError(response.data))
-      .then((response) => router.push("/welcome"))
+      .then((response) => router.push('/welcome'))
       .catch((e) => {
         //console.log(e, e.response.data.data)
         setObjError(e.response.data.data)
@@ -124,14 +122,13 @@ const New: React.FC = () => {
       aux.password = formValue.password
     }*/
 
-
-    console.log("validado!")
-   handleSubmit(aux)
+    console.log('validado!')
+    handleSubmit(aux)
   }
 
   return (
-    <div className={newStyles.authPageWrapper}>
-      <div className={newStyles.formContainer}>
+    <div className={styles.authPageWrapper}>
+      <div className={styles.formContainer}>
         <Form
           layout="horizontal"
           labelWrap
@@ -141,25 +138,30 @@ const New: React.FC = () => {
           style={{ width: '100%' }}
           onFinish={validete}
         >
-          <Title className={newStyles.textCenter} level={3}>
+          <Title className={styles.textCenter} level={3}>
             Cadastro Novo Usuario
           </Title>
 
-          <Form.Item validateStatus='validating' label="Nome: ">
-            <Input id="nameDoctor" value={formValue?.nameDoctor} name="nameDoctor" onChange={handleChange} />
-            <label style={{color: 'red'}} >{objError?.name}</label>
+          <Form.Item validateStatus="validating" label="Nome: ">
+            <Input
+              id="nameDoctor"
+              value={formValue?.nameDoctor}
+              name="nameDoctor"
+              onChange={handleChange}
+            />
+            <label style={{ color: 'red' }}>{objError?.name}</label>
           </Form.Item>
 
           {/*DATA DE NASCIMENTO DESATIVADA PARA FUTURA IMPLANTAÇÃO*/}
           {/*<Form.Item label="Data de Nascimento: ">
                 <DatePicker onChange={(date) => {
                   setValor({...formValue, ['birthday']: moment(date).format(dateFormat)});
-                }} id="birthday" name="birthday" className={newStyles.formBorderRadius} format={dateFormat} />
+                }} id="birthday" name="birthday" className={styles.formBorderRadius} format={dateFormat} />
               </Form.Item>*/}
 
           <Form.Item label="CRM: ">
             <Input id="crm" name="crm" onChange={handleChange} />
-            <label style={{color: 'red'}} >{objError?.crm}</label>
+            <label style={{ color: 'red' }}>{objError?.crm}</label>
           </Form.Item>
 
           <Form.Item name="crmUf" label="CRM UF: ">
@@ -168,7 +170,7 @@ const New: React.FC = () => {
                 setValor({ ...formValue, ['crmUf']: uf })
               }}
               id="crmUf"
-              className={newStyles.formBorderRadius}
+              className={styles.formBorderRadius}
             >
               {fakeCrmUf.map((uf) => (
                 <Select.Option key={uf} value={uf}>
@@ -176,7 +178,7 @@ const New: React.FC = () => {
                 </Select.Option>
               ))}
             </Select>
-            <label style={{color: 'red'}} >{objError?.crmUf}</label>
+            <label style={{ color: 'red' }}>{objError?.crmUf}</label>
           </Form.Item>
 
           <Form.Item label="Email: ">
@@ -186,17 +188,36 @@ const New: React.FC = () => {
               alt="Seu E-mail"
               onChange={handleChange}
             />
-            <label style={{color: 'red'}} >{objError?.email}</label>
+            <label style={{ color: 'red' }}>{objError?.email}</label>
           </Form.Item>
 
-          <Form.Item label="Confirme o Email: ">
+          <Form.Item
+            label="Confirme o Email: "
+            // dependencies={['email']}
+            // rules={[
+            //   {
+            //     required: true,
+            //     message: 'Please confirm your email!',
+            //   },
+            //   ({ getFieldValue }) => ({
+            //     validator(_, value) {
+            //       if (!value || getFieldValue('email') === value) {
+            //         return Promise.resolve()
+            //       }
+            //       return Promise.reject(
+            //         new Error('The two emails that you entered do not match!')
+            //       )
+            //     },
+            //   }),
+            // ]}
+          >
             <Input
               id="confEmail"
               name="confEmail"
               alt="Confirme seu E-mail"
               onChange={handleChange}
             />
-            <label style={{color: 'red'}} >{objError?.email}</label>
+            <label style={{ color: 'red' }}>{objError?.email}</label>
           </Form.Item>
 
           <Form.Item label="Senha: ">
@@ -206,7 +227,7 @@ const New: React.FC = () => {
               alt="Senha"
               onChange={handleChange}
             />
-            <label style={{color: 'red'}} >{objError?.password}</label>
+            <label style={{ color: 'red' }}>{objError?.password}</label>
           </Form.Item>
 
           <Form.Item label="Confirme sua Senha: ">
@@ -216,12 +237,12 @@ const New: React.FC = () => {
               alt="Confirme a Senha"
               onChange={handleChange}
             />
-            <label style={{color: 'red'}} >{objError?.password}</label>
+            <label style={{ color: 'red' }}>{objError?.password}</label>
           </Form.Item>
 
           <Form.Item label=" ">
             <Button
-              className={newStyles.button}
+              className={styles.button}
               shape="round"
               size="large"
               type="primary"
@@ -235,6 +256,5 @@ const New: React.FC = () => {
     </div>
   )
 }
-
 
 export default New

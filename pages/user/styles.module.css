@@ -24,6 +24,11 @@
   border-radius: 10px;
 }
 
+.formBorderRadius {
+  font-size: 14px;
+  border-radius: 10px;
+}
+
 .formContainer form {
   background: #fff;
   padding: 50px;

@@ -9,49 +9,16 @@ import login from '../styles/login.module.css'
 const { Title, Text } = Typography
 
 const Login: React.FC = () => {
+  const router = useRouter()
 
-  const router = useRouter();
-  const [error, setError] = useState('');
-  const [emailStorage, setEmailStorage] = useState('');
-  const [passwordStorage, setPasswordStorage] = useState('');
-  const [checked, setChecked] = useState(false);
+  const [form] = Form.useForm()
 
- useEffect(() => {
-    console.log("useEffect rodando...")
-    console.log("checkbox:..: ", checked)
+  const [error, setError] = useState('')
+  const [checked, setChecked] = useState(false)
 
-    if(checked == true){
-      console.log("entrou no if true...")
-      localStorage.setItem('email', emailStorage);
-      localStorage.setItem('password', passwordStorage);
-    }/*
-    //** BUG O CHECKED INICIA EM FALSE, O USEEFFECT RODA NO INICIO E PEGA O VALOR FALSE E NESSE IF APAGA O VALOR ASSIM A CADA RELOAD DA PAGINA NÃO SALVA
-    if(checked === false){
-      localStorage.removeItem('email');
-      localStorage.removeItem('password');
-    }*/
-
-    let x: unknown = localStorage.getItem('email');
-    let y: unknown = localStorage.getItem('password');
-
-    if(x != null){
-      setEmailStorage(x as string)
-      console.log("setou x... ", x)
-    }
-    if(y != null){
-      setPasswordStorage(y as string)
-      console.log("setou y... ", y)
-    }
-
-  }, [checked])
-
-  function handleChangeEmail(e: { target: { value: any } }){
-    setEmailStorage(e.target.value)
-  }
-
-  function handleChangePassword(e: { target: { value: any } }){
-    setPasswordStorage(e.target.value)
-  }
+  useEffect(() => {
+    form.setFieldValue('email', localStorage.getItem('email') || '')
+  }, [form])
 
   const onFinish = async (values: { [key: string]: string }) => {
     const email: string = values.email
@@ -70,6 +37,9 @@ const Login: React.FC = () => {
     }
 
     console.log(res)
+
+    localStorage.setItem('email', checked ? form.getFieldValue('email') : '')
+
     await router.push('/welcome')
   }
 
@@ -80,14 +50,16 @@ const Login: React.FC = () => {
   ) => {
     console.log('Failed:', errorInfo)
   }
-  
 
   return (
     <div className={login.authPageWrapper}>
       <div className={login.formContainer}>
         <Form
+          form={form}
           name="singin"
-          initialValues={{ remember: true }}
+          initialValues={{
+            remember: true,
+          }}
           onFinish={onFinish}
           onFinishFailed={onFinishFailed}
           autoComplete="off"
@@ -95,10 +67,10 @@ const Login: React.FC = () => {
           <Title level={2} className={login.texCenter}>
             Login
           </Title>
-          
+
           <Form.Item
-          /*SE COLOCAR O NAME=EMAIL NÃO FUNCIONA O CHEKED/LEMBRAR, E SEM O NAME FUNCIONA O RULES */
             hasFeedback
+            name="email"
             label="E-mail"
             labelCol={{ span: 24 }}
             wrapperCol={{ span: 24 }}
@@ -113,11 +85,12 @@ const Login: React.FC = () => {
               },
             ]}
           >
-            <Input value={emailStorage} onChange={handleChangeEmail} placeholder="E-mail" size="large"/>
+            <Input placeholder="E-mail" size="large" />
           </Form.Item>
 
           <Form.Item
             label="Senha"
+            name="password"
             labelCol={{ span: 24 }}
             wrapperCol={{ span: 24 }}
             rules={[
@@ -131,12 +104,19 @@ const Login: React.FC = () => {
               // },
             ]}
           >
-            <Input.Password value={passwordStorage} onChange={handleChangePassword} placeholder="Senha" size="large" />
+            <Input.Password placeholder="Senha" size="large" />
           </Form.Item>
 
           <Form.Item>
             <Form.Item valuePropName="checked" noStyle>
-              <Checkbox checked={checked} onChange={(e)=>{setChecked(e.target.checked)}}>Lembre-me</Checkbox>
+              <Checkbox
+                checked={checked}
+                onChange={(e) => {
+                  setChecked(e.target.checked)
+                }}
+              >
+                Lembre-me
+              </Checkbox>
             </Form.Item>
 
             {/* <a className={login.forgotRight} href="#">
@@ -157,7 +137,12 @@ const Login: React.FC = () => {
             Login
           </Button>
 
-          <Button className={login.button} shape="round" icon={<SelectOutlined />} size="large">
+          <Button
+            className={login.button}
+            shape="round"
+            icon={<SelectOutlined />}
+            size="large"
+          >
             <Link href="user/new"> Criar uma conta</Link>
           </Button>
         </Form>
