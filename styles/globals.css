@@ -138,3 +138,8 @@ button:active {
 button:focus {
   outline: none;
 }
+
+/* fix datePicker style */
+.ant-picker-header > * {
+  flex: auto !important;
+}

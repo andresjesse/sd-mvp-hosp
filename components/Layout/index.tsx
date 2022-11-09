@@ -2,6 +2,7 @@ import {
   FieldTimeOutlined,
   LoginOutlined,
   LogoutOutlined,
+  SecurityScanOutlined,
   UserOutlined,
 } from '@ant-design/icons'
 import { Button, Layout, Menu } from 'antd'
@@ -34,6 +35,15 @@ const siderItems = [
     ),
     key: 'schedule',
     icon: <FieldTimeOutlined />,
+  },
+  {
+    label: (
+      <Link href="/admin">
+        <a>Admin</a>
+      </Link>
+    ),
+    key: 'admin',
+    icon: <SecurityScanOutlined />,
   },
 ]
 
