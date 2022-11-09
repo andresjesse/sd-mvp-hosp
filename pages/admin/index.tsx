@@ -28,7 +28,6 @@ export default function Admin() {
         month: date.month,
         year: date.year,
       })
-      setIsLoading(false)
 
       notification['success']({
         message: 'Escalas geradas!',
@@ -40,6 +39,7 @@ export default function Admin() {
         description: `${error}`,
       })
     }
+    setIsLoading(false)
   }
 
   return (
