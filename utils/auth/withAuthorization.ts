@@ -1,13 +1,14 @@
 import { GetServerSideProps, GetServerSidePropsContext } from 'next'
 import { Session, unstable_getServerSession } from 'next-auth'
 import { authOptions, TSessionUser } from '../../pages/api/auth/[...nextauth]'
-import { ApiHandleError } from '../api/apiHandleError'
+import { AuthorizationError } from './AuthorizationError'
+import { Policy } from './Policies'
 import RolesEnum from './RolesEnum'
 
 type TWithAuthorizationOptions = {
-  policies?: Array<string>
   expectedRoles?: Array<RolesEnum>
   rolesCheckMode?: rolesCheckModeEnum
+  policies?: Array<Policy<unknown>>
 }
 
 export enum rolesCheckModeEnum {
@@ -28,12 +29,21 @@ export function withAuthorization(
       )
 
       if (session === null) {
-        throw new ApiHandleError(401, 'Unauthenticated!')
+        throw new AuthorizationError()
       }
 
       const user = session.user as TSessionUser
       if (options != null) {
         if (options.policies != null) {
+          const passExpectedPolicies = options.policies.every((policy) => {
+            const result = policy.run()
+
+            return result
+          })
+
+          if (!passExpectedPolicies) {
+            throw new AuthorizationError()
+          }
         }
 
         if (options.expectedRoles != null) {
@@ -47,14 +57,14 @@ export function withAuthorization(
           )
 
           if (!hasExpectedRoles) {
-            throw new ApiHandleError(403, 'Forbbiden!')
+            throw new AuthorizationError()
           }
         }
       }
 
       return await getServerSidePropsCallback(ctx)
     } catch (error) {
-      if (error instanceof ApiHandleError) {
+      if (error instanceof AuthorizationError) {
         return {
           redirect: {
             destination: '/login',

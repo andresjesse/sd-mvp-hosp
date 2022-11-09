@@ -12,6 +12,7 @@ import {
 import React from 'react'
 
 import { fakeCrmUf } from '../../services/fakeCrmUf'
+import { OnlyFixedShiftsPolicy } from '../../utils/auth/Policies'
 import RolesEnum from '../../utils/auth/RolesEnum'
 import withAuthorization, {
   rolesCheckModeEnum,
@@ -89,6 +90,7 @@ const App: React.FC = () => {
     </Card>
   )
 }
+
 export const getServerSideProps = withAuthorization(
   async () => {
     return {
@@ -98,6 +100,22 @@ export const getServerSideProps = withAuthorization(
   {
     expectedRoles: [RolesEnum.ADMIN, RolesEnum.DOCTOR],
     rolesCheckMode: rolesCheckModeEnum.SOME,
+    policies: [
+      new OnlyFixedShiftsPolicy(() => {
+        return {
+          shift: {
+            id: 1,
+            startDate: new Date(),
+            endDate: new Date(),
+            idDoctor: 1,
+            idSector: 2,
+            isFixed: true,
+            createdAt: new Date(),
+            updatedAt: new Date(),
+          },
+        }
+      }),
+    ],
   }
 )
 
