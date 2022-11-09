@@ -6,38 +6,29 @@ import {
   Form,
   notification,
 } from 'antd'
+import { useState } from 'react'
 import axiosApi from '../../services/axiosApi'
 
 import styles from './styles.module.css'
 
 export default function Admin() {
-  const date: {
-    month?: number
-    year?: number
-  } = {
-    month: 0,
-    year: 0,
-  }
+  const [date, setDate] = useState({ month: 0, year: 0 })
+  const [isLoading, setIsLoading] = useState(false)
 
   const onChange: DatePickerProps['onChange'] = (moment) => {
-    date.month = moment?.month()
-    date.year = moment?.year()
+    if (moment) {
+      setDate({ month: moment.month(), year: moment.year() })
+    }
   }
 
   const generateSchedules = async () => {
-    const month = date.month
-    const year = date.year
-
+    setIsLoading(true)
     try {
-      notification['info']({
-        message: 'Gerando escalas',
-        description: 'Aguarde...',
-      })
-
       const response = await axiosApi.post('/api/shifts/generate-month', {
-        month,
-        year,
+        month: date.month,
+        year: date.year,
       })
+      setIsLoading(false)
 
       notification['success']({
         message: 'Escalas geradas!',
@@ -59,9 +50,15 @@ export default function Admin() {
             <DatePicker picker="month" onChange={onChange} />
           </Form.Item>
           <Form.Item className={styles.buttonSchedulesGenerate}>
-            <Button onClick={generateSchedules} shape="round">
-              Gerar
-            </Button>
+            {isLoading ? (
+              <Button type="primary" loading shape="round">
+                Gerando escalas...
+              </Button>
+            ) : (
+              <Button type="primary" onClick={generateSchedules} shape="round">
+                Gerar
+              </Button>
+            )}
           </Form.Item>
         </Form>
       </Card>
