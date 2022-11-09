@@ -9,7 +9,7 @@ export type TSessionUser = {
   id: number
   name: string
   email: string
-  roles: RolesEnum[] | undefined
+  roles: RolesEnum[] | null
   admin: Admin | null
   doctor: Doctor | null
 }
@@ -70,9 +70,10 @@ export const authOptions: NextAuthOptions = {
             id: user.id,
             name: user.name,
             email: user.email,
-            roles: user.roles?.map((roleEntry) => {
-              return roleEntry.role.title
-            }),
+            roles:
+              user.roles?.map<RolesEnum>((roleEntry) => {
+                return roleEntry.role.title
+              }) ?? null,
             admin: user.admin,
             doctor: user.doctor,
           }
