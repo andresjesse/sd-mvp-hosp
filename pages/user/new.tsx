@@ -1,4 +1,3 @@
-import { RolesEnum } from '@prisma/client'
 import {
   Button,
   Card,
@@ -9,12 +8,14 @@ import {
   Select,
   Typography,
 } from 'antd'
-import { GetServerSideProps, GetServerSidePropsContext } from 'next'
 
 import React from 'react'
 
 import { fakeCrmUf } from '../../services/fakeCrmUf'
-import { requireAuthRoles } from '../../utils/auth/requireAuthRoles'
+import RolesEnum from '../../utils/auth/RolesEnum'
+import withAuthorization, {
+  rolesCheckModeEnum,
+} from '../../utils/auth/withAuthorization'
 
 const { Title } = Typography
 const dateFormatList = ['DD/MM/YYYY', 'DD/MM/YY']
@@ -88,27 +89,16 @@ const App: React.FC = () => {
     </Card>
   )
 }
-
-export const getServerSideProps: GetServerSideProps = async (
-  context: GetServerSidePropsContext
-) => {
-  try {
-    await requireAuthRoles(context.req, context.res, [
-      RolesEnum.ADMIN,
-      //RolesEnum.DOCTOR,
-    ])
-
+export const getServerSideProps = withAuthorization(
+  async () => {
     return {
       props: {},
     }
-  } catch (error) {
-    return {
-      redirect: {
-        permanent: false,
-        destination: '/login',
-      },
-    }
+  },
+  {
+    expectedRoles: [RolesEnum.ADMIN, RolesEnum.DOCTOR],
+    rolesCheckMode: rolesCheckModeEnum.SOME,
   }
-}
+)
 
 export default App
