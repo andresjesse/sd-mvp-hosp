@@ -1,4 +1,5 @@
 import { Button, Form, Input, Select, Typography } from 'antd'
+import router from 'next/router'
 import { useState } from 'react'
 import { fakeCrmUf } from '../../services/fakeCrmUf'
 import api from '../api/services/apiAxios'
@@ -24,29 +25,9 @@ const initialObjError = {
   crmUf: '',
 }
 
-/**
- * FORMULARIO DE CADASTRO
- */
-
-/**TO DO
- * validatestatus mudar color em cada form.item
- * colocar label com o err oda cada form.item
- * verificar erros lado cliente
- * verificar erros lado servidor
- * fazer o cadastro funcionar
- */
-
-//const New: NextPage = () => {
-
 const New: React.FC = () => {
 
-  //const [colorError, setColorError] = useState("validating");
-
-  //function colorError(){}
-
   const [formValue, setValor] = useState(initialValues)
-
-  //erro teste
   const [objError, setObjError] = useState(initialObjError);
 
 
@@ -58,22 +39,25 @@ const New: React.FC = () => {
   function handleSubmit(req: object) {
     api
       .post('/doctor/create', req)
-      .then((response) => setObjError(response.data))
-      //.then((response) => router.push("/"))
+      //.then((response) => setObjError(response.data))
+      .then((response) => router.push("/welcome"))
       .catch((e) => {
-        console.log(e, e.response.data.data)
-        //erro teste
+        //console.log(e, e.response.data.data)
         setObjError(e.response.data.data)
-        /*setColorError("error")
-        console.log(colorError)*/
+
+        //TENTATIVA DE PEGAR O NAME DO ERRO E COMPARAR COM O OBJETO STATUSERRO E INTERAGIR COM HTML CONFORME O ERRO.
+        /*if(e.response.data.data != null){
+          let aux = e.response.data.data;
+          console.log("deu erro....", );
+        }*/
       })
   }
 
-
+  //FAZER VALIDAÇÃO ANTES DE MANDAR PARA SERVIDOR.
   function validete() {
     console.log('validando...')
 
-    const aux = {
+    let aux = {
       name: formValue.nameDoctor,
       email: formValue.email,
       password: formValue.password,
@@ -81,14 +65,68 @@ const New: React.FC = () => {
       crmUf: formValue.crmUf,
     }
 
-    /*console.log("validando email...")
-    if(formValue.email == formValue.confEmail){
-      console.log("email validado...")
+    /*
+    let aux = {
+      name: '',
+      email: '',
+      password: '',
+      crm: '',
+      crmUf: '',
+    }
+
+    let counterros = false;
+
+    if(!formValue.nameDoctor){
+      setObjError({...objError, name: 'Nome não pode ser vazio!'})
     }else{
-      console.log("email errado...")
+      setObjError({...objError, name: ''})
+      aux.name = formValue.nameDoctor
+    }
+
+    //verifcar esta passando com valor null
+    if(!formValue.crm){
+      setObjError({...objError, crm: 'CRM não pode ser vazio!'})
+    }else{
+      setObjError({...objError, crm: ''})
+      aux.crm = formValue.crm
+    }
+
+    if(!formValue.crmUf){
+      setObjError({...objError, crmUf: 'CRM UF não pode ser vazio!'})
+    }else{
+      setObjError({...objError, crmUf: ''})
+      aux.crmUf = formValue.crmUf
+    }
+
+    if(formValue.email != formValue.confEmail){
+      setObjError({...objError, email: 'Email não são iguais!'})
+    }else{
+      setObjError({...objError, email: ''})
+    }
+
+    if(!formValue.email){
+      setObjError({...objError, email: 'Email não pode ser vazio!'})
+    }else{
+      setObjError({...objError, email: ''})
+      aux.email = formValue.email
+    }
+
+    if(formValue.password != formValue.confPassword){
+      setObjError({...objError, password: 'Senha não são iguais!'})
+    }else{
+      setObjError({...objError, password: ''})
+    }
+
+    if(!formValue.password){
+      setObjError({...objError, password: 'Senha não pode ser vazio!'})
+    }else{
+      setObjError({...objError, password: ''})
+      aux.password = formValue.password
     }*/
 
-    handleSubmit(aux)
+
+    console.log("validado!")
+   handleSubmit(aux)
   }
 
   return (
@@ -109,7 +147,7 @@ const New: React.FC = () => {
 
           <Form.Item validateStatus='validating' label="Nome: ">
             <Input id="nameDoctor" value={formValue?.nameDoctor} name="nameDoctor" onChange={handleChange} />
-            <label htmlFor="">{objError?.name}</label>
+            <label style={{color: 'red'}} >{objError?.name}</label>
           </Form.Item>
 
           {/*DATA DE NASCIMENTO DESATIVADA PARA FUTURA IMPLANTAÇÃO*/}
@@ -121,7 +159,7 @@ const New: React.FC = () => {
 
           <Form.Item label="CRM: ">
             <Input id="crm" name="crm" onChange={handleChange} />
-            <label htmlFor="">{objError?.crm}</label>
+            <label style={{color: 'red'}} >{objError?.crm}</label>
           </Form.Item>
 
           <Form.Item name="crmUf" label="CRM UF: ">
@@ -138,6 +176,7 @@ const New: React.FC = () => {
                 </Select.Option>
               ))}
             </Select>
+            <label style={{color: 'red'}} >{objError?.crmUf}</label>
           </Form.Item>
 
           <Form.Item label="Email: ">
@@ -147,6 +186,7 @@ const New: React.FC = () => {
               alt="Seu E-mail"
               onChange={handleChange}
             />
+            <label style={{color: 'red'}} >{objError?.email}</label>
           </Form.Item>
 
           <Form.Item label="Confirme o Email: ">
@@ -156,6 +196,7 @@ const New: React.FC = () => {
               alt="Confirme seu E-mail"
               onChange={handleChange}
             />
+            <label style={{color: 'red'}} >{objError?.email}</label>
           </Form.Item>
 
           <Form.Item label="Senha: ">
@@ -165,6 +206,7 @@ const New: React.FC = () => {
               alt="Senha"
               onChange={handleChange}
             />
+            <label style={{color: 'red'}} >{objError?.password}</label>
           </Form.Item>
 
           <Form.Item label="Confirme sua Senha: ">
@@ -174,6 +216,7 @@ const New: React.FC = () => {
               alt="Confirme a Senha"
               onChange={handleChange}
             />
+            <label style={{color: 'red'}} >{objError?.password}</label>
           </Form.Item>
 
           <Form.Item label=" ">

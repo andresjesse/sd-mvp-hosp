@@ -32,7 +32,6 @@ const Login: React.FC = () => {
     }*/
 
     let x: unknown = localStorage.getItem('email');
-    console.log("x é.. ", typeof x)
     let y: unknown = localStorage.getItem('password');
 
     if(x != null){
@@ -98,6 +97,7 @@ const Login: React.FC = () => {
           </Title>
           
           <Form.Item
+          /*SE COLOCAR O NAME=EMAIL NÃO FUNCIONA O CHEKED/LEMBRAR, E SEM O NAME FUNCIONA O RULES */
             hasFeedback
             label="E-mail"
             labelCol={{ span: 24 }}
@@ -136,7 +136,7 @@ const Login: React.FC = () => {
 
           <Form.Item>
             <Form.Item valuePropName="checked" noStyle>
-              <Checkbox onChange={(e)=>{setChecked(e.target.checked)}}>Lembre-me</Checkbox>
+              <Checkbox checked={checked} onChange={(e)=>{setChecked(e.target.checked)}}>Lembre-me</Checkbox>
             </Form.Item>
 
             {/* <a className={login.forgotRight} href="#">
