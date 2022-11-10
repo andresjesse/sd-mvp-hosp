@@ -1,4 +1,4 @@
-import { Admin, Doctor, Role, RolesEnum, User } from '@prisma/client'
+import { Admin, Doctor, Role, User } from '@prisma/client'
 import NextAuth, { NextAuthOptions } from 'next-auth'
 import CredentialsProvider from 'next-auth/providers/credentials'
 import { prisma } from './../../../lib/prisma'
@@ -9,7 +9,7 @@ export type TSessionUser = {
   id: number
   name: string
   email: string
-  roles: RolesEnum[] | null
+  roles: string[] | null
   admin: Admin | null
   doctor: Doctor | null
 }
@@ -37,7 +37,7 @@ export const authOptions: NextAuthOptions = {
             | (User & {
                 admin: Admin | null
                 doctor: Doctor | null
-                roles: { role: Role }[] | null
+                roles: Role[] | null
               })
             | null
 
@@ -48,7 +48,7 @@ export const authOptions: NextAuthOptions = {
             include: {
               admin: true,
               doctor: true,
-              roles: { select: { role: true } },
+              roles: true,
             },
           })
 
@@ -71,8 +71,8 @@ export const authOptions: NextAuthOptions = {
             name: user.name,
             email: user.email,
             roles:
-              user.roles?.map<RolesEnum>((roleEntry) => {
-                return roleEntry.role.title
+              user.roles?.map<string>((roleEntry) => {
+                return roleEntry.title
               }) ?? null,
             admin: user.admin,
             doctor: user.doctor,
@@ -80,6 +80,7 @@ export const authOptions: NextAuthOptions = {
 
           return sessionUser
         } catch (e) {
+          console.log(e)
           const { message } =
             e instanceof InvalidCredentials
               ? { message: (e as InvalidCredentials).message }
