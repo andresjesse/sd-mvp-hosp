@@ -4,6 +4,7 @@ import { authOptions, TSessionUser } from '../../pages/api/auth/[...nextauth]'
 import { AuthorizationError } from './AuthorizationError'
 import { Policy } from './Policies'
 import RolesEnum from './RolesEnum'
+import { checkRoles } from './userRolesCheck'
 
 type TWithAuthorizationOptions = {
   expectedRoles?: Array<RolesEnum>
@@ -34,29 +35,32 @@ export function withAuthorization(
 
       const user = session.user as TSessionUser
       if (options != null) {
-        if (options.policies != null) {
-          const passExpectedPolicies = options.policies.every((policy) => {
-            const result = policy.run()
+        if (options.expectedRoles != null) {
+          const hasExpectedRoles = checkRoles(
+            options.expectedRoles,
+            user.roles as RolesEnum[],
+            options.rolesCheckMode
+          )
 
-            return result
-          })
-
-          if (!passExpectedPolicies) {
+          if (!hasExpectedRoles) {
             throw new AuthorizationError()
           }
         }
 
-        if (options.expectedRoles != null) {
-          const rolesCheckMode =
-            options.rolesCheckMode ?? rolesCheckModeEnum.SOME
+        if (options.policies != null) {
+          const passExpectedPolicies = options.policies.every(
+            async (policy) => {
+              const result: boolean = await (
+                await policy.init(ctx, user)
+              ).run(user)
 
-          const hasExpectedRoles = checkRoles(
-            options.expectedRoles,
-            user.roles as RolesEnum[],
-            rolesCheckMode
+              console.log('result eh ', result)
+              return result
+            }
           )
-
-          if (!hasExpectedRoles) {
+          console.log('ué o que pass: ', passExpectedPolicies)
+          if (!passExpectedPolicies) {
+            console.log('????')
             throw new AuthorizationError()
           }
         }
@@ -64,31 +68,17 @@ export function withAuthorization(
 
       return await getServerSidePropsCallback(ctx)
     } catch (error) {
-      if (error instanceof AuthorizationError) {
-        return {
-          redirect: {
-            destination: '/login',
-            permanent: false,
-          },
-        }
+      if (!(error instanceof AuthorizationError)) {
+        console.log(error)
+      }
+
+      return {
+        redirect: {
+          destination: '/login',
+          permanent: false,
+        },
       }
     }
-  }
-}
-
-function checkRoles(
-  expectedRoles: Array<RolesEnum>,
-  userRoles: Array<RolesEnum>,
-  checkMode: rolesCheckModeEnum
-): boolean {
-  if (checkMode === rolesCheckModeEnum.ALL) {
-    return expectedRoles.every((expectedRole) => {
-      return userRoles.includes(expectedRole)
-    })
-  } else {
-    return expectedRoles.some((expectedRole) => {
-      return userRoles.includes(expectedRole)
-    })
   }
 }
 

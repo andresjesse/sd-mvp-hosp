@@ -1,3 +1,4 @@
+import { Shift } from '@prisma/client'
 import {
   Button,
   Card,
@@ -12,7 +13,7 @@ import {
 import React from 'react'
 
 import { fakeCrmUf } from '../../services/fakeCrmUf'
-import { OnlyFixedShiftsPolicy } from '../../utils/auth/Policies'
+import { DoctorOwnsShift } from '../../utils/auth/Policies'
 import RolesEnum from '../../utils/auth/RolesEnum'
 import withAuthorization, {
   rolesCheckModeEnum,
@@ -101,18 +102,15 @@ export const getServerSideProps = withAuthorization(
     expectedRoles: [RolesEnum.ADMIN, RolesEnum.DOCTOR],
     rolesCheckMode: rolesCheckModeEnum.SOME,
     policies: [
-      new OnlyFixedShiftsPolicy(() => {
-        return {
-          shift: {
-            id: 1,
-            startDate: new Date(),
-            endDate: new Date(),
-            idDoctor: 1,
-            idSector: 2,
-            isFixed: true,
-            createdAt: new Date(),
-            updatedAt: new Date(),
+      new DoctorOwnsShift(async () => {
+        const shiftId = 1 // req.id
+        const shift: Shift | null | undefined = await prisma?.shift.findFirst({
+          where: {
+            id: shiftId,
           },
+        })
+        return {
+          shift: shift as Shift,
         }
       }),
     ],
