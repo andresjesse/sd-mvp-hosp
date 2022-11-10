@@ -53,14 +53,11 @@ export function withAuthorization(
               const result: boolean = await (
                 await policy.init(ctx, user)
               ).run(user)
-
-              console.log('result eh ', result)
               return result
             }
           )
-          console.log('ué o que pass: ', passExpectedPolicies)
+
           if (!passExpectedPolicies) {
-            console.log('????')
             throw new AuthorizationError()
           }
         }

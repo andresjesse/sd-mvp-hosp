@@ -5,7 +5,6 @@ import type {
 } from 'next'
 import { signOut, useSession } from 'next-auth/react'
 import Head from 'next/head'
-import { requireAuth } from '../utils/auth/requireAuth'
 
 const Welcome: NextPage = () => {
   const { data: session, status } = useSession()
@@ -37,7 +36,6 @@ export const getServerSideProps: GetServerSideProps = async (
   context: GetServerSidePropsContext
 ) => {
   try {
-    await requireAuth(context.req, context.res)
     return { props: {} }
   } catch (error) {
     return {
