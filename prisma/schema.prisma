@@ -20,11 +20,6 @@ model Sector {
   Shift        Shift[]
 }
 
-enum Role {
-  DOCTOR
-  ADMIN
-}
-
 // Note: relation fields such as 'admin'
 // doesn't exist in database but are needed for prisma.
 model User {
@@ -32,11 +27,17 @@ model User {
   name         String
   email        String   @unique
   passwordHash String   @map("password_hash")
-  role         Role     @default(DOCTOR)
+  roles Role[]
   createdAt    DateTime @default(now()) @map("created_at")
   updatedAt    DateTime @updatedAt @map("updated_at")
   admin        Admin?
   doctor       Doctor?
+}
+
+model Role {
+  id    Int    @id
+  title String @unique
+  users User[]
 }
 
 model Admin {
