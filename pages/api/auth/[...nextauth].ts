@@ -1,15 +1,16 @@
+import { Admin, Doctor, Role, User } from '@prisma/client'
 import NextAuth, { NextAuthOptions } from 'next-auth'
 import CredentialsProvider from 'next-auth/providers/credentials'
-import { Admin, Doctor, User, Role } from '@prisma/client'
-import hasher from './../../../utils/hasher/BcryptjsHasher'
+import Roles from '../../../utils/auth/Roles'
 import { prisma } from './../../../lib/prisma'
+import hasher from './../../../utils/hasher/BcryptjsHasher'
 import { InvalidCredentials } from './signin/invalidCredentials'
 
 export type TSessionUser = {
   id: number
   name: string
   email: string
-  role: Role
+  roles: Roles[]
   admin: Admin | null
   doctor: Doctor | null
 }
@@ -37,6 +38,7 @@ export const authOptions: NextAuthOptions = {
             | (User & {
                 admin: Admin | null
                 doctor: Doctor | null
+                roles: Role[]
               })
             | null
 
@@ -47,6 +49,7 @@ export const authOptions: NextAuthOptions = {
             include: {
               admin: true,
               doctor: true,
+              roles: true,
             },
           })
 
@@ -68,13 +71,14 @@ export const authOptions: NextAuthOptions = {
             id: user.id,
             name: user.name,
             email: user.email,
-            role: user.role,
+            roles:
+              user.roles?.map<Roles>((roleEntry) => Roles[roleEntry.id]) || [], //vscode shows error, can it be a bug? eslint is ok...
             admin: user.admin,
             doctor: user.doctor,
           }
-
           return sessionUser
         } catch (e) {
+          console.log(e)
           const { message } =
             e instanceof InvalidCredentials
               ? { message: (e as InvalidCredentials).message }
