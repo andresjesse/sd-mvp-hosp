@@ -71,8 +71,7 @@ export const authOptions: NextAuthOptions = {
             id: user.id,
             name: user.name,
             email: user.email,
-            roles:
-              user.roles?.map<Roles>((roleEntry) => Roles[roleEntry.id]) || [], //vscode shows error, can it be a bug? eslint is ok...
+            roles: user.roles?.map<Roles>((roleEntry) => roleEntry.id) || [],
             admin: user.admin,
             doctor: user.doctor,
           }
