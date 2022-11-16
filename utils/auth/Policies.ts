@@ -2,11 +2,11 @@ import { TSessionUser } from '../../pages/api/auth/[...nextauth]'
 import Roles from './Roles'
 
 const Policies = {
-  allowProtected: (user: TSessionUser, obj: any) => {
+  allowProtected: async (user: TSessionUser, obj: any) => {
     if (obj.color !== 'orange')
       throw new Error('Policy error, color should be orange!')
   },
-  allowRed: (user: TSessionUser, obj: any) => {
+  allowRed: async (user: TSessionUser, obj: any) => {
     // admins can handle orange and red
     // if (user.roles.includes(Roles.ADMIN)) {
     if (user.admin !== null) {

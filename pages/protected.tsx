@@ -18,7 +18,7 @@ export const getServerSideProps = withAuth(
     }
 
     // Policies.allowProtected(user, fetchData)
-    Policies.allowRed(user, fetchData)
+    await Policies.allowRed(user, fetchData)
 
     return {
       props: {
