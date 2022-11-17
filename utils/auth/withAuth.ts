@@ -1,23 +1,13 @@
-import {
-  GetServerSideProps,
-  GetServerSidePropsContext,
-  GetServerSidePropsResult,
-} from 'next'
+import { GetServerSidePropsContext, GetServerSidePropsResult } from 'next'
 import { Session, unstable_getServerSession } from 'next-auth'
+import { UnauthenticatedUserError } from '../../errors/UnauthenticatedUserError'
 import { authOptions, TSessionUser } from '../../pages/api/auth/[...nextauth]'
-
-// interface GetServerSidePropsWithAuthProps {
-//   // getServerSidePropsCallback: GetServerSideProps & {
-//   //   user:TSessionUser
-//   // }
-//   getServerSidePropsCallback: Function
-// }
 
 export default function withAuth(
   getServerSidePropsCallback: (
     ctx: GetServerSidePropsContext,
     user: TSessionUser
-  ) => Promise<GetServerSidePropsResult<any>>
+  ) => Promise<GetServerSidePropsResult<unknown>>
 ) {
   return async (ctx: GetServerSidePropsContext) => {
     try {
@@ -28,7 +18,7 @@ export default function withAuth(
       )
 
       if (session === null) {
-        throw new Error('Session user is not present!')
+        throw new UnauthenticatedUserError('Session user is not present!')
       }
 
       const user = session.user as TSessionUser
