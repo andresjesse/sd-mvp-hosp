@@ -4,7 +4,7 @@ import CredentialsProvider from 'next-auth/providers/credentials'
 import Roles from '../../../utils/auth/Roles'
 import { prisma } from './../../../lib/prisma'
 import hasher from './../../../utils/hasher/BcryptjsHasher'
-import { InvalidCredentials } from './signin/invalidCredentials'
+import { InvalidCredentialsError } from '../../../errors/InvalidCredentialsError'
 
 export type TSessionUser = {
   id: number
@@ -54,7 +54,7 @@ export const authOptions: NextAuthOptions = {
           })
 
           if (!user) {
-            throw new InvalidCredentials()
+            throw new InvalidCredentialsError()
           }
 
           const samePassword = await hasher.compareAsync(
@@ -64,7 +64,7 @@ export const authOptions: NextAuthOptions = {
           )
 
           if (!samePassword) {
-            throw new InvalidCredentials()
+            throw new InvalidCredentialsError()
           }
 
           const sessionUser: TSessionUser = {
@@ -79,8 +79,8 @@ export const authOptions: NextAuthOptions = {
         } catch (e) {
           console.log(e)
           const { message } =
-            e instanceof InvalidCredentials
-              ? { message: (e as InvalidCredentials).message }
+            e instanceof InvalidCredentialsError
+              ? { message: (e as InvalidCredentialsError).message }
               : {
                   message:
                     'Unexpected error occourred. Try again or contact us.',
