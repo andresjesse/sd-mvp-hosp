@@ -1,5 +1,5 @@
 import type { GetServerSidePropsContext, NextPage } from 'next'
-import Policies from '../utils/auth/Policies'
+import Policies from '../utils/auth/policies/index'
 import withAuth from '../utils/auth/withAuth'
 import { TSessionUser } from './api/auth/[...nextauth]'
 
