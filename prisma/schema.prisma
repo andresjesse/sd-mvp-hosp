@@ -7,7 +7,7 @@ generator client {
 }
 
 datasource db {
-  provider             = "mysql"
+  provider             = "postgresql"
   url                  = env("DATABASE_URL")
   shadowDatabaseUrl    = env("SHADOW_DATABASE_URL")
   referentialIntegrity = "prisma"
@@ -62,12 +62,21 @@ model Doctor {
 }
 
 model Interest {
-  id        Int      @id @default(autoincrement())
-  doctor    Doctor   @relation(fields: [idDoctor], references: [id], onDelete: Cascade)
-  idDoctor  Int
-  weekday   Int
-  hourStart DateTime
-  hourEnd   DateTime
+  id         Int      @id @default(autoincrement())
+  doctor     Doctor   @relation(fields: [idDoctor], references: [id], onDelete: Cascade)
+  idDoctor   Int
+  day        DateTime
+  ShiftAux   ShiftAux @relation(fields: [shiftAuxId], references: [id])
+  shiftAuxId Int
+  status     Boolean  @default(true)
+}
+
+model ShiftAux {
+  id          Int        @id @default(autoincrement())
+  description String
+  hourStart   DateTime
+  hourEnd     DateTime
+  Interest    Interest[]
 }
 
 model Shift {
