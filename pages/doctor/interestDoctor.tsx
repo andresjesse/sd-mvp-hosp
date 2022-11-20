@@ -1,60 +1,47 @@
-import type { BadgeProps } from 'antd'
-import { Badge, Calendar, Modal } from 'antd'
-import type { Moment } from 'moment'
-import React, { useState } from 'react'
+import { Interest } from '@prisma/client'
+import { Calendar, Modal } from 'antd'
+import { GetStaticProps } from 'next'
+import { useState } from 'react'
+import { prisma } from '../../lib/prisma'
 
-const getListData = (value: Moment) => {
-  let listData
-  switch (value.date()) {
-    case 8:
-      listData = [
-        { type: 'warning', content: 'This is warning event.' },
-        { type: 'success', content: 'This is usual event.' },
-      ]
-      break
-    case 10:
-      listData = [
-        { type: 'warning', content: 'This is warning event.' },
-        { type: 'success', content: 'This is usual event.' },
-        { type: 'error', content: 'This is error event.' },
-      ]
-      break
-    case 15:
-      listData = [
-        { type: 'warning', content: 'This is warning event' },
-        { type: 'success', content: 'This is very long usual event。。....' },
-        { type: 'error', content: 'This is error event 1.' },
-        { type: 'error', content: 'This is error event 2.' },
-        { type: 'error', content: 'This is error event 3.' },
-        { type: 'error', content: 'This is error event 4.' },
-      ]
-      break
-    default:
-  }
-  return listData || []
+interface InterestProps {
+  interest: Array<Interest>
 }
 
-const getMonthData = (value: Moment) => {
-  if (value.month() === 8) {
-    return 1394
+export const getStaticProps: GetStaticProps = async () => {
+  const interest = await prisma.interest.findMany({
+    include: {
+      doctor: {
+        select: {
+          crm: true,
+          user: {
+            select: {
+              name: true,
+            },
+          },
+        },
+      },
+      ShiftAux: {
+        select: {
+          description: true,
+        },
+      },
+    },
+  })
+  return {
+    props: {
+      interest,
+    },
+    revalidate: 10,
   }
 }
 
-const App: React.FC = () => {
+export default function App({ interest }: InterestProps) {
   const [open, setOpen] = useState(false)
   const [confirmLoading, setConfirmLoading] = useState(false)
   const [modalText, setModalText] = useState(
     'Tela de cadastro do interesse do médico aqui deverá carregar automaticamente o médico logado e o dia do interesse carregado automaticamente pelo componente que foi clicado a ideia é um rádio buttom para o turno'
   )
-  const monthCellRender = (value: Moment) => {
-    const num = getMonthData(value)
-    return num ? (
-      <div className="notes-month">
-        <section>{num}</section>
-        <span>Backlog number</span>
-      </div>
-    ) : null
-  }
 
   const handleCancel = () => {
     console.log('Clicked cancel button')
@@ -70,22 +57,6 @@ const App: React.FC = () => {
     }, 2000)
   }
 
-  const dateCellRender = (value: Moment) => {
-    const listData = getListData(value)
-    return (
-      <ul className="events">
-        {listData.map((item) => (
-          <li key={item.content}>
-            <Badge
-              status={item.type as BadgeProps['status']}
-              text={item.content}
-            />
-          </li>
-        ))}
-      </ul>
-    )
-  }
-
   const showModal = () => {
     setOpen(true)
   }
@@ -93,8 +64,17 @@ const App: React.FC = () => {
   return (
     <>
       <Calendar
-        dateCellRender={dateCellRender}
-        monthCellRender={monthCellRender}
+        dateCellRender={(value) => {
+          for (const key of interest) {
+            if (
+              new Date(value).getDate() == new Date(key.day).getDate() &&
+              new Date(value).getMonth() == new Date(key.day).getMonth() &&
+              new Date(value).getFullYear() == new Date(key.day).getFullYear()
+            ) {
+              return <h4>{key.doctor.user.name}</h4>
+            }
+          }
+        }}
         onSelect={showModal}
       />
 
@@ -110,5 +90,3 @@ const App: React.FC = () => {
     </>
   )
 }
-
-export default App

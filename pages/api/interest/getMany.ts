@@ -8,7 +8,7 @@ import withErrorHandler from '../../../utils/api/withErrorHandler'
 
 const handlerFunction = async (
   req: NextApiRequest,
-  res: NextApiResponse<Interest[] | null>
+  res: NextApiResponse<Interest | null>
 ) => {
   if (req.method === 'POST') {
     const { idDoctor } = req.body
@@ -17,12 +17,11 @@ const handlerFunction = async (
     if (!idDoctor) errors['idDoctor'] = ["Doctor can't be empty!"]
     if (Object.keys(errors).length > 0) throw new ApiHandleError(400, errors)
 
-    const interest = await prisma.interest.findMany({
+    const interest = await prisma.interest.findFirst({
       where: {
         idDoctor,
       },
     })
-
     res.status(201).json(interest)
   }
 }
