@@ -1,9 +1,9 @@
 import type { BadgeProps } from 'antd'
-import { Badge, Calendar } from 'antd'
-import type { Dayjs } from 'dayjs'
-import React from 'react'
+import { Badge, Calendar, Modal } from 'antd'
+import type { Moment } from 'moment'
+import React, { useState } from 'react'
 
-const getListData = (value: any) => {
+const getListData = (value: Moment) => {
   let listData
   switch (value.date()) {
     case 8:
@@ -22,7 +22,7 @@ const getListData = (value: any) => {
     case 15:
       listData = [
         { type: 'warning', content: 'This is warning event' },
-        { type: 'success', content: 'This is very long usual event....' },
+        { type: 'success', content: 'This is very long usual event。。....' },
         { type: 'error', content: 'This is error event 1.' },
         { type: 'error', content: 'This is error event 2.' },
         { type: 'error', content: 'This is error event 3.' },
@@ -34,14 +34,19 @@ const getListData = (value: any) => {
   return listData || []
 }
 
-const getMonthData = (value: Dayjs) => {
+const getMonthData = (value: Moment) => {
   if (value.month() === 8) {
     return 1394
   }
 }
 
 const App: React.FC = () => {
-  const monthCellRender = (value: Dayjs) => {
+  const [open, setOpen] = useState(false)
+  const [confirmLoading, setConfirmLoading] = useState(false)
+  const [modalText, setModalText] = useState(
+    'Tela de cadastro do interesse do médico aqui deverá carregar automaticamente o médico logado e o dia do interesse carregado automaticamente pelo componente que foi clicado a ideia é um rádio buttom para o turno'
+  )
+  const monthCellRender = (value: Moment) => {
     const num = getMonthData(value)
     return num ? (
       <div className="notes-month">
@@ -51,7 +56,21 @@ const App: React.FC = () => {
     ) : null
   }
 
-  const dateCellRender = (value: any) => {
+  const handleCancel = () => {
+    console.log('Clicked cancel button')
+    setOpen(false)
+  }
+
+  const handleOk = () => {
+    setModalText('O interesse será salvo')
+    setConfirmLoading(true)
+    setTimeout(() => {
+      setOpen(false)
+      setConfirmLoading(false)
+    }, 2000)
+  }
+
+  const dateCellRender = (value: Moment) => {
     const listData = getListData(value)
     return (
       <ul className="events">
@@ -67,13 +86,28 @@ const App: React.FC = () => {
     )
   }
 
+  const showModal = () => {
+    setOpen(true)
+  }
+
   return (
-    <Calendar
-      onSelect={(date) => {
-        console.log('aqui vai abrir uma tela para cadastro do interest', date)
-      }}
-      dateCellRender={dateCellRender}
-    />
+    <>
+      <Calendar
+        dateCellRender={dateCellRender}
+        monthCellRender={monthCellRender}
+        onSelect={showModal}
+      />
+
+      <Modal
+        title="Cadastro de Interesse"
+        open={open}
+        onOk={handleOk}
+        confirmLoading={confirmLoading}
+        onCancel={handleCancel}
+      >
+        <p>{modalText}</p>
+      </Modal>
+    </>
   )
 }
 
