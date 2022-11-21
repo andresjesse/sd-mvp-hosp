@@ -1,0 +1,62 @@
+.textCenter {
+  text-align: center;
+}
+
+.authPageWrapper {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  height: 100%;
+  width: 100%;
+}
+
+.formContainer {
+  position: relative;
+  height: 100%;
+  width: 100%;
+  max-width: 500px;
+  z-index: 2;
+}
+
+.formContainer input {
+  font-size: 14px;
+  border-radius: 10px;
+}
+
+.formContainer form {
+  background: #fff;
+  padding: 50px;
+  height: 100%;
+}
+
+.formContainer form h1 {
+  color: var(--text-color);
+  text-align: center;
+}
+
+.forgotRight {
+  position: absolute;
+  right: 0;
+}
+
+.formContainer button {
+  margin-bottom: 5%;
+}
+
+.button {
+  font-size: 12px;
+  letter-spacing: 1px;
+  transition: transform 20ms ease-in;
+  cursor: pointer;
+  margin: 8px 0;
+  width: 100%;
+}
+
+.button:active {
+  transform: scale(0.95);
+}
+
+.button:focus {
+  outline: none;
+}

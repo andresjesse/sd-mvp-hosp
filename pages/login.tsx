@@ -4,14 +4,21 @@ import { signIn } from 'next-auth/react'
 import Link from 'next/link'
 import { useRouter } from 'next/router'
 import { ValidateErrorEntity } from 'rc-field-form/lib/interface'
-import React, { useState } from 'react'
-
+import { useEffect, useState } from 'react'
+import login from '../styles/login.module.css'
 const { Title, Text } = Typography
 
-const App: React.FC = () => {
+const Login: React.FC = () => {
   const router = useRouter()
 
+  const [form] = Form.useForm()
+
   const [error, setError] = useState('')
+  const [checked, setChecked] = useState(false)
+
+  useEffect(() => {
+    form.setFieldValue('email', localStorage.getItem('email') || '')
+  }, [form])
 
   const onFinish = async (values: { [key: string]: string }) => {
     const email: string = values.email
@@ -30,6 +37,9 @@ const App: React.FC = () => {
     }
 
     console.log(res)
+
+    localStorage.setItem('email', checked ? form.getFieldValue('email') : '')
+
     await router.push('/welcome')
   }
 
@@ -42,22 +52,25 @@ const App: React.FC = () => {
   }
 
   return (
-    <div className="auth-page-wrapper">
-      <div className="form-container sign-in-container">
+    <div className={login.authPageWrapper}>
+      <div className={login.formContainer}>
         <Form
+          form={form}
           name="singin"
-          initialValues={{ remember: true }}
+          initialValues={{
+            remember: true,
+          }}
           onFinish={onFinish}
           onFinishFailed={onFinishFailed}
           autoComplete="off"
         >
-          <Title level={2} className="text-center">
+          <Title level={2} className={login.texCenter}>
             Login
           </Title>
 
           <Form.Item
-            name="email"
             hasFeedback
+            name="email"
             label="E-mail"
             labelCol={{ span: 24 }}
             wrapperCol={{ span: 24 }}
@@ -76,9 +89,8 @@ const App: React.FC = () => {
           </Form.Item>
 
           <Form.Item
-            name="password"
-            hasFeedback
             label="Senha"
+            name="password"
             labelCol={{ span: 24 }}
             wrapperCol={{ span: 24 }}
             rules={[
@@ -96,11 +108,18 @@ const App: React.FC = () => {
           </Form.Item>
 
           <Form.Item>
-            <Form.Item name="remember" valuePropName="checked" noStyle>
-              <Checkbox disabled>Lembre-me</Checkbox>
+            <Form.Item valuePropName="checked" noStyle>
+              <Checkbox
+                checked={checked}
+                onChange={(e) => {
+                  setChecked(e.target.checked)
+                }}
+              >
+                Lembre-me
+              </Checkbox>
             </Form.Item>
 
-            {/* <a className="login-form-forgot-right" href="#">
+            {/* <a className={login.forgotRight} href="#">
               Esqueceu a senha?
             </a> */}
           </Form.Item>
@@ -113,11 +132,17 @@ const App: React.FC = () => {
             shape="round"
             icon={<LoginOutlined />}
             size="large"
+            className={login.button}
           >
             Login
           </Button>
 
-          <Button shape="round" icon={<SelectOutlined />} size="large">
+          <Button
+            className={login.button}
+            shape="round"
+            icon={<SelectOutlined />}
+            size="large"
+          >
             <Link href="user/new"> Criar uma conta</Link>
           </Button>
         </Form>
@@ -126,4 +151,4 @@ const App: React.FC = () => {
   )
 }
 
-export default App
+export default Login

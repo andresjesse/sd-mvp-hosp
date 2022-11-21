@@ -14,11 +14,15 @@ const handlerFunction = async (
     const { name, email, password, crm, crmUf } = req.body
 
     const errors: { [key: string]: string | Iterable<string> } = {}
-    if (!name) errors['name'] = ["Name can't be empty!"]
-    if (!email) errors['email'] = ["Email can't be empty!"]
-    if (!password) errors['password'] = ["Password can't be empty!"]
-    if (!crm) errors['crm'] = ["CRM can't be empty!"]
-    if (!crmUf) errors['crmUf'] = ["CRM UF can't be empty!"]
+    if (!name) errors['name'] = ["Nome não pode ser vazio!"]
+    if (!email) errors['email'] = ["Email não pode ser vazio!"]
+    if (!password) errors['password'] = ["Senha não pode ser vazio!"]
+    if (!crm) errors['crm'] = ["CRM não pode ser vazio!"]
+    if (!crmUf) errors['crmUf'] = ["CRM UF não pode ser vazio!"]
+    const aux = await prisma.user.findUnique({
+      where:{ email: String(email)}
+    })
+    if(aux != null) errors['email'] = ["Email já cadastrado!"]
     if (Object.keys(errors).length > 0) throw new ApiHandleError(400, errors)
 
     const passwordHash = await hasher.hashAsync(password)
@@ -36,6 +40,7 @@ const handlerFunction = async (
         },
       },
     })
+
 
     res.status(201).json(doctor)
   }

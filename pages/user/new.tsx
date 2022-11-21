@@ -1,56 +1,121 @@
-import {
-  Button,
-  Card,
-  DatePicker,
-  Form,
-  Input,
-  Row,
-  Select,
-  Typography,
-} from 'antd'
-
-import React from 'react'
-
+import { Button, Form, Input, notification, Select, Typography } from 'antd'
+import router from 'next/router'
+import { useState } from 'react'
+import axiosApi from '../../services/axiosApi'
 import { fakeCrmUf } from '../../services/fakeCrmUf'
+import styles from './styles.module.css'
+const { Title, Text } = Typography
 
-const { Title } = Typography
-const dateFormatList = ['DD/MM/YYYY', 'DD/MM/YY']
+const initialValues = {
+  name: '',
+  crm: '',
+  crmUf: '',
+  email: '',
+  password: '',
+}
 
-const App: React.FC = () => {
+const initialObjError = {
+  name: '',
+  email: '',
+  password: '',
+  crm: '',
+  crmUf: '',
+}
+
+const New: React.FC = () => {
+  const [formValue, setValor] = useState(initialValues)
+  const [objError, setObjError] = useState(initialObjError)
+
+  function handleChange(event: { target: { id: string; value: string } }) {
+    const { id, value } = event.target
+    setValor({ ...formValue, [id]: value })
+  }
+
+  function handleSubmit(req: object) {
+    axiosApi
+      .post('/api/doctor/create', req)
+      .then((response) => {
+        if (response.status == 201) {
+          notification.open({
+            message: 'Usuário criado com sucesso!',
+            description: 'Você pode fazer login agora.',
+            duration: 0,
+          })
+          router.push('/login')
+        } else {
+          notification.open({
+            message: 'Erro ao criar usuário!',
+            description: 'Entre em contato com o suporte.',
+            duration: 0,
+          })
+        }
+      })
+      .catch((e) => {
+        if (e.response.data.data) {
+          setObjError(e.response.data.data)
+          return
+        }
+      })
+  }
+
   return (
-    <Card>
-      <Row justify="center">
-        <Title level={3}>Cadastro Novo usuario</Title>
-      </Row>
-
-      <Row justify="center" style={{ padding: '5%' }}>
+    <div className={styles.authPageWrapper}>
+      <div className={styles.formContainer}>
         <Form
+          name="formNew"
           layout="horizontal"
           labelWrap
           labelCol={{ flex: '120px' }}
-          wrapperCol={{ flex: 1 }}
+          // wrapperCol={{ flex: 1 }}
           colon={false}
           style={{ width: '100%' }}
+          onFinish={() => {
+            handleSubmit(formValue)
+          }}
+          scrollToFirstError
         >
-          <Form.Item label="Nome: ">
-            <Input name="nameDoctor" />
+          <Title className={styles.textCenter} level={3}>
+            Cadastro Novo Usuario
+          </Title>
+
+          <Form.Item
+            name="name"
+            label="Nome: "
+            hasFeedback
+            rules={[
+              {
+                required: true,
+                message: 'Por favor insira seu Nome!',
+                whitespace: true,
+              },
+            ]}
+          >
+            <Input id="name" onChange={handleChange} />
           </Form.Item>
 
-          <Form.Item label="Sobrenome: ">
-            <Input name="lastNameDoctor" />
+          <Form.Item
+            name="crm"
+            label="CRM: "
+            hasFeedback
+            rules={[{ required: true, message: 'Por favor insira seu CRM!' }]}
+          >
+            <Input id="crm" onChange={handleChange} />
           </Form.Item>
 
-          <Form.Item label="Data de Nascimento: ">
-            <DatePicker format={dateFormatList[0]} />
-          </Form.Item>
-
-          <Form.Item label="CRM: ">
-            <Input name="crm" />
-          </Form.Item>
-
-          {/**fazer a fake uf's */}
-          <Form.Item label="CRM UF: ">
-            <Select>
+          <Form.Item
+            name="crmUf"
+            label="CRM UF: "
+            hasFeedback
+            rules={[
+              { required: true, message: 'Por favor insira seu CRM-UF!' },
+            ]}
+          >
+            <Select
+              onChange={(uf) => {
+                setValor({ ...formValue, ['crmUf']: uf })
+              }}
+              className={styles.formBorderRadius}
+            >
               {fakeCrmUf.map((uf) => (
                 <Select.Option key={uf} value={uf}>
                   {uf}
@@ -59,31 +124,109 @@ const App: React.FC = () => {
             </Select>
           </Form.Item>
 
-          <Form.Item label="Email: ">
-            <Input name="email" alt="Seu E-mail" />
+          <Form.Item
+            name="email"
+            label="Email: "
+            hasFeedback
+            rules={[
+              {
+                required: true,
+                message: 'Por favor insira seu e-mail.',
+              },
+              {
+                type: 'email',
+                message: 'E-mail invalido.',
+              },
+            ]}
+          >
+            <Input id="email" onChange={handleChange} />
           </Form.Item>
 
-          <Form.Item label="Confirme o Email: ">
-            <Input name="confEmail" alt="Confirme seu E-mail" />
+          <Form.Item
+            label="Confirme o Email: "
+            name="confEmail"
+            dependencies={['email']}
+            hasFeedback
+            rules={[
+              {
+                required: true,
+                message: 'Por favor confirme seu E-mail!',
+              },
+              ({ getFieldValue }) => ({
+                validator(_, value) {
+                  if (!value || getFieldValue('email') === value) {
+                    return Promise.resolve()
+                  }
+                  return Promise.reject(new Error('Os E-mail não são iguais!'))
+                },
+              }),
+            ]}
+          >
+            <Input />
           </Form.Item>
 
-          <Form.Item label="Senha: ">
-            <Input name="password" alt="Senha" />
+          <Form.Item
+            name="password"
+            label="Senha: "
+            hasFeedback
+            rules={[
+              {
+                required: true,
+                message: 'Por favor insira sua senha.',
+              },
+            ]}
+          >
+            <Input.Password id="password" onChange={handleChange} />
           </Form.Item>
 
-          <Form.Item label="Confirme sua Senha: ">
-            <Input name="confPassword" alt="Confirme a Senha" />
+          <Form.Item
+            name="confPassword"
+            label="Confirme sua Senha: "
+            dependencies={['password']}
+            hasFeedback
+            rules={[
+              {
+                required: true,
+                message: 'Por favor confirme sua senha!',
+              },
+              ({ getFieldValue }) => ({
+                validator(_, value) {
+                  if (!value || getFieldValue('password') === value) {
+                    return Promise.resolve()
+                  }
+                  return Promise.reject(new Error('As senhas não são iguais!'))
+                },
+              }),
+            ]}
+          >
+            <Input.Password />
           </Form.Item>
+
+          {objError && (
+            <Text type="danger">
+              {objError.name ||
+                objError.crm ||
+                objError.crmUf ||
+                objError.email ||
+                objError.password}
+            </Text>
+          )}
 
           <Form.Item label=" ">
-            <Button type="primary" htmlType="submit">
+            <Button
+              className={styles.button}
+              shape="round"
+              size="large"
+              type="primary"
+              htmlType="submit"
+            >
               Cadastrar
             </Button>
           </Form.Item>
         </Form>
-      </Row>
-    </Card>
+      </div>
+    </div>
   )
 }
 
-export default App
+export default New
