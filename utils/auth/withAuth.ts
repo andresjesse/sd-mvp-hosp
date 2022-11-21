@@ -29,7 +29,7 @@ export default function withAuth(
 
       return {
         redirect: {
-          destination: '/login',
+          destination: `/login?callbackUrl=${ctx.resolvedUrl}`,
           permanent: false,
         },
       }
