@@ -1,7 +1,7 @@
 import { NextApiRequest, NextApiResponse } from 'next'
 import { prisma } from '../../../lib/prisma'
 import formatHashShift from '../../../services/formatHashShift'
-import { ApiHandleError } from '../../../utils/api/apiHandleError'
+import { ApiHandleError } from '../../../errors/ApiHandleError'
 import withErrorHandler from '../../../utils/api/withErrorHandler'
 
 // helper function

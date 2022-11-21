@@ -5,7 +5,7 @@ declare module 'next-auth' {
     id: number
     name: string
     email: string
-    role: Role
+    roles: Roles[]
     admin: Admin | null
     doctor: Doctor | null
   }

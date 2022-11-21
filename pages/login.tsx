@@ -40,7 +40,8 @@ const Login: React.FC = () => {
 
     localStorage.setItem('email', checked ? form.getFieldValue('email') : '')
 
-    await router.push('/welcome')
+    const callbackUrl = router.query.callbackUrl
+    await router.push((callbackUrl as string) || '/welcome')
   }
 
   const onFinishFailed = (

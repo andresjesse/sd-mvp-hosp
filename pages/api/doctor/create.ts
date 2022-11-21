@@ -2,7 +2,7 @@
 import { Doctor } from '@prisma/client'
 import type { NextApiRequest, NextApiResponse } from 'next'
 import { prisma } from '../../../lib/prisma'
-import { ApiHandleError } from '../../../utils/api/apiHandleError'
+import { ApiHandleError } from '../../../errors/ApiHandleError'
 import withErrorHandler from '../../../utils/api/withErrorHandler'
 import hasher from '../../../utils/hasher/BcryptjsHasher'
 

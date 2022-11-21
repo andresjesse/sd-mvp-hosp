@@ -1,6 +1,7 @@
 import { prisma } from '../lib/prisma'
 import AdminSeedFunction from './seeds/admin'
 import generateDoctorsSeed from './seeds/doctors'
+import { roles } from './seeds/roles'
 import { sectors } from './seeds/sectors'
 
 async function main() {
@@ -15,6 +16,17 @@ async function main() {
         },
         create: {
           ...sector,
+        },
+        update: {},
+      })
+    ),
+    ...roles.map((role) =>
+      prisma.role.upsert({
+        where: {
+          id: role.id,
+        },
+        create: {
+          ...role,
         },
         update: {},
       })

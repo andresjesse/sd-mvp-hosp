@@ -1,5 +1,5 @@
 import { NextApiHandler, NextApiRequest, NextApiResponse } from 'next'
-import { ApiHandleError } from './apiHandleError'
+import { ApiHandleError } from '../../errors/ApiHandleError'
 
 export default function withErrorHandler(
   handler: NextApiHandler
