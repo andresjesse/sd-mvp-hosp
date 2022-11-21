@@ -1,6 +1,6 @@
 import hasher from '../../utils/hasher/BcryptjsHasher'
 
-interface IDoctor {
+type TDoctorUser = {
   name: string
   email: string
   passwordHash: string
@@ -12,8 +12,8 @@ interface IDoctor {
   }
 }
 
-export async function getDoctors(length: number) {
-  const doctors: Array<IDoctor> = []
+export default async function generateDoctorsSeed(length: number) {
+  const doctors: Array<TDoctorUser> = []
   const passwordHash = await hasher.hashAsync('123456')
 
   for (let i = 1; i <= length; i++) {
