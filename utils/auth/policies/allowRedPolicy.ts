@@ -1,7 +1,12 @@
 import { AuthPolicyError } from '../../../errors/AuthPolicyError'
 import { TSessionUser } from '../../../pages/api/auth/[...nextauth]'
 
-export default async function allowPolicy(user: TSessionUser, obj: any) {
+export default async function allowPolicy(
+  user: TSessionUser,
+  obj: {
+    color: string
+  }
+) {
   if (user.admin !== null) {
     const accepted = ['orange', 'red']
 
