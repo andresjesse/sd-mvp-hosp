@@ -1,7 +1,7 @@
 export class UnauthenticatedUserError extends Error {
-  data?: string | null
+  data?: string
 
-  constructor(data?: string | null) {
+  constructor(data?: string) {
     super()
 
     this.data = data
