@@ -32,7 +32,7 @@ type TAdminUser = {
   roles: {}
 }
 
-async function admin(): Promise<TAdminUser> {
+export default async function generateAdminSeed(): Promise<TAdminUser> {
   const adminProps: TAdminProps = getAdminProps()
 
   const passwordHash = await hasher.hashAsync(
@@ -57,5 +57,3 @@ async function admin(): Promise<TAdminUser> {
     },
   }
 }
-
-export default admin

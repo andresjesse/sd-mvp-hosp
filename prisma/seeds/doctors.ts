@@ -1,3 +1,4 @@
+import Roles from '../../utils/auth/Roles'
 import hasher from '../../utils/hasher/BcryptjsHasher'
 
 type TDoctorUser = {
@@ -10,6 +11,7 @@ type TDoctorUser = {
       crm: string
     }
   }
+  roles: {}
 }
 
 export default async function generateDoctorsSeed(length: number) {
@@ -25,6 +27,11 @@ export default async function generateDoctorsSeed(length: number) {
         create: {
           crm: `123123${i}`,
           crmUf: 'PR',
+        },
+      },
+      roles: {
+        connect: {
+          id: Roles.DOCTOR,
         },
       },
     })
