@@ -1,11 +1,11 @@
 import { prisma } from '../lib/prisma'
-import AdminSeedFunction from './seeds/admin'
+import generateAdminSeed from './seeds/admin'
 import generateDoctorsSeed from './seeds/doctors'
 import { roles } from './seeds/roles'
 import { sectors } from './seeds/sectors'
 
 async function main() {
-  const adminSeedData = await AdminSeedFunction()
+  const adminSeedData = await generateAdminSeed()
   const doctors = generateDoctorsSeed(5)
 
   await prisma.$transaction([
