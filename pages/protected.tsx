@@ -1,5 +1,7 @@
 import type { GetServerSidePropsContext, NextPage } from 'next'
+import { rolesCheckModeEnum } from '../utils/auth/policies/allowByRolePolicy'
 import Policies from '../utils/auth/policies/index'
+import Roles from '../utils/auth/Roles'
 import withAuth from '../utils/auth/withAuth'
 import { TSessionUser } from './api/auth/[...nextauth]'
 
@@ -17,8 +19,12 @@ export const getServerSideProps = withAuth(
       color: 'red',
     }
 
-    // Policies.allowProtected(user, fetchData)
     await Policies.allowRed(user, fetchData)
+    await Policies.allowByRole(
+      user,
+      [Roles.ADMIN, Roles.DOCTOR],
+      rolesCheckModeEnum.SOME
+    )
 
     return {
       props: {
