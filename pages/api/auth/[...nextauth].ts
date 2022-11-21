@@ -6,6 +6,7 @@ import { prisma } from './../../../lib/prisma'
 import hasher from './../../../utils/hasher/BcryptjsHasher'
 import { InvalidCredentialsError } from '../../../errors/InvalidCredentialsError'
 
+/** Any changes on this type definition requires changes on 'auth.d.ts' file which mirrors this.*/
 export type TSessionUser = {
   id: number
   name: string
