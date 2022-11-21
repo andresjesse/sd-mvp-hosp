@@ -1,9 +1,11 @@
 import { prisma } from '../lib/prisma'
 import AdminSeedFunction from './seeds/admin'
+import { getDoctors } from './seeds/doctors'
 import { sectors } from './seeds/sectors'
 
 async function main() {
   const adminSeedData = await AdminSeedFunction()
+  const doctors = getDoctors(5)
 
   await prisma.$transaction([
     ...sectors.map((sector) =>
@@ -26,6 +28,19 @@ async function main() {
       },
       update: {},
     }),
+    ...(
+      await doctors
+    ).map((doctor) =>
+      prisma.user.upsert({
+        where: {
+          email: doctor.email,
+        },
+        create: {
+          ...doctor,
+        },
+        update: {},
+      })
+    ),
   ])
 }
 
