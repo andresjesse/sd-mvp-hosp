@@ -1,9 +1,9 @@
-import allowRedPolicy from './allowRedPolicy'
-import allowByRolePolicy from './allowByRolePolicy'
+import allowByRole from './allowByRole'
+import allowRed from './allowRed'
 
 const Policies = {
-  allowRed: allowRedPolicy,
-  allowByRole: allowByRolePolicy,
+  allowRed,
+  allowByRole,
 }
 
 export default Policies

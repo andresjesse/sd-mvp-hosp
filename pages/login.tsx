@@ -41,8 +41,7 @@ const Login: React.FC = () => {
     localStorage.setItem('email', checked ? form.getFieldValue('email') : '')
 
     const callbackUrl = router.query.callbackUrl
-    const redirectUrl = callbackUrl === undefined ? '/welcome' : callbackUrl
-    await router.push(redirectUrl as string)
+    await router.push((callbackUrl as string) || '/welcome')
   }
 
   const onFinishFailed = (

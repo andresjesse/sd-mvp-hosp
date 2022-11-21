@@ -1,7 +1,7 @@
 import { AuthPolicyError } from '../../../errors/AuthPolicyError'
 import { TSessionUser } from '../../../pages/api/auth/[...nextauth]'
 
-export default async function allowPolicy(
+export default async function allowRed(
   user: TSessionUser,
   obj: {
     color: string
