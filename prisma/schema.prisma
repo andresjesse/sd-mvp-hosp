@@ -27,7 +27,7 @@ model User {
   name         String
   email        String   @unique
   passwordHash String   @map("password_hash")
-  roles Role[]
+  roles        Role[]
   createdAt    DateTime @default(now()) @map("created_at")
   updatedAt    DateTime @updatedAt @map("updated_at")
   admin        Admin?
@@ -62,14 +62,13 @@ model Doctor {
 }
 
 model Interest {
-  id         Int      @id @default(autoincrement())
-  doctor     Doctor   @relation(fields: [idDoctor], references: [id], onDelete: Cascade)
-  idDoctor   Int
-  day        String
-  status     Boolean  @default(true)
-  turno      String   @default("dia")
+  id        Int      @id @default(autoincrement())
+  doctor    Doctor   @relation(fields: [idDoctor], references: [id], onDelete: Cascade)
+  idDoctor  Int
+  weekday   Int
+  hourStart DateTime
+  hourEnd   DateTime
 }
-
 
 model Shift {
   id        Int      @id @default(autoincrement())
