@@ -2,8 +2,8 @@
 
 import { Interest } from '@prisma/client'
 import type { NextApiRequest, NextApiResponse } from 'next'
+import { ApiHandleError } from '../../../errors/ApiHandleError'
 import { prisma } from '../../../lib/prisma'
-import { ApiHandleError } from '../../../utils/api/apiHandleError'
 import withErrorHandler from '../../../utils/api/withErrorHandler'
 
 const handlerFunction = async (
@@ -11,21 +11,29 @@ const handlerFunction = async (
   res: NextApiResponse<Interest | null>
 ) => {
   if (req.method === 'POST') {
-    const { day, idDoctor, turno, status } = req.body
+    const { startDate, endDate, idSector } = req.body
+
+    //TODO: get idDoctor from session
+    //TODO: validate shift start and end date with SHIFTS constant
+    const idDoctor = 1
 
     const errors: { [key: string]: string | Iterable<string> } = {}
-    if (!idDoctor) errors['idDoctor'] = ["Doctor can't be empty!"]
-    if (!day) errors['day'] = ["day can't be empty!"]
-    if (!turno) errors['shift'] = ["shift can't be empty!"]
-    if (!status) errors['status'] = ["status can't be empty!"]
+    if (!startDate)
+      errors['startDate'] = ["startDate: UTC Datetime can't be empty!"]
+    if (!startDate)
+      errors['endDate'] = ["endDate: UTC Datetime can't be empty!"]
+    if (!idSector) errors['idSector'] = ["idSector can't be empty!"]
     if (Object.keys(errors).length > 0) throw new ApiHandleError(400, errors)
 
     const interest = await prisma.interest.create({
       data: {
-        day,
-        turno,
-        idDoctor,
-        status,
+        startDate,
+        endDate,
+        sector: {
+          connect: {
+            id: idSector,
+          },
+        },
         doctor: {
           connect: {
             id: idDoctor,

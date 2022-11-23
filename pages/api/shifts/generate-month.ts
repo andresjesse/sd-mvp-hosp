@@ -3,18 +3,8 @@ import { prisma } from '../../../lib/prisma'
 import formatHashShift from '../../../services/formatHashShift'
 import { ApiHandleError } from '../../../errors/ApiHandleError'
 import withErrorHandler from '../../../utils/api/withErrorHandler'
-
-// helper function
-const createDateUTC = (baseDate: Date, utcHour: number) => {
-  return new Date(
-    Date.UTC(
-      baseDate.getFullYear(),
-      baseDate.getMonth(),
-      baseDate.getDate(),
-      utcHour
-    )
-  )
-}
+import SHIFTS from '../../../constants/Shifts'
+import createDateUTC from '../../../utils/datetime/createDateUTC'
 
 async function handlerFunction(
   req: NextApiRequest,
@@ -45,18 +35,6 @@ async function handlerFunction(
       idSector: number
       hash: string
     }> = []
-
-    // Define consts (for now shifts are fixed)
-    const SHIFTS = [
-      {
-        START_UTC: 10, // 7AM in localtime (America/Sao_Paulo)
-        END_UTC: 22, //7PM in localtime (America/Sao_Paulo)
-      },
-      {
-        START_UTC: 22, // 7PM in localtime (America/Sao_Paulo)
-        END_UTC: 22 + 12, //7AM (next day +12h) in localtime (America/Sao_Paulo)
-      },
-    ]
 
     const date = new Date(year, month, 1)
     while (date.getMonth() === month) {
