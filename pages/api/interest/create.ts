@@ -11,25 +11,24 @@ const handlerFunction = async (
   res: NextApiResponse<Interest | null>
 ) => {
   if (req.method === 'POST') {
-    const { day, idDoctor, idShiftDesc } = req.body
+    const { day, idDoctor, turno, status } = req.body
 
     const errors: { [key: string]: string | Iterable<string> } = {}
     if (!idDoctor) errors['idDoctor'] = ["Doctor can't be empty!"]
     if (!day) errors['day'] = ["day can't be empty!"]
-    if (!idShiftDesc) errors['idShiftDesc'] = ["idShiftDesc can't be empty!"]
+    if (!turno) errors['shift'] = ["shift can't be empty!"]
+    if (!status) errors['status'] = ["status can't be empty!"]
     if (Object.keys(errors).length > 0) throw new ApiHandleError(400, errors)
 
     const interest = await prisma.interest.create({
       data: {
         day,
-        ShiftAux: {
-          connect: {
-            id: 1,
-          },
-        },
+        turno,
+        idDoctor,
+        status,
         doctor: {
           connect: {
-            id: 1,
+            id: idDoctor,
           },
         },
       },

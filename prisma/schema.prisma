@@ -66,18 +66,10 @@ model Interest {
   doctor     Doctor   @relation(fields: [idDoctor], references: [id], onDelete: Cascade)
   idDoctor   Int
   day        String
-  ShiftAux   ShiftAux @relation(fields: [shiftAuxId], references: [id])
-  shiftAuxId Int
   status     Boolean  @default(true)
+  turno      String   @default("dia")
 }
 
-model ShiftAux {
-  id          Int        @id @default(autoincrement())
-  description String
-  hourStart   String
-  hourEnd     String
-  Interest    Interest[]
-}
 
 model Shift {
   id        Int      @id @default(autoincrement())
