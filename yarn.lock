@@ -1681,13 +1681,6 @@ __metadata:
   languageName: node
   linkType: hard
 
-"ant@npm:^0.2.0":
-  version: 0.2.0
-  resolution: "ant@npm:0.2.0"
-  checksum: b9bfb2abac49045b1959f7a2fbf4f71416eb066420924bbf6b08f9a601ef40827bf9af3d750938d11b59dfd92d4c5c77f534d3c2507ec75771d47ddb7f48bd4c
-  languageName: node
-  linkType: hard
-
 "antd@npm:^4.23.3":
   version: 4.24.3
   resolution: "antd@npm:4.24.3"
@@ -5028,9 +5021,9 @@ __metadata:
   languageName: node
   linkType: hard
 
-"next-auth@npm:^4.16.4":
-  version: 4.16.4
-  resolution: "next-auth@npm:4.16.4"
+"next-auth@npm:^4.12.2":
+  version: 4.17.0
+  resolution: "next-auth@npm:4.17.0"
   dependencies:
     "@babel/runtime": ^7.16.3
     "@panva/hkdf": ^1.0.1
@@ -5049,7 +5042,7 @@ __metadata:
   peerDependenciesMeta:
     nodemailer:
       optional: true
-  checksum: 13f739e39ab3b786653737ebf877c9ae9442bf36eeaa20940754fd9dee0444e7c30250e3b7b8b52737005ff069a64a77ac0083a44290f266149c5f1493bf06d8
+  checksum: 86293b35ab07a9cdfb0b01d76db5a636beba6c98587667ee38c33c2a8337e6785894ac29635012ed24fe76787d42ad80654e6ab63751c424157fd61beabb7960
   languageName: node
   linkType: hard
 
@@ -5595,7 +5588,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"prisma@npm:^4.6.1":
+"prisma@npm:^4.5.0":
   version: 4.6.1
   resolution: "prisma@npm:4.6.1"
   dependencies:
@@ -6522,7 +6515,6 @@ __metadata:
     "@types/react": 18.0.20
     "@types/react-dom": 18.0.6
     "@typescript-eslint/eslint-plugin": ^5.40.1
-    ant: ^0.2.0
     antd: ^4.23.3
     axios: ^1.1.3
     bcryptjs: ^2.4.3
@@ -6532,9 +6524,9 @@ __metadata:
     jest: ^29.0.3
     jest-environment-jsdom: ^29.0.3
     next: 12.3.1
-    next-auth: ^4.16.4
+    next-auth: ^4.12.2
     prettier: ^2.7.1
-    prisma: ^4.6.1
+    prisma: ^4.5.0
     react: 18.2.0
     react-dom: 18.2.0
     ts-node: ^10.9.1
