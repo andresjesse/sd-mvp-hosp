@@ -27,7 +27,7 @@ export const getStaticProps: GetStaticProps = async () => {
     },
     where: {
       idDoctor: {
-        equals: 1,
+        equals: 1, //substituir o número 1 pela sessao do medico logado
       },
     },
   })
