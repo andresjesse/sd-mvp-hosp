@@ -6,7 +6,7 @@ import { useState } from 'react'
 import { prisma } from '../../lib/prisma'
 
 interface InterestProps {
-  interest: Array<Interest>
+  interests: Array<Interest>
 }
 
 // const onFinish = (values: any) => {
@@ -17,14 +17,15 @@ const onFinishFailed = (errorInfo: any) => {
   console.log('Failed:', errorInfo)
 }
 
-export default function App({ interest }: InterestProps) {
+export default function App({ interests }: InterestProps) {
   const [open, setOpen] = useState(false)
   const [confirmLoading, setConfirmLoading] = useState(false)
   const [modalText, setModalText] = useState('')
-  const [value, setDate] = useState(() => moment())
   const [selectedDate, setSelectedDate] = useState(() => moment('2017-01-25'))
   const [selectedStatus, setSelectedStatus] = useState(false)
   const [selectedShift, setSelectedShift] = useState('')
+
+  console.log(interests)
 
   const handleCancel = () => {
     console.log('Clicked cancel button')
@@ -55,7 +56,7 @@ export default function App({ interest }: InterestProps) {
     <>
       <Calendar
         dateCellRender={(value) => {
-          for (const key of interest) {
+          for (const key of interests) {
             if (
               new Date(value).getDate() == new Date(key.day).getDate() &&
               new Date(value).getMonth() == new Date(key.day).getMonth() &&
@@ -154,7 +155,7 @@ export default function App({ interest }: InterestProps) {
 }
 
 export const getServerSideProps: GetStaticProps = async () => {
-  const interest = await prisma.interest.findMany({
+  const interests = await prisma.interest.findMany({
     include: {
       doctor: {
         select: {
@@ -171,16 +172,14 @@ export const getServerSideProps: GetStaticProps = async () => {
     },
     where: {
       idDoctor: {
-        equals: 1, //substituir o número 1 pela sessao do medico logado
+        equals: 1, //TODO: replace by doctor logged in id
       },
     },
   })
 
-  console.log(interest)
-
   return {
     props: {
-      interest,
+      interests: JSON.parse(JSON.stringify(interests)), //next does not serialize objects like prisma Datetime
     },
   }
 }
