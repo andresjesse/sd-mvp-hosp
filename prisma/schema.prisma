@@ -14,10 +14,11 @@ datasource db {
 }
 
 model Sector {
-  id           Int     @id @default(autoincrement())
-  abbreviation String  @unique
+  id           Int        @id @default(autoincrement())
+  abbreviation String     @unique
   description  String
-  Shift        Shift[]
+  shifts       Shift[]
+  interests    Interest[]
 }
 
 // Note: relation fields such as 'admin'
@@ -57,17 +58,18 @@ model Doctor {
   isActive  Boolean    @default(false)
   createdAt DateTime   @default(now()) @map("created_at")
   updatedAt DateTime   @updatedAt @map("updated_at")
-  Interest  Interest[]
-  Shift     Shift[]
+  interests Interest[]
+  shifts    Shift[]
 }
 
 model Interest {
   id        Int      @id @default(autoincrement())
   doctor    Doctor   @relation(fields: [idDoctor], references: [id], onDelete: Cascade)
   idDoctor  Int
-  weekday   Int
-  hourStart DateTime
-  hourEnd   DateTime
+  startDate DateTime
+  endDate   DateTime
+  sector    Sector   @relation(fields: [idSector], references: [id])
+  idSector  Int
 }
 
 model Shift {
