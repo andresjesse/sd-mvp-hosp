@@ -9,39 +9,9 @@ interface InterestProps {
   interest: Array<Interest>
 }
 
-export const getStaticProps: GetStaticProps = async () => {
-  const interest = await prisma.interest.findMany({
-    include: {
-      doctor: {
-        select: {
-          id: true,
-          crm: true,
-          user: {
-            select: {
-              id: true,
-              name: true,
-            },
-          },
-        },
-      },
-    },
-    where: {
-      idDoctor: {
-        equals: 1, //substituir o número 1 pela sessao do medico logado
-      },
-    },
-  })
-  return {
-    props: {
-      interest,
-    },
-    revalidate: 10,
-  }
-}
-
-const onFinish = (values: any) => {
-  console.log('Success:', values)
-}
+// const onFinish = (values: any) => {
+//   console.log('Success:', values)
+// }
 
 const onFinishFailed = (errorInfo: any) => {
   console.log('Failed:', errorInfo)
@@ -181,4 +151,36 @@ export default function App({ interest }: InterestProps) {
       </Modal>
     </>
   )
+}
+
+export const getServerSideProps: GetStaticProps = async () => {
+  const interest = await prisma.interest.findMany({
+    include: {
+      doctor: {
+        select: {
+          id: true,
+          crm: true,
+          user: {
+            select: {
+              id: true,
+              name: true,
+            },
+          },
+        },
+      },
+    },
+    where: {
+      idDoctor: {
+        equals: 1, //substituir o número 1 pela sessao do medico logado
+      },
+    },
+  })
+
+  console.log(interest)
+
+  return {
+    props: {
+      interest,
+    },
+  }
 }
