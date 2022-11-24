@@ -9,11 +9,14 @@ import {
   Radio,
   Select,
 } from 'antd'
+import axios from 'axios'
 import moment, { Moment } from 'moment'
 import { GetStaticProps } from 'next'
 import { useState } from 'react'
 import SHIFTS from '../../constants/Shifts'
 import { prisma } from '../../lib/prisma'
+import axiosApi from '../../services/axiosApi'
+import createDateUTC from '../../utils/datetime/createDateUTC'
 // import createDateUTC from '../../utils/datetime/createDateUTC'
 
 const { Option } = Select
@@ -37,8 +40,6 @@ export default function App({ interests, sectors }: InterestProps) {
   const [open, setOpen] = useState(false)
   const [confirmLoading, setConfirmLoading] = useState(false)
   const [selectedDate, setSelectedDate] = useState(() => moment('2017-01-25'))
-  // const [selectedStatus, setSelectedStatus] = useState(false)
-  // const [selectedShift, setSelectedShift] = useState('')
 
   // console.log(interests)
 
@@ -49,10 +50,33 @@ export default function App({ interests, sectors }: InterestProps) {
 
   const handleOk = async (values: any) => {
     setConfirmLoading(true)
-    console.log(form.getFieldsValue())
-    setOpen(false)
 
-    setConfirmLoading(false)
+    console.log(form.getFieldsValue())
+    const { idSector, shift } = form.getFieldsValue()
+
+    const startDate = createDateUTC(selectedDate.toDate(), shift)
+    const endDate = createDateUTC(selectedDate.toDate(), shift + 12)
+
+    axiosApi
+      .post('/api/interest/create', {
+        idSector,
+        startDate,
+        endDate,
+      })
+      .then((res) => {
+        if (res.status == 201) {
+          console.log('sucess notification!')
+        } else {
+          throw new Error(res.statusText)
+        }
+
+        setOpen(false)
+        setConfirmLoading(false)
+      })
+      .catch((err) => {
+        console.log(err)
+        console.log('error notification!')
+      })
 
     // console.log(
     //   'medico pela seção',
