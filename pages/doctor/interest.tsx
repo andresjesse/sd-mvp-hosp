@@ -1,15 +1,5 @@
 import { Interest, Sector } from '@prisma/client'
-import {
-  Badge,
-  Button,
-  Calendar,
-  Checkbox,
-  Form,
-  Modal,
-  Radio,
-  Select,
-} from 'antd'
-import axios from 'axios'
+import { Badge, Calendar, Form, message, Modal, Select, Switch } from 'antd'
 import moment, { Moment } from 'moment'
 import { GetStaticProps } from 'next'
 import { useState } from 'react'
@@ -17,21 +7,11 @@ import SHIFTS from '../../constants/Shifts'
 import { prisma } from '../../lib/prisma'
 import axiosApi from '../../services/axiosApi'
 import createDateUTC from '../../utils/datetime/createDateUTC'
-// import createDateUTC from '../../utils/datetime/createDateUTC'
-
-const { Option } = Select
+import { CheckOutlined } from '@ant-design/icons'
 
 interface InterestProps {
   interests: Array<Interest>
   sectors: Array<Sector>
-}
-
-// const onFinish = (values: any) => {
-//   console.log('Success:', values)
-// }
-
-const onFinishFailed = (errorInfo: any) => {
-  console.log('Failed:', errorInfo)
 }
 
 export default function App({ interests, sectors }: InterestProps) {
@@ -44,50 +24,34 @@ export default function App({ interests, sectors }: InterestProps) {
   // console.log(interests)
 
   const handleCancel = () => {
-    console.log('Clicked cancel button')
     setOpen(false)
   }
 
-  const handleOk = async (values: any) => {
-    setConfirmLoading(true)
-
-    console.log(form.getFieldsValue())
-    const { idSector, shift } = form.getFieldsValue()
-
-    const startDate = createDateUTC(selectedDate.toDate(), shift)
-    const endDate = createDateUTC(selectedDate.toDate(), shift + 12)
+  const handleToggleInterest = async (
+    idSector: number,
+    startUTC: number,
+    endUTC: number
+  ) => {
+    const startDate = createDateUTC(selectedDate.toDate(), startUTC)
+    const endDate = createDateUTC(selectedDate.toDate(), endUTC)
 
     axiosApi
-      .post('/api/interest/create', {
+      .post('/api/interest/toggle', {
         idSector,
         startDate,
         endDate,
       })
       .then((res) => {
-        if (res.status == 201) {
-          console.log('sucess notification!')
+        if (res.status == 200) {
+          message.info('Salvo com sucesso!')
         } else {
           throw new Error(res.statusText)
         }
-
-        setOpen(false)
-        setConfirmLoading(false)
       })
       .catch((err) => {
         console.log(err)
-        console.log('error notification!')
+        message.error('Erro ao salvar o interesse! Tente mais tarde.')
       })
-
-    // console.log(
-    //   'medico pela seção',
-    //   `${selectedDate?.format('DD/MM/YY')}`,
-    //   selectedShift,
-    //   selectedStatus
-    // )
-    // setTimeout(() => {
-    //   setOpen(false)
-    //   setConfirmLoading(false)
-    // }, 2000)
   }
 
   const onSelect = (newValue: Moment) => {
@@ -158,54 +122,56 @@ export default function App({ interests, sectors }: InterestProps) {
           'DD/MM/YY'
         )}`}
         open={open}
-        onOk={handleOk}
-        confirmLoading={confirmLoading}
+        footer={null}
         onCancel={handleCancel}
       >
         <Form
-          // name="interest"
           form={form}
-          labelCol={{ span: 8 }}
+          labelCol={{ span: 6 }}
+          labelAlign="left"
           wrapperCol={{ span: 16 }}
-          // initialValues={{ remember: false }}
-          // onFinish={handleOk}
-          // onReset={handleCancel}
-          // onFinishFailed={onFinishFailed}
-          // autoComplete="off"
         >
-          <Form.Item
-            label="Médico"
-            // name="idDoctor"
-            rules={[{ required: true, message: 'Please input' }]}
-          >
-            {'NOME DO MÉDICO PELA SESSÃO'}
-          </Form.Item>
+          {sectors.map((sector) =>
+            SHIFTS.map((shift, index) => {
+              // fixed localtime conversion (see SHIFTS)
+              const startHourLocalTime = shift.START_UTC - 3
+              const endHourLocalTime = (shift.END_UTC - 3) % 24
 
-          <Form.Item label="Turno" name="shift">
-            <Select defaultActiveFirstOption>
-              {SHIFTS.map((shift, index) => {
-                // fixed localtime conversion (see SHIFTS)
-                const startHourLocalTime = shift.START_UTC - 3
-                const endHourLocalTime = shift.END_UTC - 3
+              let defaultChecked = false
 
-                return (
-                  <Option key={index} value={shift.START_UTC}>
-                    {startHourLocalTime} às {endHourLocalTime}
-                  </Option>
-                )
-              })}
-            </Select>
-          </Form.Item>
+              interests.forEach((i) => {
+                const interestStartDate = new Date(i.startDate)
+                const interestEndDate = new Date(i.endDate)
 
-          <Form.Item label="Setor" name="idSector">
-            <Select defaultActiveFirstOption>
-              {sectors.map((sector) => (
-                <Option value={sector.id} key={sector.id}>
-                  {sector.abbreviation}
-                </Option>
-              ))}
-            </Select>
-          </Form.Item>
+                if (
+                  interestStartDate.getHours() === startHourLocalTime &&
+                  interestEndDate.getHours() === endHourLocalTime &&
+                  i.idSector === sector.id
+                ) {
+                  defaultChecked = true
+                }
+              })
+
+              return (
+                <Form.Item
+                  key={sector.abbreviation + index}
+                  label={`${sector.abbreviation}: ${startHourLocalTime} às ${endHourLocalTime}`}
+                >
+                  <Switch
+                    checkedChildren={<CheckOutlined />}
+                    defaultChecked={defaultChecked}
+                    onChange={() =>
+                      handleToggleInterest(
+                        sector.id,
+                        shift.START_UTC,
+                        shift.END_UTC
+                      )
+                    }
+                  />
+                </Form.Item>
+              )
+            })
+          )}
         </Form>
       </Modal>
     </>
