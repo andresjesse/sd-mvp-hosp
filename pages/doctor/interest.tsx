@@ -32,13 +32,15 @@ const onFinishFailed = (errorInfo: any) => {
 }
 
 export default function App({ interests, sectors }: InterestProps) {
+  const [form] = Form.useForm()
+
   const [open, setOpen] = useState(false)
   const [confirmLoading, setConfirmLoading] = useState(false)
   const [selectedDate, setSelectedDate] = useState(() => moment('2017-01-25'))
   // const [selectedStatus, setSelectedStatus] = useState(false)
   // const [selectedShift, setSelectedShift] = useState('')
 
-  console.log(interests)
+  // console.log(interests)
 
   const handleCancel = () => {
     console.log('Clicked cancel button')
@@ -47,6 +49,10 @@ export default function App({ interests, sectors }: InterestProps) {
 
   const handleOk = async (values: any) => {
     setConfirmLoading(true)
+    console.log(form.getFieldsValue())
+    setOpen(false)
+
+    setConfirmLoading(false)
 
     // console.log(
     //   'medico pela seção',
@@ -72,9 +78,9 @@ export default function App({ interests, sectors }: InterestProps) {
           for (const interest of interests) {
             // const startDate = key.startDate
 
-            console.log(interest.startDate)
-            console.log(new Date(interest.startDate).getDate())
-            console.log(value.date())
+            // console.log(interest.startDate)
+            // console.log(new Date(interest.startDate).getDate())
+            // console.log(value.date())
 
             const interestDate = new Date(interest.startDate)
 
@@ -128,59 +134,55 @@ export default function App({ interests, sectors }: InterestProps) {
           'DD/MM/YY'
         )}`}
         open={open}
-        // onOk={handleOk}
+        onOk={handleOk}
         confirmLoading={confirmLoading}
         onCancel={handleCancel}
       >
-        <p>
-          <Form
-            name="basic"
-            labelCol={{ span: 8 }}
-            wrapperCol={{ span: 16 }}
-            initialValues={{ remember: false }}
-            onFinish={handleOk}
-            onReset={handleCancel}
-            onFinishFailed={onFinishFailed}
-            autoComplete="off"
+        <Form
+          // name="interest"
+          form={form}
+          labelCol={{ span: 8 }}
+          wrapperCol={{ span: 16 }}
+          // initialValues={{ remember: false }}
+          // onFinish={handleOk}
+          // onReset={handleCancel}
+          // onFinishFailed={onFinishFailed}
+          // autoComplete="off"
+        >
+          <Form.Item
+            label="Médico"
+            // name="idDoctor"
+            rules={[{ required: true, message: 'Please input' }]}
           >
-            <Form.Item
-              label="Doctor"
-              name="Doctor"
-              rules={[{ required: true, message: 'Please input' }]}
-            >
-              {'NOME DO MÉDICO PELA SESSÃO'}
-            </Form.Item>
-
-            <Form.Item label="Início do Turno" name="Shift">
-              <Select defaultActiveFirstOption>
-                {SHIFTS.map((shift) => {
-                  // fixed localtime conversion (see SHIFTS)
-                  const startHourLocalTime = shift.START_UTC - 3
-
-                  return (
-                    <Option value={shift.START_UTC}>
-                      {startHourLocalTime}
-                    </Option>
-                  )
-                })}
-              </Select>
-            </Form.Item>
-
-            <Form.Item label="Setor" name="Sector">
-              <Select defaultActiveFirstOption>
-                {sectors.map((sector) => (
-                  <Option value={sector.id}>{sector.abbreviation}</Option>
-                ))}
-              </Select>
-            </Form.Item>
-          </Form>
-
-          <Form.Item>
-            <Button type="primary" htmlType="submit">
-              Submit
-            </Button>
+            {'NOME DO MÉDICO PELA SESSÃO'}
           </Form.Item>
-        </p>
+
+          <Form.Item label="Turno" name="shift">
+            <Select defaultActiveFirstOption>
+              {SHIFTS.map((shift, index) => {
+                // fixed localtime conversion (see SHIFTS)
+                const startHourLocalTime = shift.START_UTC - 3
+                const endHourLocalTime = shift.END_UTC - 3
+
+                return (
+                  <Option key={index} value={shift.START_UTC}>
+                    {startHourLocalTime} às {endHourLocalTime}
+                  </Option>
+                )
+              })}
+            </Select>
+          </Form.Item>
+
+          <Form.Item label="Setor" name="idSector">
+            <Select defaultActiveFirstOption>
+              {sectors.map((sector) => (
+                <Option value={sector.id} key={sector.id}>
+                  {sector.abbreviation}
+                </Option>
+              ))}
+            </Select>
+          </Form.Item>
+        </Form>
       </Modal>
     </>
   )
