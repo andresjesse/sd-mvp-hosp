@@ -104,11 +104,7 @@ export default function App({ interests, sectors }: InterestProps) {
               // }
               return (
                 <h4>
-                  <Badge
-                    key={interest.id}
-                    color={'gold'}
-                    text={interest.idDoctor}
-                  />
+                  <Badge key={interest.id} color={'gold'} text={'Interesse'} />
                 </h4>
               )
             }
