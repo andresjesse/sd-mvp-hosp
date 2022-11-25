@@ -1,12 +1,11 @@
+import { CheckOutlined } from '@ant-design/icons'
 import { Interest, Sector } from '@prisma/client'
 import { Form, message, Modal, Switch } from 'antd'
-import { CheckOutlined } from '@ant-design/icons'
+import { Moment } from 'moment'
 import { useRouter } from 'next/router'
-import React, { useState } from 'react'
 import SHIFTS from '../../constants/Shifts'
 import axiosApi from '../../services/axiosApi'
 import createDateUTC from '../../utils/datetime/createDateUTC'
-import moment, { Moment } from 'moment'
 import isSameDay from '../../utils/datetime/isSameDay'
 import isSameShiftUTC from '../../utils/datetime/isSameShiftUTC'
 
@@ -77,7 +76,7 @@ export default function InterestsModal({
       >
         {sectors.map((sector) =>
           SHIFTS.map((shift, index) => {
-            // fixed localtime conversion (see SHIFTS)
+            // Convert fixed shift to localtime (for UI only)
             const startHourLocalTime = shift.START_UTC - 3
             const endHourLocalTime = (shift.END_UTC - 3) % 24
 
