@@ -18,7 +18,9 @@ export default function withAuth(
       )
 
       if (session === null) {
-        throw new UnauthenticatedUserError('Session user is not present!')
+        throw new UnauthenticatedUserError(
+          'Acesse sua conta antes de continuar.'
+        )
       }
 
       const user = session.user as TSessionUser
@@ -29,7 +31,9 @@ export default function withAuth(
 
       return {
         redirect: {
-          destination: `/login?callbackUrl=${ctx.resolvedUrl}`,
+          destination: `/login?authmessage=${
+            (error as Error).message
+          }&callbackUrl=${ctx.resolvedUrl}`,
           permanent: false,
         },
       }

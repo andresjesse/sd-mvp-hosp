@@ -1,5 +1,5 @@
 import { LoginOutlined, SelectOutlined } from '@ant-design/icons'
-import { Button, Checkbox, Form, Input, Typography } from 'antd'
+import { Button, Checkbox, Form, Input, Typography, notification } from 'antd'
 import { signIn } from 'next-auth/react'
 import Link from 'next/link'
 import { useRouter } from 'next/router'
@@ -15,6 +15,15 @@ const Login: React.FC = () => {
 
   const [error, setError] = useState('')
   const [checked, setChecked] = useState(false)
+
+  useEffect(() => {
+    if (router.query.authmessage != undefined) {
+      notification['error']({
+        message: `${router.query.authmessage as string}`,
+        duration: 0,
+      })
+    }
+  }, [router.query.authmessage])
 
   useEffect(() => {
     form.setFieldValue('email', localStorage.getItem('email') || '')
