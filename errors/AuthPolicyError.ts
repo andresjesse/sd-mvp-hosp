@@ -1,9 +1,5 @@
 export class AuthPolicyError extends Error {
-  data?: string
-
-  constructor(data?: string) {
-    super()
-
-    this.data = data
+  constructor(message = 'Policy Error.') {
+    super(message)
   }
 }
