@@ -8,6 +8,7 @@ import { prisma } from '../../lib/prisma'
 import axiosApi from '../../services/axiosApi'
 import createDateUTC from '../../utils/datetime/createDateUTC'
 import { CheckOutlined } from '@ant-design/icons'
+import { useRouter } from 'next/router'
 
 interface InterestProps {
   interests: Array<Interest>
@@ -15,6 +16,7 @@ interface InterestProps {
 }
 
 export default function App({ interests, sectors }: InterestProps) {
+  const router = useRouter()
   const [form] = Form.useForm()
 
   const [open, setOpen] = useState(false)
@@ -51,6 +53,9 @@ export default function App({ interests, sectors }: InterestProps) {
       .catch((err) => {
         console.log(err)
         message.error('Erro ao salvar o interesse! Tente mais tarde.')
+      })
+      .finally(() => {
+        router.push(location.href)
       })
   }
 
