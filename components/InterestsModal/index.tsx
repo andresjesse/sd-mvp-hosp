@@ -13,7 +13,7 @@ interface InterestsModalProps {
   selectedDate: Moment | null
   sectors: Array<Sector>
   interests: Array<Interest>
-  onCloseModal: Function
+  onCloseModal: () => void
 }
 
 export default function InterestsModal({
@@ -34,29 +34,31 @@ export default function InterestsModal({
     startUTC: number,
     endUTC: number
   ) => {
-    const startDate = createDateUTC(selectedDate!.toDate(), startUTC)
-    const endDate = createDateUTC(selectedDate!.toDate(), endUTC)
+    if (selectedDate) {
+      const startDate = createDateUTC(selectedDate.toDate(), startUTC)
+      const endDate = createDateUTC(selectedDate.toDate(), endUTC)
 
-    axiosApi
-      .post('/api/interest/toggle', {
-        idSector,
-        startDate,
-        endDate,
-      })
-      .then((res) => {
-        if (res.status == 200) {
-          message.info('Salvo com sucesso!')
-        } else {
-          throw new Error(res.statusText)
-        }
-      })
-      .catch((err) => {
-        console.log(err)
-        message.error('Erro ao salvar o interesse! Tente mais tarde.')
-      })
-      .finally(() => {
-        router.push(location.href)
-      })
+      axiosApi
+        .post('/api/interest/toggle', {
+          idSector,
+          startDate,
+          endDate,
+        })
+        .then((res) => {
+          if (res.status == 200) {
+            message.info('Salvo com sucesso!')
+          } else {
+            throw new Error(res.statusText)
+          }
+        })
+        .catch((err) => {
+          console.log(err)
+          message.error('Erro ao salvar o interesse! Tente mais tarde.')
+        })
+        .finally(() => {
+          router.push(location.href)
+        })
+    }
   }
 
   return (

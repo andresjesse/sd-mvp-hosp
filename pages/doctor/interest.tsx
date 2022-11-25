@@ -39,7 +39,7 @@ export default function App({ interests, sectors }: InterestProps) {
         const text = `${sector?.abbreviation} - ${start} às ${end}`
 
         return (
-          <h4>
+          <h4 key={fileredInterest.id}>
             <Badge key={fileredInterest.id} color={'blue'} text={text} />
           </h4>
         )
