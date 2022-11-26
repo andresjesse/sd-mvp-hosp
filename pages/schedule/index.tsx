@@ -2,8 +2,7 @@ import { Shift } from '@prisma/client'
 import { Calendar } from 'antd'
 import { Moment } from 'moment'
 import { GetServerSideProps } from 'next'
-import ShiftComponent from '../../components/ShiftComponent'
-import styles from './styles.module.css'
+import ScheduleCell from '../../components/ScheduleCell'
 
 const getListData = (value: Moment, schedules: Array<Shift>) => {
   const listData: Array<Shift> = []
@@ -19,8 +18,6 @@ const getListData = (value: Moment, schedules: Array<Shift>) => {
     }
   })
 
-  //console.log(listData)
-
   return listData
 }
 
@@ -32,13 +29,9 @@ export default function SchedulePage({ schedules }: SchedulePageProps) {
   const dateCellRender = (value: Moment) => {
     const listData = getListData(value, schedules)
     return (
-      <ul className={styles.events}>
-        {listData?.map((shift) => (
-          <li key={shift.id}>
-            <ShiftComponent data={shift} />
-          </li>
-        ))}
-      </ul>
+      <div>
+        <ScheduleCell shifts={listData} />
+      </div>
     )
   }
 
