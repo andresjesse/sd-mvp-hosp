@@ -1,4 +1,4 @@
-import { Shift } from '@prisma/client'
+import { Doctor, Shift } from '@prisma/client'
 import { Calendar } from 'antd'
 import { Moment } from 'moment'
 import { GetServerSideProps } from 'next'
@@ -23,14 +23,18 @@ const getListData = (value: Moment, schedules: Array<Shift>) => {
 
 interface SchedulePageProps {
   schedules: Array<Shift>
+  doctors: Array<Doctor>
 }
 
-export default function SchedulePage({ schedules }: SchedulePageProps) {
+export default function SchedulePage({
+  schedules,
+  doctors,
+}: SchedulePageProps) {
   const dateCellRender = (value: Moment) => {
     const listData = getListData(value, schedules)
     return (
       <div>
-        <ScheduleCell shifts={listData} />
+        <ScheduleCell shifts={listData} doctors={doctors} />
       </div>
     )
   }
@@ -51,12 +55,21 @@ export const getServerSideProps: GetServerSideProps = async () => {
         },
       },
     },
+    where: {
+      idSector: 1,
+    },
   })
-  //console.log(JSON.parse(JSON.stringify(schedules))[99].doctor)
+
+  const doctors = await prisma?.doctor.findMany({
+    include: {
+      user: true,
+    },
+  })
 
   return {
     props: {
       schedules: JSON.parse(JSON.stringify(schedules)),
+      doctors: JSON.parse(JSON.stringify(doctors)),
     },
   }
 }
