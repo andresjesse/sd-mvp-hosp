@@ -11,7 +11,11 @@ type TDoctorUser = {
       crm: string
     }
   }
-  roles: {}
+  roles: {
+    connect: {
+      id: number
+    }
+  }
 }
 
 export default async function generateDoctorsSeed(length: number) {
