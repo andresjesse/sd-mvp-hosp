@@ -2,8 +2,9 @@ import { Doctor, Shift } from '@prisma/client'
 import ShiftComponent from '../ShiftComponent'
 import styles from './styles.module.css'
 import React, { useState } from 'react'
-import { Badge, Checkbox, List, Modal, Select, Space } from 'antd'
+import { Button, List, Modal, Select, Switch } from 'antd'
 import { DefaultOptionType } from 'antd/lib/select'
+import { CheckOutlined, CloseOutlined } from '@ant-design/icons'
 
 interface CellProps {
   shifts: Array<Shift>
@@ -44,6 +45,7 @@ export default function ScheduleCell({ shifts, doctors }: CellProps) {
       doctorsList.push({
         shiftTime: getFormatedHour(new Date(shift.startDate)),
         doctorName: !shift.doctor ? 'Selecionar' : shift.doctor?.user.name,
+        isFixed: shift.isFixed,
       })
     })
     return doctorsList
@@ -72,6 +74,11 @@ export default function ScheduleCell({ shifts, doctors }: CellProps) {
         open={isModalOpen}
         onOk={handleOk}
         onCancel={handleCancel}
+        footer={[
+          <Button key="ok" type="primary" onClick={handleOk}>
+            OK
+          </Button>,
+        ]}
       >
         <List
           itemLayout="horizontal"
@@ -81,11 +88,17 @@ export default function ScheduleCell({ shifts, doctors }: CellProps) {
               <List.Item.Meta title={shift.shiftTime} />
               <Select
                 defaultValue={shift.doctorName}
-                style={{ width: 200, marginRight: 10 }}
+                style={{ width: 200, marginRight: 20 }}
                 allowClear
                 options={getDoctorsList()}
               />
-              <Checkbox>É fixo?</Checkbox>
+              <Switch
+                style={{ marginRight: 10 }}
+                checkedChildren={<CheckOutlined />}
+                unCheckedChildren={<CloseOutlined />}
+                checked={shift.isFixed}
+              />
+              <List.Item.Meta title="É fixo?" />
             </List.Item>
           )}
         />
