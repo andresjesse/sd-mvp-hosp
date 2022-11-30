@@ -1,5 +1,6 @@
 import { GetServerSidePropsContext, GetServerSidePropsResult } from 'next'
 import { Session, unstable_getServerSession } from 'next-auth'
+import { AuthPolicyError } from '../../errors/AuthPolicyError'
 import { UnauthenticatedUserError } from '../../errors/UnauthenticatedUserError'
 import { authOptions, TSessionUser } from '../../pages/api/auth/[...nextauth]'
 
@@ -29,11 +30,24 @@ export default function withAuth(
     } catch (error) {
       console.log(error)
 
+      const isNotifiable =
+        error instanceof UnauthenticatedUserError ||
+        error instanceof AuthPolicyError
+
+      if (isNotifiable) {
+        return {
+          redirect: {
+            destination: `/login?authmessage=${
+              (error as Error).message
+            }&callbackUrl=${ctx.resolvedUrl}`,
+            permanent: false,
+          },
+        }
+      }
+
       return {
         redirect: {
-          destination: `/login?authmessage=${
-            (error as Error).message
-          }&callbackUrl=${ctx.resolvedUrl}`,
+          destination: '/500',
           permanent: false,
         },
       }
