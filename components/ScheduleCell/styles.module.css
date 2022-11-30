@@ -1,5 +1,6 @@
 .events {
   margin: 0;
+  margin-bottom: 10;
   padding: 0;
   list-style: none;
 }
@@ -24,4 +25,8 @@
 
 .buttonSchedulesGenerate button {
   width: 200px;
+}
+
+.marginBotton {
+  margin-bottom: 10;
 }

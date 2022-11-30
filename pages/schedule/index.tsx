@@ -4,17 +4,17 @@ import { Moment } from 'moment'
 import { GetServerSideProps } from 'next'
 import ScheduleCell from '../../components/ScheduleCell'
 
-const getListData = (value: Moment, schedules: Array<Shift>) => {
+const getListData = (value: Moment, shifts: Array<Shift>) => {
   const listData: Array<Shift> = []
 
-  schedules.forEach(async (schedule) => {
-    const date = new Date(schedule.startDate)
+  shifts.forEach(async (shift) => {
+    const date = new Date(shift.startDate)
     if (
       date.getDate() == value.date() &&
       date.getMonth() == value.month() &&
       date.getFullYear() == value.year()
     ) {
-      listData.push(schedule)
+      listData.push(shift)
     }
   })
 
@@ -22,16 +22,13 @@ const getListData = (value: Moment, schedules: Array<Shift>) => {
 }
 
 interface SchedulePageProps {
-  schedules: Array<Shift>
+  shifts: Array<Shift>
   doctors: Array<Doctor>
 }
 
-export default function SchedulePage({
-  schedules,
-  doctors,
-}: SchedulePageProps) {
+export default function SchedulePage({ shifts, doctors }: SchedulePageProps) {
   const dateCellRender = (value: Moment) => {
-    const listData = getListData(value, schedules)
+    const listData = getListData(value, shifts)
     return (
       <div>
         <ScheduleCell shifts={listData} doctors={doctors} />
@@ -47,16 +44,14 @@ export default function SchedulePage({
 }
 
 export const getServerSideProps: GetServerSideProps = async () => {
-  const schedules = await prisma?.shift.findMany({
+  const shifts = await prisma?.shift.findMany({
     include: {
       doctor: {
         include: {
           user: true,
         },
       },
-    },
-    where: {
-      idSector: 1,
+      sector: true,
     },
   })
 
@@ -68,7 +63,7 @@ export const getServerSideProps: GetServerSideProps = async () => {
 
   return {
     props: {
-      schedules: JSON.parse(JSON.stringify(schedules)),
+      shifts: JSON.parse(JSON.stringify(shifts)),
       doctors: JSON.parse(JSON.stringify(doctors)),
     },
   }
