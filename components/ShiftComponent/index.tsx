@@ -13,7 +13,7 @@ export default function ShiftComponent({ data }: ShiftProps) {
     return (date.getHours() < 10 ? '0' : '') + date.getHours()
   }
 
-  const badgeColor = !shift.doctor ? 'gold' : 'cyan'
+  const badgeColor = !shift.doctor ? 'red' : 'green'
 
   const startDate = getFormatedHour(new Date(shift.startDate))
 
