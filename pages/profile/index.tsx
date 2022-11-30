@@ -1,123 +1,233 @@
-import {
-  Button,
-  Card,
-  DatePicker,
-  DatePickerProps,
-  Form,
-  notification,
-  Input,
-  Radio,
-  Select,
-  Cascader,
-  InputNumber,
-  TreeSelect,
-  Switch,
-  Checkbox,
-  Upload,
-} from 'antd'
-
-const { RangePicker } = DatePicker
-const { TextArea } = Input
-
+import { Button, Form, Input, notification, Select, Typography } from 'antd'
+import router from 'next/router'
 import { useState } from 'react'
-import { PlusOutlined } from '@ant-design/icons'
-
 import axiosApi from '../../services/axiosApi'
+import { fakeCrmUf } from '../../services/fakeCrmUf'
+import styles from './styles.module.css'
+const { Title, Text } = Typography
 
-export default function Profile() {
-  const [date, setDate] = useState({ month: 0, year: 0 })
-  const [isLoading, setIsLoading] = useState(false)
+const initialValues = {
+  name: '',
+  crm: '',
+  crmUf: '',
+  email: '',
+  password: '',
+}
 
-  const onChange: DatePickerProps['onChange'] = (moment) => {
-    if (moment) {
-      setDate({ month: moment.month(), year: moment.year() })
-    }
+const initialObjError = {
+  name: '',
+  email: '',
+  password: '',
+  crm: '',
+  crmUf: '',
+}
+
+const Profile: React.FC = () => {
+  const [formValue, setValor] = useState(initialValues)
+  const [objError, setObjError] = useState(initialObjError)
+
+  function handleChange(event: { target: { id: string; value: string } }) {
+    const { id, value } = event.target
+    setValor({ ...formValue, [id]: value })
   }
-  //https://codesandbox.io/s/m8ylw3?file=/demo.tsx:584-2988
+
+  function handleSubmit(req: object) {
+    axiosApi
+      .post('/api/doctor/create', req)
+      .then((response) => {
+        if (response.status == 201) {
+          notification.open({
+            message: 'Usuário criado com sucesso!',
+            description: 'Você pode fazer login agora.',
+            duration: 0,
+          })
+          router.push('/login')
+        } else {
+          notification.open({
+            message: 'Erro ao criar usuário!',
+            description: 'Entre em contato com o suporte.',
+            duration: 0,
+          })
+        }
+      })
+      .catch((e) => {
+        if (e.response.data.data) {
+          setObjError(e.response.data.data)
+          return
+        }
+      })
+  }
+
   return (
-    <div>
-      <Card title="Perfil">
-        <Form>
-          <Form
-            labelCol={{ span: 4 }}
-            wrapperCol={{ span: 14 }}
-            layout="horizontal"
-            //onValuesChange={onFormLayoutChange}
-            //disabled="True"
+    <div className={styles.authPageWrapper}>
+      <div className={styles.formContainer}>
+        <Form
+          name="formNew"
+          layout="horizontal"
+          disabled={true}
+          labelWrap
+          labelCol={{ flex: '120px' }}
+          // wrapperCol={{ flex: 1 }}
+          colon={false}
+          style={{ width: '100%' }}
+          onFinish={() => {
+            handleSubmit(formValue)
+          }}
+          scrollToFirstError
+        >
+          <Title className={styles.textCenter} level={3}>
+            Meu Perfil
+          </Title>
+
+          <Form.Item
+            name="name"
+            label="Nome: "
+            hasFeedback
+            rules={[
+              {
+                required: true,
+                message: 'Por favor insira seu Nome!',
+                whitespace: true,
+              },
+            ]}
           >
-            <Form.Item label="Checkbox" name="disabled" valuePropName="checked">
-              <Checkbox>Checkbox</Checkbox>
-            </Form.Item>
-            <Form.Item label="Radio">
-              <Radio.Group>
-                <Radio value="apple"> Apple </Radio>
-                <Radio value="pear"> Pear </Radio>
-              </Radio.Group>
-            </Form.Item>
-            <Form.Item label="Input">
-              <Input />
-            </Form.Item>
-            <Form.Item label="Select">
-              <Select>
-                <Select.Option value="demo">Demo</Select.Option>
-              </Select>
-            </Form.Item>
-            <Form.Item label="TreeSelect">
-              <TreeSelect
-                treeData={[
-                  {
-                    title: 'Light',
-                    value: 'light',
-                    children: [{ title: 'Bamboo', value: 'bamboo' }],
-                  },
-                ]}
-              />
-            </Form.Item>
-            <Form.Item label="Cascader">
-              <Cascader
-                options={[
-                  {
-                    value: 'zhejiang',
-                    label: 'Zhejiang',
-                    children: [
-                      {
-                        value: 'hangzhou',
-                        label: 'Hangzhou',
-                      },
-                    ],
-                  },
-                ]}
-              />
-            </Form.Item>
-            <Form.Item label="DatePicker">
-              <DatePicker />
-            </Form.Item>
-            <Form.Item label="RangePicker">
-              <RangePicker />
-            </Form.Item>
-            <Form.Item label="InputNumber">
-              <InputNumber />
-            </Form.Item>
-            <Form.Item label="TextArea">
-              <TextArea rows={4} />
-            </Form.Item>
-            <Form.Item label="Switch" valuePropName="checked">
-              <Switch />
-            </Form.Item>
-            <Form.Item label="Upload" valuePropName="fileList">
-              <Upload action="/upload.do" listType="picture-card">
-                <div>
-                  <PlusOutlined />
-                  <div style={{ marginTop: 8 }}>Upload</div>
-                </div>
-              </Upload>
-            </Form.Item>
-            <Form.Item label="Button">
-              <Button>Button</Button>
-            </Form.Item>
-          </Form>
+            <Input id="name" onChange={handleChange} />
+          </Form.Item>
+
+          <Form.Item
+            name="crm"
+            label="CRM: "
+            hasFeedback
+            rules={[{ required: true, message: 'Por favor insira seu CRM!' }]}
+          >
+            <Input id="crm" onChange={handleChange} />
+          </Form.Item>
+
+          <Form.Item
+            name="crmUf"
+            label="CRM UF: "
+            hasFeedback
+            rules={[
+              { required: true, message: 'Por favor insira seu CRM-UF!' },
+            ]}
+          >
+            <Select
+              onChange={(uf) => {
+                setValor({ ...formValue, ['crmUf']: uf })
+              }}
+              className={styles.formBorderRadius}
+            >
+              {fakeCrmUf.map((uf) => (
+                <Select.Option key={uf} value={uf}>
+                  {uf}
+                </Select.Option>
+              ))}
+            </Select>
+          </Form.Item>
+
+          <Form.Item
+            name="email"
+            label="Email: "
+            hasFeedback
+            rules={[
+              {
+                required: true,
+                message: 'Por favor insira seu e-mail.',
+              },
+              {
+                type: 'email',
+                message: 'E-mail invalido.',
+              },
+            ]}
+          >
+            <Input id="email" onChange={handleChange} />
+          </Form.Item>
+
+          <Form.Item
+            label="Confirme o Email: "
+            name="confEmail"
+            dependencies={['email']}
+            hasFeedback
+            rules={[
+              {
+                required: true,
+                message: 'Por favor confirme seu E-mail!',
+              },
+              ({ getFieldValue }) => ({
+                validator(_, value) {
+                  if (!value || getFieldValue('email') === value) {
+                    return Promise.resolve()
+                  }
+                  return Promise.reject(new Error('Os E-mail não são iguais!'))
+                },
+              }),
+            ]}
+          >
+            <Input />
+          </Form.Item>
+
+          <Form.Item
+            name="password"
+            label="Senha: "
+            hasFeedback
+            rules={[
+              {
+                required: true,
+                message: 'Por favor insira sua senha.',
+              },
+            ]}
+          >
+            <Input.Password id="password" onChange={handleChange} />
+          </Form.Item>
+
+          <Form.Item
+            name="confPassword"
+            label="Confirme sua Senha: "
+            dependencies={['password']}
+            hasFeedback
+            rules={[
+              {
+                required: true,
+                message: 'Por favor confirme sua senha!',
+              },
+              ({ getFieldValue }) => ({
+                validator(_, value) {
+                  if (!value || getFieldValue('password') === value) {
+                    return Promise.resolve()
+                  }
+                  return Promise.reject(new Error('As senhas não são iguais!'))
+                },
+              }),
+            ]}
+          >
+            <Input.Password />
+          </Form.Item>
+
+          {objError && (
+            <Text type="danger">
+              {objError.name ||
+                objError.crm ||
+                objError.crmUf ||
+                objError.email ||
+                objError.password}
+            </Text>
+          )}
+
+          <Form.Item label=" ">
+            <Button
+              className={styles.button}
+              shape="round"
+              size="large"
+              type="primary"
+              htmlType="submit"
+            >
+              Cadastrar
+            </Button>
+          </Form.Item>
         </Form>
-      </Card>
+      </div>
     </div>
   )
 }
+
+export default Profile
