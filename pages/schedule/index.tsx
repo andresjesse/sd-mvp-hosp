@@ -1,11 +1,30 @@
-import { Doctor, Shift } from '@prisma/client'
+import { prisma } from './../../lib/prisma'
+import { Doctor, Sector, Shift, User } from '@prisma/client'
 import { Calendar } from 'antd'
 import { Moment } from 'moment'
 import { GetServerSideProps } from 'next'
 import ScheduleCell from '../../components/ScheduleCell'
 
-const getListData = (value: Moment, shifts: Array<Shift>) => {
-  const listData: Array<Shift> = []
+export type CompositeShift = Shift & {
+  doctor:
+    | (Doctor & {
+        user: User
+      })
+    | null
+  sector: Sector
+}
+
+export type CompositeDoctor = Doctor & {
+  user: User
+}
+
+interface SchedulePageProps {
+  shifts: Array<CompositeShift>
+  doctors: Array<CompositeDoctor>
+}
+
+const getListData = (value: Moment, shifts: Array<CompositeShift>) => {
+  const listData: Array<CompositeShift> = []
 
   shifts.forEach(async (shift) => {
     const date = new Date(shift.startDate)
@@ -19,11 +38,6 @@ const getListData = (value: Moment, shifts: Array<Shift>) => {
   })
 
   return listData
-}
-
-interface SchedulePageProps {
-  shifts: Array<Shift>
-  doctors: Array<Doctor>
 }
 
 export default function SchedulePage({ shifts, doctors }: SchedulePageProps) {
@@ -44,7 +58,7 @@ export default function SchedulePage({ shifts, doctors }: SchedulePageProps) {
 }
 
 export const getServerSideProps: GetServerSideProps = async () => {
-  const shifts = await prisma?.shift.findMany({
+  const shifts = await prisma.shift.findMany({
     include: {
       doctor: {
         include: {
@@ -55,7 +69,7 @@ export const getServerSideProps: GetServerSideProps = async () => {
     },
   })
 
-  const doctors = await prisma?.doctor.findMany({
+  const doctors = await prisma.doctor.findMany({
     include: {
       user: true,
     },
@@ -63,8 +77,8 @@ export const getServerSideProps: GetServerSideProps = async () => {
 
   return {
     props: {
-      shifts: JSON.parse(JSON.stringify(shifts)),
-      doctors: JSON.parse(JSON.stringify(doctors)),
+      shifts: JSON.parse(JSON.stringify(shifts)), //next does not serialize objects like prisma Datetime
+      doctors: JSON.parse(JSON.stringify(doctors)), //next does not serialize objects like prisma Datetime
     },
   }
 }

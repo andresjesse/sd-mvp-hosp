@@ -1,4 +1,3 @@
-import { Doctor, Shift } from '@prisma/client'
 import ShiftComponent from '../ShiftComponent'
 import styles from './styles.module.css'
 import React, { useState } from 'react'
@@ -7,10 +6,20 @@ import { DefaultOptionType } from 'antd/lib/select'
 import { CheckOutlined, CloseOutlined } from '@ant-design/icons'
 import axiosApi from '../../services/axiosApi'
 import { useRouter } from 'next/router'
+import { CompositeDoctor, CompositeShift } from '../../pages/schedule'
+
+type ShiftListItem = {
+  id: number
+  shiftTime: string
+  doctorName: string
+  idDoctor?: number
+  isFixed: boolean
+  sector: string
+}
 
 interface CellProps {
-  shifts: Array<Shift>
-  doctors: Array<Doctor>
+  shifts: Array<CompositeShift>
+  doctors: Array<CompositeDoctor>
 }
 
 export default function ScheduleCell({ shifts, doctors }: CellProps) {
@@ -35,16 +44,16 @@ export default function ScheduleCell({ shifts, doctors }: CellProps) {
     doctors.map((doctor) => {
       doctorsList.push({
         value: doctor.id,
-        label: JSON.parse(JSON.stringify(doctor)).user.name,
+        label: doctor.user.name,
       })
     })
     return doctorsList
   }
 
   const getShiftsList = () => {
-    const shiftsList: Array<any> = []
+    const shiftsList: Array<ShiftListItem> = []
 
-    JSON.parse(JSON.stringify(shifts))?.map((shift: any) => {
+    shifts.map((shift: CompositeShift) => {
       shiftsList.push({
         id: shift.id,
         shiftTime: getFormatedHour(new Date(shift.startDate)),
@@ -64,7 +73,7 @@ export default function ScheduleCell({ shifts, doctors }: CellProps) {
     return shiftHour + ':' + shiftMinute
   }
 
-  const handleSelectDoctor = async (shift: Shift, idDoctor: number) => {
+  const handleSelectDoctor = async (shift: ShiftListItem, idDoctor: number) => {
     axiosApi
       .post('/api/shifts/selectDoctor', {
         shift,
@@ -86,7 +95,7 @@ export default function ScheduleCell({ shifts, doctors }: CellProps) {
       })
   }
 
-  const handleToggleIsFixed = async (shift: Shift) => {
+  const handleToggleIsFixed = async (shift: ShiftListItem) => {
     axiosApi
       .post('/api/shifts/toggleIsFixed', {
         shift,
@@ -113,7 +122,7 @@ export default function ScheduleCell({ shifts, doctors }: CellProps) {
         <ul className={styles.events}>
           {shifts?.map((shift) => (
             <li key={shift.id}>
-              <ShiftComponent data={shift} />
+              <ShiftComponent shift={shift} />
             </li>
           ))}
         </ul>
@@ -140,7 +149,7 @@ export default function ScheduleCell({ shifts, doctors }: CellProps) {
                 defaultValue={shift.doctorName}
                 style={{ width: 200, marginRight: 20 }}
                 options={getDoctorsList()}
-                onChange={(value) => handleSelectDoctor(shift, value)}
+                onChange={(value) => handleSelectDoctor(shift, parseInt(value))}
                 allowClear
               />
               <Switch
