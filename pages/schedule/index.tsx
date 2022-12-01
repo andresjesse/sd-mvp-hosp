@@ -1,42 +1,52 @@
+import { prisma } from './../../lib/prisma'
+import { Doctor, Sector, Shift, User } from '@prisma/client'
 import { Calendar } from 'antd'
 import { Moment } from 'moment'
 import { GetServerSideProps } from 'next'
-import Schedule from '../../components/Shift'
-import { fakeSchedules, TShift } from '../../services/fakeData'
-import styles from './styles.module.css'
+import ScheduleCell from '../../components/ScheduleCell'
 
-const getListData = (value: Moment, schedules: Array<TShift>) => {
-  const listData: Array<TShift> = []
+export type CompositeShift = Shift & {
+  doctor:
+    | (Doctor & {
+        user: User
+      })
+    | null
+  sector: Sector
+}
 
-  schedules.forEach(async (schedule) => {
-    const date = new Date(schedule.date)
+export type CompositeDoctor = Doctor & {
+  user: User
+}
+
+interface SchedulePageProps {
+  shifts: Array<CompositeShift>
+  doctors: Array<CompositeDoctor>
+}
+
+const getListData = (value: Moment, shifts: Array<CompositeShift>) => {
+  const listData: Array<CompositeShift> = []
+
+  shifts.forEach(async (shift) => {
+    const date = new Date(shift.startDate)
     if (
       date.getDate() == value.date() &&
       date.getMonth() == value.month() &&
       date.getFullYear() == value.year()
     ) {
-      listData.push(schedule)
+      listData.push(shift)
     }
   })
 
   return listData
 }
 
-interface SchedulePageProps {
-  schedules: Array<TShift>
-}
-
-export default function SchedulePage({ schedules }: SchedulePageProps) {
+export default function SchedulePage({ shifts, doctors }: SchedulePageProps) {
   const dateCellRender = (value: Moment) => {
-    const listData = getListData(value, schedules)
+    const listData = getListData(value, shifts)
     return (
-      <ul className={styles.events}>
-        {listData?.map((schedule) => (
-          <li key={schedule.id}>
-            <Schedule data={schedule} />
-          </li>
-        ))}
-      </ul>
+      <div>
+        <ScheduleCell shifts={listData} doctors={doctors} />
+      </div>
     )
   }
 
@@ -48,11 +58,27 @@ export default function SchedulePage({ schedules }: SchedulePageProps) {
 }
 
 export const getServerSideProps: GetServerSideProps = async () => {
-  const schedules = fakeSchedules
+  const shifts = await prisma.shift.findMany({
+    include: {
+      doctor: {
+        include: {
+          user: true,
+        },
+      },
+      sector: true,
+    },
+  })
+
+  const doctors = await prisma.doctor.findMany({
+    include: {
+      user: true,
+    },
+  })
 
   return {
     props: {
-      schedules,
+      shifts: JSON.parse(JSON.stringify(shifts)), //next does not serialize objects like prisma Datetime
+      doctors: JSON.parse(JSON.stringify(doctors)), //next does not serialize objects like prisma Datetime
     },
   }
 }

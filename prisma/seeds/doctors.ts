@@ -24,7 +24,7 @@ export default async function generateDoctorsSeed(length: number) {
 
   for (let i = 1; i <= length; i++) {
     doctors.push({
-      name: 'Doctor Example',
+      name: 'Doctor ' + i,
       email: `doctor${i}@example.com`,
       passwordHash,
       doctor: {

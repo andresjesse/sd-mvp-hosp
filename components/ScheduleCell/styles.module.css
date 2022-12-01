@@ -1,0 +1,32 @@
+.events {
+  margin: 0;
+  margin-bottom: 10;
+  padding: 0;
+  list-style: none;
+}
+.events .ant-badge-status {
+  width: 100%;
+  overflow: hidden;
+  font-size: 12px;
+  white-space: nowrap;
+  text-overflow: ellipsis;
+}
+.notesMonth {
+  font-size: 28px;
+  text-align: center;
+}
+.notesMonth section {
+  font-size: 28px;
+}
+
+.buttonSchedulesGenerate {
+  text-align: center;
+}
+
+.buttonSchedulesGenerate button {
+  width: 200px;
+}
+
+.marginBotton {
+  margin-bottom: 10;
+}
