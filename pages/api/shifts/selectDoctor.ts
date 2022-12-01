@@ -1,4 +1,4 @@
-import { Doctor, Shift } from '@prisma/client'
+import { Shift } from '@prisma/client'
 import type { NextApiRequest, NextApiResponse } from 'next'
 import { ApiHandleError } from '../../../errors/ApiHandleError'
 import { prisma } from '../../../lib/prisma'
