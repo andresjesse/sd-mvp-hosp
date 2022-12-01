@@ -1,14 +1,14 @@
-import ShiftComponent from '../ShiftComponent'
-import styles from './styles.module.css'
-import React, { useState } from 'react'
-import { Button, List, message, Modal, Select, Switch } from 'antd'
+import { message } from 'antd'
 import { DefaultOptionType } from 'antd/lib/select'
-import { CheckOutlined, CloseOutlined } from '@ant-design/icons'
-import axiosApi from '../../services/axiosApi'
 import { useRouter } from 'next/router'
+import { useState } from 'react'
 import { CompositeDoctor, CompositeShift } from '../../pages/schedule'
+import axiosApi from '../../services/axiosApi'
+import ShiftComponent from '../ShiftComponent'
+import AdminModal from './AdminModal'
+import styles from './styles.module.css'
 
-type ShiftListItem = {
+export type ShiftListItem = {
   id: number
   shiftTime: string
   doctorName: string
@@ -24,20 +24,9 @@ interface CellProps {
 
 export default function ScheduleCell({ shifts, doctors }: CellProps) {
   const router = useRouter()
-  const [isModalOpen, setIsModalOpen] = useState(false)
+  const [isAdminModalOpen, setIsAdminModalOpen] = useState(false)
 
-  const showModal = () => {
-    setIsModalOpen(true)
-  }
-
-  const handleOk = () => {
-    setIsModalOpen(false)
-  }
-
-  const handleCancel = () => {
-    setIsModalOpen(false)
-  }
-
+  // helper
   const getDoctorsList = () => {
     const doctorsList: Array<DefaultOptionType> = []
 
@@ -50,6 +39,7 @@ export default function ScheduleCell({ shifts, doctors }: CellProps) {
     return doctorsList
   }
 
+  // helper
   const getShiftsList = () => {
     const shiftsList: Array<ShiftListItem> = []
 
@@ -66,13 +56,14 @@ export default function ScheduleCell({ shifts, doctors }: CellProps) {
     return shiftsList
   }
 
+  // helper
   const getFormatedHour = (date: Date) => {
     const shiftHour = (date.getHours() < 10 ? '0' : '') + date.getHours()
     const shiftMinute = (date.getMinutes() < 10 ? '0' : '') + date.getMinutes()
-
     return shiftHour + ':' + shiftMinute
   }
 
+  // API Call
   const handleSelectDoctor = async (shift: ShiftListItem, idDoctor: number) => {
     axiosApi
       .post('/api/shifts/selectDoctor', {
@@ -95,6 +86,7 @@ export default function ScheduleCell({ shifts, doctors }: CellProps) {
       })
   }
 
+  // API Call
   const handleToggleIsFixed = async (shift: ShiftListItem) => {
     axiosApi
       .post('/api/shifts/toggleIsFixed', {
@@ -118,7 +110,7 @@ export default function ScheduleCell({ shifts, doctors }: CellProps) {
 
   return (
     <>
-      <div onClick={showModal}>
+      <div onClick={() => setIsAdminModalOpen(true)}>
         <ul className={styles.events}>
           {shifts?.map((shift) => (
             <li key={shift.id}>
@@ -127,43 +119,15 @@ export default function ScheduleCell({ shifts, doctors }: CellProps) {
           ))}
         </ul>
       </div>
-      <Modal
-        title="Escala do dia"
-        open={isModalOpen}
-        onOk={handleOk}
-        onCancel={handleCancel}
-        footer={[
-          <Button key="ok" type="primary" onClick={handleOk}>
-            OK
-          </Button>,
-        ]}
-      >
-        <List
-          itemLayout="horizontal"
-          dataSource={getShiftsList()}
-          renderItem={(shift) => (
-            <List.Item>
-              <List.Item.Meta title={shift.sector} />
-              <List.Item.Meta title={shift.shiftTime + ': '} />
-              <Select
-                defaultValue={shift.doctorName}
-                style={{ width: 200, marginRight: 20 }}
-                options={getDoctorsList()}
-                onChange={(value) => handleSelectDoctor(shift, parseInt(value))}
-                allowClear
-              />
-              <Switch
-                style={{ marginRight: 10 }}
-                checkedChildren={<CheckOutlined />}
-                unCheckedChildren={<CloseOutlined />}
-                checked={shift.isFixed}
-                onChange={() => handleToggleIsFixed(shift)}
-              />
-              <List.Item.Meta title="É fixo?" />
-            </List.Item>
-          )}
-        />
-      </Modal>
+
+      <AdminModal
+        isModalOpen={isAdminModalOpen}
+        onCloseModal={() => setIsAdminModalOpen(false)}
+        doctorsList={getDoctorsList()}
+        shiftsList={getShiftsList()}
+        onSelectDoctor={handleSelectDoctor}
+        onToggleIsFixed={handleToggleIsFixed}
+      />
     </>
   )
 }
