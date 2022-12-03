@@ -62,6 +62,26 @@ export default function Admin({ doctors }: DoctorProps) {
     }
   }
 
+  const activeDoctor = async (active: boolean, id: React.Key) => {
+    try {
+      const response = await axiosApi.post('/api/doctor/activate', {
+        id,
+        active,
+      })
+
+      notification['success']({
+        message: `O cadastro foi ${active ? 'ativado' : 'desativado'}!`,
+        description: response.data,
+      })
+    } catch (error) {
+      notification['error']({
+        message: 'Algo deu errado!',
+        description: `${error}`,
+        duration: 0,
+      })
+    }
+  }
+
   const columns: ColumnsType<DataType> = [
     {
       title: 'Nome',
@@ -82,7 +102,14 @@ export default function Admin({ doctors }: DoctorProps) {
     {
       title: 'Ativo',
       dataIndex: 'active',
-      render: (_, record) => <Switch defaultChecked={record.active} />,
+      render: (_, record) => (
+        <Switch
+          defaultChecked={record.active}
+          onClick={(checked) => {
+            activeDoctor(checked, record.key)
+          }}
+        />
+      ),
     },
   ]
 
