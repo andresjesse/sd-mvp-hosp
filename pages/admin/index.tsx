@@ -21,6 +21,7 @@ interface DataType {
   email: string
   crm: string
   uf: string
+  active: boolean
 }
 
 interface DoctorProps {
@@ -79,9 +80,9 @@ export default function Admin({ doctors }: DoctorProps) {
       dataIndex: 'uf',
     },
     {
-      title: 'Status',
-      dataIndex: 'status',
-      render: () => <Switch checked={false} onChange={function () {}} />,
+      title: 'Ativo',
+      dataIndex: 'active',
+      render: (_, record) => <Switch defaultChecked={record.active} />,
     },
   ]
 
@@ -95,6 +96,7 @@ export default function Admin({ doctors }: DoctorProps) {
         email: item.user.email,
         crm: item.crm,
         uf: item.crmUf,
+        active: item.isActive,
       }
     })
   }
