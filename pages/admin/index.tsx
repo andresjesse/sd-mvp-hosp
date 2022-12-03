@@ -18,9 +18,16 @@ import { Doctor, User } from '@prisma/client'
 interface DataType {
   key: React.Key
   name: string
+  email: string
+  crm: string
+  uf: string
 }
 
-export default function Admin() {
+interface DoctorProps {
+  doctors: Array<Doctor & { user: User }>
+}
+
+export default function Admin({ doctors }: DoctorProps) {
   const [date, setDate] = useState({ month: 0, year: 0 })
   const [isLoading, setIsLoading] = useState(false)
 
@@ -56,22 +63,41 @@ export default function Admin() {
 
   const columns: ColumnsType<DataType> = [
     {
-      title: 'Name',
+      title: 'Nome',
       dataIndex: 'name',
     },
     {
-      title: 'Ação',
-      dataIndex: 'action',
+      title: 'Email',
+      dataIndex: 'email',
+    },
+    {
+      title: 'CRM',
+      dataIndex: 'crm',
+    },
+    {
+      title: 'UF',
+      dataIndex: 'uf',
+    },
+    {
+      title: 'Status',
+      dataIndex: 'status',
       render: () => <Switch checked={false} onChange={function () {}} />,
     },
   ]
 
-  const dataDoctor: DataType[] = [
-    {
-      key: '1',
-      name: 'John Brown',
-    },
-  ]
+  const getDataTable = (
+    doctorData: Array<Doctor & { user: User }>
+  ): Array<DataType> => {
+    return doctorData.map((item) => {
+      return {
+        key: item.id,
+        name: item.user.name,
+        email: item.user.email,
+        crm: item.crm,
+        uf: item.crmUf,
+      }
+    })
+  }
 
   return (
     <div>
@@ -108,7 +134,7 @@ export default function Admin() {
         </Form>
       </Card>
       <Card title="Ativação de cadastro">
-        <Table columns={columns} dataSource={dataDoctor} />
+        <Table columns={columns} dataSource={getDataTable(doctors)} />
       </Card>
     </div>
   )
