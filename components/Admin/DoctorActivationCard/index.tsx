@@ -67,8 +67,6 @@ type DataIndex = keyof DataType
 export default function DoctorActivationCard({
   doctors,
 }: DoctorActivationCardProps) {
-  const [searchText, setSearchText] = useState('')
-  const [searchedColumn, setSearchedColumn] = useState('')
   const searchInput = useRef<InputRef>(null)
 
   const handleSearch = (
@@ -77,13 +75,10 @@ export default function DoctorActivationCard({
     dataIndex: DataIndex
   ) => {
     confirm()
-    setSearchText(selectedKeys[0])
-    setSearchedColumn(dataIndex)
   }
 
   const handleReset = (clearFilters: () => void) => {
     clearFilters()
-    setSearchText('')
   }
 
   const getColumnSearchProps = (
