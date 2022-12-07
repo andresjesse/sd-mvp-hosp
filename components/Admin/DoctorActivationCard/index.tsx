@@ -77,10 +77,7 @@ export default function DoctorActivationCard({
     confirm()
   }
 
-  const handleReset = (clearFilters: () => void) => {
-    clearFilters()
-  }
-
+  // Table Filter Helper
   const getColumnSearchProps = (
     dataIndex: DataIndex
   ): ColumnType<DataType> => ({
@@ -117,7 +114,7 @@ export default function DoctorActivationCard({
           </Button>
           <Button
             onClick={() => {
-              clearFilters && handleReset(clearFilters)
+              clearFilters?.()
               confirm({ closeDropdown: false })
             }}
             size="small"
@@ -131,11 +128,12 @@ export default function DoctorActivationCard({
     filterIcon: (filtered: boolean) => (
       <SearchOutlined style={{ color: filtered ? '#1890ff' : undefined }} />
     ),
-    onFilter: (value, record) =>
-      record[dataIndex]
+    onFilter: (value, record) => {
+      return record[dataIndex]
         .toString()
         .toLowerCase()
-        .includes((value as string).toLowerCase()),
+        .includes((value as string).toLowerCase())
+    },
     onFilterDropdownOpenChange: (visible) => {
       if (visible) {
         setTimeout(() => searchInput.current?.select(), 100)
