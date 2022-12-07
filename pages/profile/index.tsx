@@ -6,7 +6,7 @@ const { Title } = Typography
 import { GetServerSidePropsContext } from 'next'
 import { SelectOutlined } from '@ant-design/icons'
 import { prisma } from '../../lib/prisma'
-import { Doctor, User } from '@prisma/client'
+import { Doctor } from '@prisma/client'
 import withAuth from '../../utils/auth/withAuth'
 import { TSessionUser } from '../api/auth/[...nextauth]'
 
