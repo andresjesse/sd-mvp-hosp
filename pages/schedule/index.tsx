@@ -1,9 +1,13 @@
 import { prisma } from './../../lib/prisma'
 import { Doctor, Sector, Shift, User } from '@prisma/client'
-import { Calendar } from 'antd'
+import { Calendar, Switch } from 'antd'
 import { Moment } from 'moment'
-import { GetServerSideProps } from 'next'
+import { GetServerSidePropsContext } from 'next'
 import ScheduleCell from '../../components/ScheduleCell'
+import withAuth from '../../utils/auth/withAuth'
+import { TSessionUser } from '../api/auth/[...nextauth]'
+import { useState } from 'react'
+import styles from './styles.module.css'
 
 export type CompositeShift = Shift & {
   doctor:
@@ -21,6 +25,7 @@ export type CompositeDoctor = Doctor & {
 interface SchedulePageProps {
   shifts: Array<CompositeShift>
   doctors: Array<CompositeDoctor>
+  user: TSessionUser
 }
 
 const getListData = (value: Moment, shifts: Array<CompositeShift>) => {
@@ -40,9 +45,22 @@ const getListData = (value: Moment, shifts: Array<CompositeShift>) => {
   return listData
 }
 
-export default function SchedulePage({ shifts, doctors }: SchedulePageProps) {
+export default function SchedulePage({
+  shifts,
+  doctors,
+  user,
+}: SchedulePageProps) {
+  const [showAllShifts, setShowAllShifts] = useState(true)
+
   const dateCellRender = (value: Moment) => {
-    const listData = getListData(value, shifts)
+    const shiftsToShow = showAllShifts
+      ? shifts
+      : shifts.filter((shift) => {
+          return shift.idDoctor === user.doctor?.id
+        })
+
+    const listData = getListData(value, shiftsToShow)
+
     return (
       <div>
         <ScheduleCell shifts={listData} doctors={doctors} />
@@ -52,33 +70,52 @@ export default function SchedulePage({ shifts, doctors }: SchedulePageProps) {
 
   return (
     <div>
+      {user.doctor ? (
+        <div className={styles.switchContainer}>
+          <p>Ver todas as escalas?</p>
+          <Switch
+            defaultChecked
+            checkedChildren="Sim"
+            unCheckedChildren="Não"
+            onChange={() => {
+              setShowAllShifts(!showAllShifts)
+            }}
+          />
+        </div>
+      ) : (
+        <></>
+      )}
+
       <Calendar dateCellRender={dateCellRender} />
     </div>
   )
 }
 
-export const getServerSideProps: GetServerSideProps = async () => {
-  const shifts = await prisma.shift.findMany({
-    include: {
-      doctor: {
-        include: {
-          user: true,
+export const getServerSideProps = withAuth(
+  async (ctx: GetServerSidePropsContext, user: TSessionUser) => {
+    const shifts = await prisma.shift.findMany({
+      include: {
+        doctor: {
+          include: {
+            user: true,
+          },
         },
+        sector: true,
       },
-      sector: true,
-    },
-  })
+    })
 
-  const doctors = await prisma.doctor.findMany({
-    include: {
-      user: true,
-    },
-  })
+    const doctors = await prisma.doctor.findMany({
+      include: {
+        user: true,
+      },
+    })
 
-  return {
-    props: {
-      shifts: JSON.parse(JSON.stringify(shifts)), //next does not serialize objects like prisma Datetime
-      doctors: JSON.parse(JSON.stringify(doctors)), //next does not serialize objects like prisma Datetime
-    },
+    return {
+      props: {
+        shifts: JSON.parse(JSON.stringify(shifts)), //next does not serialize objects like prisma Datetime
+        doctors: JSON.parse(JSON.stringify(doctors)), //next does not serialize objects like prisma Datetime
+        user,
+      },
+    }
   }
-}
+)
