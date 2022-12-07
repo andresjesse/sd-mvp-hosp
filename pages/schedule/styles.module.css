@@ -25,3 +25,11 @@
 .buttonSchedulesGenerate button {
   width: 200px;
 }
+
+.switchContainer {
+  display: inline-flex;
+}
+
+.switchContainer > :not(:first-child) {
+  margin-left: 16px;
+}

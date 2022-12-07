@@ -24,7 +24,6 @@ export type CompositeDoctor = Doctor & {
 
 interface SchedulePageProps {
   shifts: Array<CompositeShift>
-  sessionUserShifts: Array<CompositeShift>
   doctors: Array<CompositeDoctor>
   user: TSessionUser
 }
@@ -48,15 +47,20 @@ const getListData = (value: Moment, shifts: Array<CompositeShift>) => {
 
 export default function SchedulePage({
   shifts,
-  sessionUserShifts,
   doctors,
   user,
 }: SchedulePageProps) {
   const [showAllShifts, setShowAllShifts] = useState(true)
 
   const dateCellRender = (value: Moment) => {
-    const shiftsToShow = showAllShifts ? shifts : sessionUserShifts
+    const shiftsToShow = showAllShifts
+      ? shifts
+      : shifts.filter((shift) => {
+          return shift.idDoctor === user.doctor?.id
+        })
+
     const listData = getListData(value, shiftsToShow)
+
     return (
       <div>
         <ScheduleCell shifts={listData} doctors={doctors} />
@@ -67,7 +71,7 @@ export default function SchedulePage({
   return (
     <div>
       {user.doctor ? (
-        <div className={styles.switch}>
+        <div className={styles.switchContainer}>
           <p>Ver todas as escalas?</p>
           <Switch
             defaultChecked
@@ -100,10 +104,6 @@ export const getServerSideProps = withAuth(
       },
     })
 
-    const sessionUserShifts = shifts.filter((shift) => {
-      return shift.idDoctor === user.doctor?.id
-    })
-
     const doctors = await prisma.doctor.findMany({
       include: {
         user: true,
@@ -113,7 +113,6 @@ export const getServerSideProps = withAuth(
     return {
       props: {
         shifts: JSON.parse(JSON.stringify(shifts)), //next does not serialize objects like prisma Datetime
-        sessionUserShifts: JSON.parse(JSON.stringify(sessionUserShifts)), //next does not serialize objects like prisma Datetime
         doctors: JSON.parse(JSON.stringify(doctors)), //next does not serialize objects like prisma Datetime
         user,
       },
