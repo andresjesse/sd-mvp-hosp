@@ -24,7 +24,7 @@ export type CompositeDoctor = Doctor & {
 
 interface SchedulePageProps {
   shifts: Array<CompositeShift>
-  shiftsFiltered: Array<CompositeShift>
+  sessionUserShifts: Array<CompositeShift>
   doctors: Array<CompositeDoctor>
   user: TSessionUser
 }
@@ -48,14 +48,14 @@ const getListData = (value: Moment, shifts: Array<CompositeShift>) => {
 
 export default function SchedulePage({
   shifts,
-  shiftsFiltered,
+  sessionUserShifts,
   doctors,
   user,
 }: SchedulePageProps) {
-  const [showAllShifts, setshowAllShifts] = useState(false)
+  const [showAllShifts, setShowAllShifts] = useState(false)
 
   const dateCellRender = (value: Moment) => {
-    const shiftsToShow = showAllShifts ? shifts : shiftsFiltered
+    const shiftsToShow = showAllShifts ? shifts : sessionUserShifts
     const listData = getListData(value, shiftsToShow)
     return (
       <div>
@@ -74,7 +74,7 @@ export default function SchedulePage({
             checkedChildren="Sim"
             unCheckedChildren="Não"
             onChange={() => {
-              setshowAllShifts(!showAllShifts)
+              setShowAllShifts(!showAllShifts)
             }}
           />
         </div>
@@ -89,20 +89,6 @@ export default function SchedulePage({
 
 export const getServerSideProps = withAuth(
   async (ctx: GetServerSidePropsContext, user: TSessionUser) => {
-    const shiftsFiltered = await prisma.shift.findMany({
-      include: {
-        doctor: {
-          include: {
-            user: true,
-          },
-        },
-        sector: true,
-      },
-      where: {
-        idDoctor: user.id,
-      },
-    })
-
     const shifts = await prisma.shift.findMany({
       include: {
         doctor: {
@@ -114,6 +100,10 @@ export const getServerSideProps = withAuth(
       },
     })
 
+    const sessionUserShifts = shifts.filter((shift) => {
+      return shift.idDoctor === user.id
+    })
+
     const doctors = await prisma.doctor.findMany({
       include: {
         user: true,
@@ -123,7 +113,7 @@ export const getServerSideProps = withAuth(
     return {
       props: {
         shifts: JSON.parse(JSON.stringify(shifts)), //next does not serialize objects like prisma Datetime
-        shiftsFiltered: JSON.parse(JSON.stringify(shiftsFiltered)), //next does not serialize objects like prisma Datetime
+        sessionUserShifts: JSON.parse(JSON.stringify(sessionUserShifts)), //next does not serialize objects like prisma Datetime
         doctors: JSON.parse(JSON.stringify(doctors)), //next does not serialize objects like prisma Datetime
         user,
       },
