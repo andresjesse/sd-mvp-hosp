@@ -1,7 +1,7 @@
 import { Doctor, User } from '@prisma/client'
 import { Card, notification, Switch, Table, Button, Input, Space } from 'antd'
 import { ColumnsType, ColumnType } from 'antd/es/table'
-import React, { useRef, useState } from 'react'
+import React, { useRef } from 'react'
 import axiosApi from '../../../services/axiosApi'
 import { SearchOutlined } from '@ant-design/icons'
 import type { InputRef } from 'antd'
@@ -69,11 +69,7 @@ export default function DoctorActivationCard({
 }: DoctorActivationCardProps) {
   const searchInput = useRef<InputRef>(null)
 
-  const handleSearch = (
-    selectedKeys: string[],
-    confirm: (param?: FilterConfirmProps) => void,
-    dataIndex: DataIndex
-  ) => {
+  const handleSearch = (confirm: (param?: FilterConfirmProps) => void) => {
     confirm()
   }
 
@@ -95,17 +91,13 @@ export default function DoctorActivationCard({
           onChange={(e) =>
             setSelectedKeys(e.target.value ? [e.target.value] : [])
           }
-          onPressEnter={() =>
-            handleSearch(selectedKeys as string[], confirm, dataIndex)
-          }
+          onPressEnter={() => handleSearch(confirm)}
           style={{ marginBottom: 8, display: 'block' }}
         />
         <Space>
           <Button
             type="primary"
-            onClick={() =>
-              handleSearch(selectedKeys as string[], confirm, dataIndex)
-            }
+            onClick={() => handleSearch(confirm)}
             icon={<SearchOutlined />}
             size="small"
             style={{ width: 90 }}
