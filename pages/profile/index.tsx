@@ -2,7 +2,7 @@ import { Form, Input, Button, Typography } from 'antd'
 
 import Link from 'next/link'
 import styles from './styles.module.css'
-const { Title } = Typography
+const { Title, Text } = Typography
 import { GetServerSidePropsContext } from 'next'
 import { SelectOutlined } from '@ant-design/icons'
 import { prisma } from '../../lib/prisma'
@@ -15,55 +15,34 @@ interface ProfilePageProps {
   user: TSessionUser
 }
 
+const renderField = (label: string, value: string) => {
+  return (
+    <>
+      <Title level={5}>
+        <b>{label}:</b>
+      </Title>
+      <Text>{value}</Text>
+    </>
+  )
+}
+
 export default function ProfilePage({ doctor, user }: ProfilePageProps) {
   return (
     <div className={styles.authPageWrapper}>
       <div className={styles.formContainer}>
-        <Form
-          name="formNew"
-          //layout="horizontal"
-          disabled={true}
-        >
-          <Title className={styles.textCenter} level={2}>
-            Meu Perfil
-          </Title>
+        <Title className={styles.textCenter} level={2}>
+          Meu Perfil
+        </Title>
 
-          <Form.Item
-            name="name"
-            label="Nome: "
-            initialValue={user.name}
-            labelCol={{ span: 24 }}
-            wrapperCol={{ span: 24 }}
-          >
-            <Input id="name" size="large" />
-          </Form.Item>
-          <Form.Item
-            name="crm"
-            label="CRM: "
-            initialValue={doctor?.crm}
-            labelCol={{ span: 24 }}
-            wrapperCol={{ span: 24 }}
-          >
-            <Input id="crm" size="large" />
-          </Form.Item>
-          <Form.Item
-            name="crmUf"
-            label="CRM UF: "
-            initialValue={doctor?.crmUf}
-            labelCol={{ span: 24 }}
-            wrapperCol={{ span: 24 }}
-          >
-            <Input id="crmUf" size="large" />
-          </Form.Item>
-          <Form.Item
-            name="email"
-            label="Email: "
-            initialValue={user.email}
-            labelCol={{ span: 24 }}
-            wrapperCol={{ span: 24 }}
-          >
-            <Input id="email" size="large" />
-          </Form.Item>
+        {renderField('Nome', user.name)}
+
+        {renderField('Email', user.email)}
+
+        {doctor && renderField('CRM', doctor.crm)}
+
+        {doctor && renderField('CRM UF', doctor.crmUf)}
+
+        <Link href="profile/edit">
           <Button
             className={styles.button}
             shape="round"
@@ -71,9 +50,9 @@ export default function ProfilePage({ doctor, user }: ProfilePageProps) {
             disabled={false}
             size="large"
           >
-            <Link href="profile/edit"> Editar Perfil</Link>
+            Editar Perfil
           </Button>
-        </Form>
+        </Link>
       </div>
     </div>
   )
