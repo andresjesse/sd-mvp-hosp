@@ -1,4 +1,4 @@
-import { Form, Input, Button, Typography } from 'antd'
+import { Button, Typography } from 'antd'
 
 import Link from 'next/link'
 import styles from './styles.module.css'
