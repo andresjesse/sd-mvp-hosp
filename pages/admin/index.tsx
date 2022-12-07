@@ -1,82 +1,41 @@
-import {
-  Button,
-  Card,
-  DatePicker,
-  DatePickerProps,
-  Form,
-  notification,
-} from 'antd'
-import { useState } from 'react'
-import axiosApi from '../../services/axiosApi'
+import { Doctor, User } from '@prisma/client'
+import { GetStaticProps } from 'next'
+import DoctorActivationCard from '../../components/Admin/DoctorActivationCard'
+import GenerateMonthScheduleCard from '../../components/Admin/GenerateMonthScheduleCard'
+import { prisma } from '../../lib/prisma'
 
-export default function Admin() {
-  const [date, setDate] = useState({ month: 0, year: 0 })
-  const [isLoading, setIsLoading] = useState(false)
+interface AdminProps {
+  doctors: Array<Doctor & { user: User }>
+}
 
-  const onChange: DatePickerProps['onChange'] = (moment) => {
-    if (moment) {
-      setDate({ month: moment.month(), year: moment.year() })
-    }
-  }
-
-  const generateSchedules = async () => {
-    setIsLoading(true)
-
-    try {
-      const response = await axiosApi.post('/api/shifts/generate-month', {
-        month: date.month,
-        year: date.year,
-      })
-
-      notification['success']({
-        message: 'Escalas geradas!',
-        description: response.data,
-      })
-    } catch (error) {
-      notification['error']({
-        message: 'Algo deu errado!',
-        description: `${error}`,
-        duration: 0,
-      })
-    } finally {
-      setIsLoading(false)
-    }
-  }
-
+export default function Admin({ doctors }: AdminProps) {
   return (
-    <div>
-      <Card title="Gerar escalas do mês">
-        <Form>
-          <Form.Item name="month" hasFeedback label="Mês">
-            <DatePicker
-              picker="month"
-              onChange={onChange}
-              style={{ width: '100%' }}
-            />
-          </Form.Item>
-          <Form.Item>
-            {isLoading ? (
-              <Button
-                type="primary"
-                loading
-                shape="round"
-                style={{ width: '100%' }}
-              >
-                Gerando escalas...
-              </Button>
-            ) : (
-              <Button
-                type="primary"
-                onClick={generateSchedules}
-                shape="round"
-                style={{ width: '100%' }}
-              >
-                Gerar
-              </Button>
-            )}
-          </Form.Item>
-        </Form>
-      </Card>
-    </div>
+    <>
+      <GenerateMonthScheduleCard />
+      <DoctorActivationCard doctors={doctors} />
+    </>
   )
+}
+
+export const getServerSideProps: GetStaticProps = async () => {
+  const doctors = await prisma.doctor.findMany({
+    select: {
+      id: true,
+      crm: true,
+      crmUf: true,
+      isActive: true,
+      user: {
+        select: {
+          name: true,
+          email: true,
+        },
+      },
+    },
+  })
+
+  return {
+    props: {
+      doctors,
+    },
+  }
 }
