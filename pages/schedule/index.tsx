@@ -66,7 +66,7 @@ export default function SchedulePage({
 
   return (
     <div>
-      {user.admin ? (
+      {user.doctor ? (
         // TO-DO add styling to switch button
         <div className={styles.switch}>
           <p>Ver todas as escalas?</p>
