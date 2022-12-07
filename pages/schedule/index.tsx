@@ -52,7 +52,7 @@ export default function SchedulePage({
   doctors,
   user,
 }: SchedulePageProps) {
-  const [showAllShifts, setShowAllShifts] = useState(false)
+  const [showAllShifts, setShowAllShifts] = useState(true)
 
   const dateCellRender = (value: Moment) => {
     const shiftsToShow = showAllShifts ? shifts : sessionUserShifts
@@ -67,10 +67,10 @@ export default function SchedulePage({
   return (
     <div>
       {user.doctor ? (
-        // TO-DO add styling to switch button
         <div className={styles.switch}>
           <p>Ver todas as escalas?</p>
           <Switch
+            defaultChecked
             checkedChildren="Sim"
             unCheckedChildren="Não"
             onChange={() => {
