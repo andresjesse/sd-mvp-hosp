@@ -101,7 +101,7 @@ export const getServerSideProps = withAuth(
     })
 
     const sessionUserShifts = shifts.filter((shift) => {
-      return shift.idDoctor === user.id
+      return shift.idDoctor === user.doctor?.id
     })
 
     const doctors = await prisma.doctor.findMany({
