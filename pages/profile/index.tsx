@@ -1,27 +1,21 @@
-import { Form, Input, Button, Select, Typography } from 'antd'
-import router from 'next/router'
-import { useState } from 'react'
-import axiosApi from '../../services/axiosApi'
+import { Form, Input, Button, Typography } from 'antd'
+
 import Link from 'next/link'
-import { fakeCrmUf } from '../../services/fakeCrmUf'
 import styles from './styles.module.css'
-const { Title, Text } = Typography
-import { GetServerSideProps } from 'next'
+const { Title } = Typography
+import { GetServerSidePropsContext } from 'next'
 import { SelectOutlined } from '@ant-design/icons'
 import { prisma } from '../../lib/prisma'
-
-type ProfileSummary = {
-  name: String
-  crm: String
-  crmUf: String
-  email: String
-}
+import { Doctor, User } from '@prisma/client'
+import withAuth from '../../utils/auth/withAuth'
+import { TSessionUser } from '../api/auth/[...nextauth]'
 
 interface ProfilePageProps {
-  data: ProfileSummary
+  doctor: Doctor
+  user: TSessionUser
 }
 
-export default function ProfilePage({ data }: ProfilePageProps) {
+export default function ProfilePage({ doctor, user }: ProfilePageProps) {
   return (
     <div className={styles.authPageWrapper}>
       <div className={styles.formContainer}>
@@ -37,7 +31,7 @@ export default function ProfilePage({ data }: ProfilePageProps) {
           <Form.Item
             name="name"
             label="Nome: "
-            initialValue={data.name}
+            initialValue={user.name}
             labelCol={{ span: 24 }}
             wrapperCol={{ span: 24 }}
           >
@@ -46,7 +40,7 @@ export default function ProfilePage({ data }: ProfilePageProps) {
           <Form.Item
             name="crm"
             label="CRM: "
-            initialValue={data.crm}
+            initialValue={doctor?.crm}
             labelCol={{ span: 24 }}
             wrapperCol={{ span: 24 }}
           >
@@ -55,7 +49,7 @@ export default function ProfilePage({ data }: ProfilePageProps) {
           <Form.Item
             name="crmUf"
             label="CRM UF: "
-            initialValue={data.crmUf}
+            initialValue={doctor?.crmUf}
             labelCol={{ span: 24 }}
             wrapperCol={{ span: 24 }}
           >
@@ -64,7 +58,7 @@ export default function ProfilePage({ data }: ProfilePageProps) {
           <Form.Item
             name="email"
             label="Email: "
-            initialValue={data.email}
+            initialValue={user.email}
             labelCol={{ span: 24 }}
             wrapperCol={{ span: 24 }}
           >
@@ -85,32 +79,22 @@ export default function ProfilePage({ data }: ProfilePageProps) {
   )
 }
 
-export const getServerSideProps: GetServerSideProps = async () => {
-  const id = 2
+export const getServerSideProps = withAuth(
+  async (ctx: GetServerSidePropsContext, user: TSessionUser) => {
+    const doctor = await prisma.doctor.findUnique({
+      where: {
+        id: user.id,
+      },
+      include: {
+        user: true,
+      },
+    })
 
-  const selectedUser = await prisma.user.findUnique({
-    where: {
-      id: id,
-    },
-  })
-
-  const selectedDoctor = await prisma.doctor.findUnique({
-    where: {
-      id: id,
-    },
-  })
-
-  console.log(selectedUser?.name)
-
-  let profile: ProfileSummary = {
-    //Como resolver isso?
-    name: selectedUser?.name,
-    crm: selectedDoctor?.crm,
-    crmUf: selectedDoctor?.crmUf,
-    email: selectedUser?.email,
+    return {
+      props: {
+        doctor: JSON.parse(JSON.stringify(doctor)),
+        user,
+      },
+    }
   }
-
-  return {
-    props: { data: profile },
-  }
-}
+)
