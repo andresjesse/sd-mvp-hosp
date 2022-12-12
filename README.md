@@ -23,3 +23,7 @@ Reset database (erases everything!): `npx prisma migrate reset`
 4. Run development server: `yarn dev`
 
 Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+
+## Additional docs
+
+Docs for authorization (PT-BR): [docs/use-authorization-on-pages](docs/use-authorization-on-pages)
