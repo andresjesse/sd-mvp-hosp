@@ -26,8 +26,6 @@ export const getServerSideProps = withAuth(
       RolesCheckModeEnum.ACCEPT_ANY
     )
 
-    // throw new Error('DB:Connection error' + JSON.stringify(process.env))
-
     return {
       props: {
         fetchData,
