@@ -9,6 +9,7 @@ import { prisma } from '../../../lib/prisma'
 import { Doctor } from '@prisma/client'
 import withAuth from '../../../utils/auth/withAuth'
 import { TSessionUser } from '../../api/auth/[...nextauth]'
+import axiosApi from '../../../services/axiosApi'
 
 interface ProfilePageProps {
   doctor: Doctor
@@ -16,6 +17,11 @@ interface ProfilePageProps {
 }
 
 export default function ProfilePage({ doctor, user }: ProfilePageProps) {
+  const handleUpdate = () => {
+    console.log('post')
+    axiosApi.post('/api/profile/edit', {})
+  }
+
   return (
     <div className={styles.authPageWrapper}>
       <div className={styles.formContainer}>
@@ -70,8 +76,10 @@ export default function ProfilePage({ doctor, user }: ProfilePageProps) {
             icon={<SelectOutlined />}
             disabled={false}
             size="large"
+            onClick={handleUpdate}
           >
-            <Link href="profile/edit"> Editar Perfil</Link>
+            TEMP
+            {/* <Link href="profile/edit"> Editar Perfil</Link> */}
           </Button>
         </Form>
       </div>
