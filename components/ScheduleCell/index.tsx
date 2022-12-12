@@ -2,16 +2,18 @@ import { message } from 'antd'
 import { DefaultOptionType } from 'antd/lib/select'
 import { useRouter } from 'next/router'
 import { useState } from 'react'
+import { TSessionUser } from '../../pages/api/auth/[...nextauth]'
 import { CompositeDoctor, CompositeShift } from '../../pages/schedule'
 import axiosApi from '../../services/axiosApi'
 import ShiftComponent from '../ShiftComponent'
 import AdminModal from './AdminModal'
+import DoctorModal from './DoctorModal'
 import styles from './styles.module.css'
 
 export type ShiftListItem = {
   id: number
   shiftTime: string
-  doctorName: string
+  doctorName: string | null
   idDoctor?: number
   isFixed: boolean
   sector: string
@@ -20,9 +22,10 @@ export type ShiftListItem = {
 interface CellProps {
   shifts: Array<CompositeShift>
   doctors: Array<CompositeDoctor>
+  user: TSessionUser
 }
 
-export default function ScheduleCell({ shifts, doctors }: CellProps) {
+export default function ScheduleCell({ shifts, doctors, user }: CellProps) {
   const router = useRouter()
   const [isAdminModalOpen, setIsAdminModalOpen] = useState(false)
 
@@ -47,7 +50,7 @@ export default function ScheduleCell({ shifts, doctors }: CellProps) {
       shiftsList.push({
         id: shift.id,
         shiftTime: getFormatedHour(new Date(shift.startDate)),
-        doctorName: !shift.doctor ? 'Selecionar' : shift.doctor?.user.name,
+        doctorName: !shift.doctor ? null : shift.doctor?.user.name,
         idDoctor: shift.doctor?.id,
         isFixed: shift.isFixed,
         sector: shift.sector.abbreviation,
@@ -120,14 +123,23 @@ export default function ScheduleCell({ shifts, doctors }: CellProps) {
         </ul>
       </div>
 
-      <AdminModal
-        isModalOpen={isAdminModalOpen}
-        onCloseModal={() => setIsAdminModalOpen(false)}
-        doctorsList={getDoctorsList()}
-        shiftsList={getShiftsList()}
-        onSelectDoctor={handleSelectDoctor}
-        onToggleIsFixed={handleToggleIsFixed}
-      />
+      {user.admin ? (
+        <AdminModal
+          isModalOpen={isAdminModalOpen}
+          onCloseModal={() => setIsAdminModalOpen(false)}
+          doctorsList={getDoctorsList()}
+          shiftsList={getShiftsList()}
+          onSelectDoctor={handleSelectDoctor}
+          onToggleIsFixed={handleToggleIsFixed}
+        />
+      ) : (
+        <DoctorModal
+          isModalOpen={isAdminModalOpen}
+          onCloseModal={() => setIsAdminModalOpen(false)}
+          shiftsList={getShiftsList()}
+          idDoctor={user.doctor?.id}
+        />
+      )}
     </>
   )
 }
