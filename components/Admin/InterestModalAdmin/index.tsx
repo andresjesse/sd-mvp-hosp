@@ -1,12 +1,8 @@
-import { CheckOutlined } from '@ant-design/icons'
 import { Doctor, Interest, Sector, User } from '@prisma/client'
-import { Form, message, Modal, Switch } from 'antd'
+import { Form, Modal } from 'antd'
 import { Moment } from 'moment'
-import { useRouter } from 'next/router'
+// import { useRouter } from 'next/router'
 import SHIFTS from '../../../constants/Shifts'
-import { sectors } from '../../../prisma/seeds/sectors'
-import axiosApi from '../../../services/axiosApi'
-import createDateUTC from '../../../utils/datetime/createDateUTC'
 import isSameDay from '../../../utils/datetime/isSameDay'
 import isSameShiftUTC from '../../../utils/datetime/isSameShiftUTC'
 
@@ -27,47 +23,47 @@ export default function InterestsModal({
   users,
   onCloseModal,
 }: InterestModalAdminProps) {
-  const router = useRouter()
+  // const router = useRouter()
   const [form] = Form.useForm()
 
   const handleCancel = () => {
     onCloseModal()
   }
 
-  const handleToggleInterest = async (
-    idSector: number,
-    startUTC: number,
-    endUTC: number
-  ) => {
-    if (selectedDate) {
-      const startDate = createDateUTC(selectedDate.toDate(), startUTC)
-      const endDate = createDateUTC(selectedDate.toDate(), endUTC)
+  // const handleToggleInterest = async (
+  //   idSector: number,
+  //   startUTC: number,
+  //   endUTC: number
+  // ) => {
+  //   if (selectedDate) {
+  //     const startDate = createDateUTC(selectedDate.toDate(), startUTC)
+  //     const endDate = createDateUTC(selectedDate.toDate(), endUTC)
 
-      axiosApi
-        .post('/api/interest/toggle', {
-          idSector,
-          startDate,
-          endDate,
-        })
-        .then((res) => {
-          if (res.status == 200) {
-            message.info('Salvo com sucesso!')
-          } else {
-            throw new Error(res.statusText)
-          }
-        })
-        .catch((err) => {
-          console.log(err)
-          message.error('Erro ao salvar o interesse! Tente mais tarde.')
-        })
-        .finally(() => {
-          router.push(location.href)
-        })
-    }
-  }
+  //     axiosApi
+  //       .post('/api/interest/toggle', {
+  //         idSector,
+  //         startDate,
+  //         endDate,
+  //       })
+  //       .then((res) => {
+  //         if (res.status == 200) {
+  //           message.info('Salvo com sucesso!')
+  //         } else {
+  //           throw new Error(res.statusText)
+  //         }
+  //       })
+  //       .catch((err) => {
+  //         console.log(err)
+  //         message.error('Erro ao salvar o interesse! Tente mais tarde.')
+  //       })
+  //       .finally(() => {
+  //         router.push(location.href)
+  //       })
+  //   }
+  // }
   return (
     <Modal
-      title={`Cadastro de Interesse para o dia: ${selectedDate?.format(
+      title={`Interesses registrados para o dia: ${selectedDate?.format(
         'DD/MM/YY'
       )}`}
       open={selectedDate != null}
@@ -104,6 +100,7 @@ export default function InterestsModal({
                 <Form.Item
                   key={index}
                   label={`${user?.name}: ${startHourLocalTime} às ${endHourLocalTime} - em ${sector?.abbreviation}`}
+                  colon={false}
                 ></Form.Item>
               )
             }

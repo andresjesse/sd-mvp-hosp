@@ -1,12 +1,14 @@
 import { Interest, Sector } from '@prisma/client'
 import { Badge, Calendar } from 'antd'
 import { Moment } from 'moment'
-import { GetStaticProps } from 'next'
+import { GetServerSidePropsContext } from 'next'
 import { useState } from 'react'
 import { prisma } from '../../lib/prisma'
 
 import InterestsModal from '../../components/InterestsModal'
 import isSameDay from '../../utils/datetime/isSameDay'
+import { TSessionUser } from '../api/auth/[...nextauth]'
+import withAuth from '../../utils/auth/withAuth'
 
 interface InterestProps {
   interests: Array<Interest>
@@ -60,35 +62,38 @@ export default function App({ interests, sectors }: InterestProps) {
   )
 }
 
-export const getServerSideProps: GetStaticProps = async () => {
-  const interests = await prisma.interest.findMany({
-    include: {
-      doctor: {
-        select: {
-          id: true,
-          crm: true,
-          user: {
-            select: {
-              id: true,
-              name: true,
+// export const getServerSideProps: GetStaticProps = async () => {
+export const getServerSideProps = withAuth(
+  async (ctx: GetServerSidePropsContext, user: TSessionUser) => {
+    const interests = await prisma.interest.findMany({
+      include: {
+        doctor: {
+          select: {
+            id: true,
+            crm: true,
+            user: {
+              select: {
+                id: true,
+                name: true,
+              },
             },
           },
         },
       },
-    },
-    where: {
-      idDoctor: {
-        equals: 1, //TODO: replace by doctor logged in id
+      where: {
+        idDoctor: {
+          equals: user.doctor?.id,
+        },
       },
-    },
-  })
+    })
 
-  const sectors = await prisma.sector.findMany()
+    const sectors = await prisma.sector.findMany()
 
-  return {
-    props: {
-      interests: JSON.parse(JSON.stringify(interests)), //next does not serialize objects like prisma Datetime
-      sectors,
-    },
+    return {
+      props: {
+        interests: JSON.parse(JSON.stringify(interests)), //next does not serialize objects like prisma Datetime
+        sectors,
+      },
+    }
   }
-}
+)
