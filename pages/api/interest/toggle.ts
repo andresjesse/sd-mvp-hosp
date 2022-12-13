@@ -2,9 +2,12 @@
 
 import { Interest } from '@prisma/client'
 import type { NextApiRequest, NextApiResponse } from 'next'
+import { Session, unstable_getServerSession } from 'next-auth'
 import { ApiHandleError } from '../../../errors/ApiHandleError'
+import { UnauthenticatedUserError } from '../../../errors/UnauthenticatedUserError'
 import { prisma } from '../../../lib/prisma'
 import withErrorHandler from '../../../utils/api/withErrorHandler'
+import { authOptions, TSessionUser } from '../auth/[...nextauth]'
 
 const handlerFunction = async (
   req: NextApiRequest,
@@ -13,9 +16,20 @@ const handlerFunction = async (
   if (req.method === 'POST') {
     const { startDate, endDate, idSector } = req.body
 
-    //TODO: get idDoctor from session
+    const session: Session | null = await unstable_getServerSession(
+      req,
+      res,
+      authOptions
+    )
+
+    if (session === null || session.user === undefined) {
+      throw new UnauthenticatedUserError('Acesse sua conta antes de continuar.')
+    }
+
+    const user = session.user as TSessionUser
+
     //TODO: validate shift start and end date with SHIFTS constant
-    const idDoctor = 1
+    const idDoctor = user.doctor?.id
 
     const errors: { [key: string]: string | Iterable<string> } = {}
     if (!startDate)
