@@ -1,11 +1,12 @@
-import { Button, Modal } from 'antd'
+import { Button, List, Modal } from 'antd'
 import { ShiftListItem } from '..'
 
 interface DoctorModalProps {
   shiftsList: Array<ShiftListItem>
   isModalOpen: boolean
   onCloseModal: () => void
-  idDoctor?: number
+  idDoctor: number
+  onSelectDoctor: (shift: ShiftListItem, idDoctor: number) => void
 }
 
 export default function DoctorModal({
@@ -13,7 +14,13 @@ export default function DoctorModal({
   isModalOpen,
   onCloseModal,
   idDoctor,
+  onSelectDoctor,
 }: DoctorModalProps) {
+
+  const handleSelectDoctor = (shift: ShiftListItem) => {
+    onSelectDoctor(shift, idDoctor)
+  };
+
   return (
     <Modal
       title="Escala do dia"
@@ -26,34 +33,23 @@ export default function DoctorModal({
         </Button>,
       ]}
     >
-      {JSON.stringify(shiftsList)}
-      DOCTOR: {idDoctor}
-      Render condicional, só mostrar botão nos turnos onde doctorName = null
-      {/* <List
+       <List
         itemLayout="horizontal"
         dataSource={shiftsList}
         renderItem={(shift) => (
           <List.Item>
             <List.Item.Meta title={shift.sector} />
             <List.Item.Meta title={shift.shiftTime + ': '} />
-            <Select
-              defaultValue={shift.doctorName}
-              style={{ width: 200, marginRight: 20 }}
-              options={doctorsList}
-              onChange={(value) => onSelectDoctor(shift, parseInt(value))}
-              allowClear
-            />
-            <Switch
-              style={{ marginRight: 10 }}
-              checkedChildren={<CheckOutlined />}
-              unCheckedChildren={<CloseOutlined />}
-              checked={shift.isFixed}
-              onChange={() => onToggleIsFixed(shift)}
-            />
-            <List.Item.Meta title="É fixo?" />
+            {shift.doctorName? (
+            <List.Item.Meta title={shift.doctorName} /> )
+            : (
+              <Button key="assign-self" type="primary" onClick={() => handleSelectDoctor(shift)}>
+          Associar-se ao turno
+        </Button>
+            )}
           </List.Item>
         )}
-      /> */}
+      />
     </Modal>
   )
 }

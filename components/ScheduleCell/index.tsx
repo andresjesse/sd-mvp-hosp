@@ -137,7 +137,8 @@ export default function ScheduleCell({ shifts, doctors, user }: CellProps) {
           isModalOpen={isAdminModalOpen}
           onCloseModal={() => setIsAdminModalOpen(false)}
           shiftsList={getShiftsList()}
-          idDoctor={user.doctor?.id}
+          idDoctor={user.doctor?.id || -1}
+          onSelectDoctor={handleSelectDoctor}
         />
       )}
     </>
