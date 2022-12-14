@@ -32,21 +32,23 @@ const handlerFunction = async (
 
     const { name, email, password, crm, crmUf } = req.body
 
-    const aux = await prisma.doctor.findUnique({
-      where: { userId: user.id },
-    })
+    const isDoctor =
+      (await prisma.doctor.findUnique({
+        where: { userId: user.id },
+      })) != null
+
     const errors: { [key: string]: string | Iterable<string> } = {}
     if (!name) errors['name'] = ['Nome não pode ser vazio!']
     if (!email) errors['email'] = ['Email não pode ser vazio!']
-    if (!crm && aux != null) errors['crm'] = ['CRM não pode ser vazio!']
-    if (!crmUf && aux != null) errors['crmUf'] = ['CRM UF não pode ser vazio!']
+    if (!crm && isDoctor) errors['crm'] = ['CRM não pode ser vazio!']
+    if (!crmUf && isDoctor) errors['crmUf'] = ['CRM UF não pode ser vazio!']
 
     if (Object.keys(errors).length > 0) throw new ApiHandleError(400, errors)
 
     if (password) {
       const passwordHash = await hasher.hashAsync(password)
 
-      const updatedUser = await prisma.user.update({
+      await prisma.user.update({
         where: {
           id: user.id,
         },
@@ -56,9 +58,8 @@ const handlerFunction = async (
           passwordHash: passwordHash,
         },
       })
-      console.log(updatedUser)
     } else {
-      const updatedUser = await prisma.user.update({
+      await prisma.user.update({
         where: {
           id: user.id,
         },
@@ -67,11 +68,10 @@ const handlerFunction = async (
           email: email,
         },
       })
-      console.log(updatedUser)
     }
 
-    if (aux != null) {
-      const updatedDoctor = await prisma.doctor.update({
+    if (isDoctor) {
+      await prisma.doctor.update({
         where: {
           userId: user.id,
         },
@@ -80,32 +80,8 @@ const handlerFunction = async (
           crmUf: crmUf,
         },
       })
-      console.log(updatedDoctor)
     }
 
-    //     const doctor = await prisma.doctor.create({
-    //       data: {
-    //         crm,
-    //         crmUf,
-    //         user: {
-    //           create: {
-    //             name,
-    //             email,
-    //             passwordHash,
-    //           },
-    //         },
-    //       },
-    //     })
-
-    //
-    //     const doctor = await prisma.doctor.findUnique({
-    //       where: {
-    //         id: 1,
-    //       },
-    //       include: {
-    //         user: true,
-    //       },
-    //     })
     res.status(200).end()
   }
 }
