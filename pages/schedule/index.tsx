@@ -63,7 +63,7 @@ export default function SchedulePage({
 
     return (
       <div>
-        <ScheduleCell shifts={listData} doctors={doctors} />
+        <ScheduleCell shifts={listData} doctors={doctors} user={user} />
       </div>
     )
   }
