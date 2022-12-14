@@ -86,35 +86,42 @@ export default function ProfilePage({ doctor, user }: ProfilePageProps) {
           >
             <Input id="name" size="large" />
           </Form.Item>
-          <Form.Item
-            name="crm"
-            label="CRM: "
-            initialValue={doctor?.crm}
-            labelCol={{ span: 24 }}
-            wrapperCol={{ span: 24 }}
-          >
-            <Input id="crm" size="large" />
-          </Form.Item>
-          <Form.Item
-            name="crmUf"
-            label="CRM UF: "
-            initialValue={doctor?.crmUf}
-            labelCol={{ span: 24 }}
-            wrapperCol={{ span: 24 }}
-          >
-            <Select
-              //onChange={(uf) => {
-              //  setValor({ ...formValue, ['crmUf']: uf })
-              //}}
-              className={styles.formBorderRadius}
+
+          {doctor?.crm && (
+            <Form.Item
+              name="crm"
+              label="CRM: "
+              initialValue={doctor?.crm}
+              labelCol={{ span: 24 }}
+              wrapperCol={{ span: 24 }}
             >
-              {fakeCrmUf.map((uf) => (
-                <Select.Option key={uf} value={uf}>
-                  {uf}
-                </Select.Option>
-              ))}
-            </Select>
-          </Form.Item>
+              <Input id="crm" size="large" />
+            </Form.Item>
+          )}
+
+          {doctor?.crmUf && (
+            <Form.Item
+              name="crmUf"
+              label="CRM UF: "
+              initialValue={doctor?.crmUf}
+              labelCol={{ span: 24 }}
+              wrapperCol={{ span: 24 }}
+            >
+              <Select
+                //onChange={(uf) => {
+                //  setValor({ ...formValue, ['crmUf']: uf })
+                //}}
+                className={styles.formBorderRadius}
+              >
+                {fakeCrmUf.map((uf) => (
+                  <Select.Option key={uf} value={uf}>
+                    {uf}
+                  </Select.Option>
+                ))}
+              </Select>
+            </Form.Item>
+          )}
+
           <Form.Item
             name="email"
             label="Email: "
