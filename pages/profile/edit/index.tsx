@@ -1,26 +1,75 @@
-import { Form, Input, Button, Typography } from 'antd'
+import { Form, Input, Button, notification, Typography, Select } from 'antd'
 
-import Link from 'next/link'
+import router from 'next/router'
+import { useState } from 'react'
 import styles from './styles.module.css'
-const { Title } = Typography
+const { Title, Text } = Typography
 import { GetServerSidePropsContext } from 'next'
 import { SelectOutlined } from '@ant-design/icons'
 import { prisma } from '../../../lib/prisma'
 import { Doctor } from '@prisma/client'
 import withAuth from '../../../utils/auth/withAuth'
 import { TSessionUser } from '../../api/auth/[...nextauth]'
+import axiosApi from '../../../services/axiosApi'
+import { fakeCrmUf } from '../../../services/fakeCrmUf'
 
 interface ProfilePageProps {
   doctor: Doctor
   user: TSessionUser
 }
 
+const initialObjError = {
+  name: '',
+  email: '',
+  password: '',
+  crm: '',
+  crmUf: '',
+}
+
 export default function ProfilePage({ doctor, user }: ProfilePageProps) {
+  const [form] = Form.useForm()
+  const [objError, setObjError] = useState(initialObjError)
+
+  const handleUpdate = (values: { [key: string]: string }) => {
+    axiosApi
+      .post('/api/profile/edit', {
+        name: values.name,
+        email: values.email,
+        password: values.password,
+        crm: values.crm,
+        crmUf: values.crmUf,
+      })
+      .then((response) => {
+        if (response.status == 200) {
+          notification.open({
+            message: 'Perfil atualizado com sucesso!',
+            //description: 'Você pode fazer login agora.',
+            duration: 0,
+          })
+          router.push('/profile')
+        } else {
+          notification.open({
+            message: 'Erro ao atualizar perfi!!',
+            description: 'Entre em contato com o suporte.',
+            duration: 0,
+          })
+        }
+      })
+      .catch((e) => {
+        if (e.response.data.data) {
+          setObjError(e.response.data.data)
+          return
+        }
+      })
+  }
+
   return (
     <div className={styles.authPageWrapper}>
       <div className={styles.formContainer}>
         <Form
-          name="formNew"
+          form={form}
+          name="formUpdate"
+          onFinish={handleUpdate}
           //layout="horizontal"
           // disabled={true}
         >
@@ -37,24 +86,42 @@ export default function ProfilePage({ doctor, user }: ProfilePageProps) {
           >
             <Input id="name" size="large" />
           </Form.Item>
-          <Form.Item
-            name="crm"
-            label="CRM: "
-            initialValue={doctor?.crm}
-            labelCol={{ span: 24 }}
-            wrapperCol={{ span: 24 }}
-          >
-            <Input id="crm" size="large" />
-          </Form.Item>
-          <Form.Item
-            name="crmUf"
-            label="CRM UF: "
-            initialValue={doctor?.crmUf}
-            labelCol={{ span: 24 }}
-            wrapperCol={{ span: 24 }}
-          >
-            <Input id="crmUf" size="large" />
-          </Form.Item>
+
+          {doctor?.crm && (
+            <Form.Item
+              name="crm"
+              label="CRM: "
+              initialValue={doctor?.crm}
+              labelCol={{ span: 24 }}
+              wrapperCol={{ span: 24 }}
+            >
+              <Input id="crm" size="large" />
+            </Form.Item>
+          )}
+
+          {doctor?.crmUf && (
+            <Form.Item
+              name="crmUf"
+              label="CRM UF: "
+              initialValue={doctor?.crmUf}
+              labelCol={{ span: 24 }}
+              wrapperCol={{ span: 24 }}
+            >
+              <Select
+                //onChange={(uf) => {
+                //  setValor({ ...formValue, ['crmUf']: uf })
+                //}}
+                className={styles.formBorderRadius}
+              >
+                {fakeCrmUf.map((uf) => (
+                  <Select.Option key={uf} value={uf}>
+                    {uf}
+                  </Select.Option>
+                ))}
+              </Select>
+            </Form.Item>
+          )}
+
           <Form.Item
             name="email"
             label="Email: "
@@ -64,14 +131,34 @@ export default function ProfilePage({ doctor, user }: ProfilePageProps) {
           >
             <Input id="email" size="large" />
           </Form.Item>
+          <Form.Item
+            name="password"
+            label="Senha: "
+            labelCol={{ span: 24 }}
+            wrapperCol={{ span: 24 }}
+          >
+            <Input.Password id="password" size="large" />
+          </Form.Item>
+          {objError && (
+            <Text type="danger">
+              {objError.name ||
+                objError.crm ||
+                objError.crmUf ||
+                objError.email}
+            </Text>
+          )}
           <Button
             className={styles.button}
             shape="round"
             icon={<SelectOutlined />}
             disabled={false}
             size="large"
+            type="primary"
+            htmlType="submit"
+            //onClick={handleUpdate}
           >
-            <Link href="profile/edit"> Editar Perfil</Link>
+            Salvar
+            {/* <Link href="profile/edit"> Editar Perfil</Link> */}
           </Button>
         </Form>
       </div>
@@ -83,17 +170,22 @@ export const getServerSideProps = withAuth(
   async (ctx: GetServerSidePropsContext, user: TSessionUser) => {
     const doctor = await prisma.doctor.findUnique({
       where: {
-        id: user.id,
+        userId: user.id,
       },
       include: {
         user: true,
+      },
+    })
+    const newUser = await prisma.user.findUnique({
+      where: {
+        id: user.id,
       },
     })
 
     return {
       props: {
         doctor: JSON.parse(JSON.stringify(doctor)),
-        user,
+        user: JSON.parse(JSON.stringify(newUser)),
       },
     }
   }
