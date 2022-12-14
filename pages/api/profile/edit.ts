@@ -1,10 +1,13 @@
 // Next.js API route support: https://nextjs.org/docs/api-routes/introduction
 import { Doctor } from '@prisma/client'
 import type { NextApiRequest, NextApiResponse } from 'next'
+import { prisma } from '../../../lib/prisma'
 import { Session, unstable_getServerSession } from 'next-auth'
 import { UnauthenticatedUserError } from '../../../errors/UnauthenticatedUserError'
+import { ApiHandleError } from '../../../errors/ApiHandleError'
 import withErrorHandler from '../../../utils/api/withErrorHandler'
 import { authOptions, TSessionUser } from '../auth/[...nextauth]'
+import hasher from '../../../utils/hasher/BcryptjsHasher'
 
 const handlerFunction = async (
   req: NextApiRequest,
@@ -17,41 +20,68 @@ const handlerFunction = async (
       authOptions
     )
 
+    //const { name, email, password, crm, crmUf } = req.body
+
     if (session === null || session.user === undefined) {
       throw new UnauthenticatedUserError('Acesse sua conta antes de continuar.')
     }
 
     const user = session.user as TSessionUser
-
     console.log('TSessionUser', user)
+    //console.log(req.body)
 
-    //     const { name, email, newEmail, password, newPassword, crm, crmUf } =
-    //       req.body
+    const { name, email, password, crm, crmUf } = req.body
 
-    //     const errors: { [key: string]: string | Iterable<string> } = {}
-    //     if (!name) errors['name'] = ['Nome não pode ser vazio!']
-    //     if (!email) errors['email'] = ['Email não pode ser vazio!']
-    //     if (!password) errors['password'] = ['Senha não pode ser vazio!']
-    //     if (!crm) errors['crm'] = ['CRM não pode ser vazio!']
-    //     if (!crmUf) errors['crmUf'] = ['CRM UF não pode ser vazio!']
-    //     // const user = await prisma.user.findUnique({
-    //     //   where: { email: String(email) },
-    //     // })
-    //     // console.log(user)
-    //     if (user == null) errors['email'] = ['Usuário não encontrado!']
+    const aux = await prisma.doctor.findUnique({
+      where: { userId: user.id },
+    })
+    const errors: { [key: string]: string | Iterable<string> } = {}
+    if (!name) errors['name'] = ['Nome não pode ser vazio!']
+    if (!email) errors['email'] = ['Email não pode ser vazio!']
+    if (!crm && aux != null) errors['crm'] = ['CRM não pode ser vazio!']
+    if (!crmUf && aux != null) errors['crmUf'] = ['CRM UF não pode ser vazio!']
 
-    //     if (Object.keys(errors).length > 0) throw new ApiHandleError(400, errors)
+    if (Object.keys(errors).length > 0) throw new ApiHandleError(400, errors)
 
-    //     const passwordHash = await hasher.hashAsync(password)
+    if (password) {
+      const passwordHash = await hasher.hashAsync(password)
 
-    //     /* const updatedDoctor = await prisma.shift.update({
-    //         data: {
-    //           idDoctor: idDoctor ? idDoctor : null,
-    //         },
-    //         where: {
-    //           id: shift.id,
-    //         },
-    //       })
+      const updatedUser = await prisma.user.update({
+        where: {
+          id: user.id,
+        },
+        data: {
+          name: name,
+          email: email,
+          passwordHash: passwordHash,
+        },
+      })
+      console.log(updatedUser)
+    } else {
+      const updatedUser = await prisma.user.update({
+        where: {
+          id: user.id,
+        },
+        data: {
+          name: name,
+          email: email,
+        },
+      })
+      console.log(updatedUser)
+    }
+
+    if (aux != null) {
+      const updatedDoctor = await prisma.doctor.update({
+        where: {
+          userId: user.id,
+        },
+        data: {
+          crm: crm,
+          crmUf: crmUf,
+        },
+      })
+      console.log(updatedDoctor)
+    }
 
     //     const doctor = await prisma.doctor.create({
     //       data: {
@@ -67,7 +97,7 @@ const handlerFunction = async (
     //       },
     //     })
 
-    // */
+    //
     //     const doctor = await prisma.doctor.findUnique({
     //       where: {
     //         id: 1,
@@ -76,7 +106,7 @@ const handlerFunction = async (
     //         user: true,
     //       },
     //     })
-    //     res.status(200).json(doctor)
+    res.status(200).end()
   }
 }
 

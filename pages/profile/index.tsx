@@ -60,9 +60,15 @@ export default function ProfilePage({ doctor, user }: ProfilePageProps) {
 
 export const getServerSideProps = withAuth(
   async (ctx: GetServerSidePropsContext, user: TSessionUser) => {
-    const doctor = await prisma.doctor.findUnique({
+    const newUser = await prisma.user.findUnique({
       where: {
         id: user.id,
+      },
+    })
+
+    const doctor = await prisma.doctor.findUnique({
+      where: {
+        userId: user.id,
       },
       include: {
         user: true,
@@ -72,7 +78,7 @@ export const getServerSideProps = withAuth(
     return {
       props: {
         doctor: JSON.parse(JSON.stringify(doctor)),
-        user,
+        user: JSON.parse(JSON.stringify(newUser)),
       },
     }
   }
