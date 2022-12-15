@@ -16,10 +16,9 @@ export default function DoctorModal({
   idDoctor,
   onSelectDoctor,
 }: DoctorModalProps) {
-
   const handleSelectDoctor = (shift: ShiftListItem) => {
     onSelectDoctor(shift, idDoctor)
-  };
+  }
 
   return (
     <Modal
@@ -33,19 +32,23 @@ export default function DoctorModal({
         </Button>,
       ]}
     >
-       <List
+      <List
         itemLayout="horizontal"
         dataSource={shiftsList}
         renderItem={(shift) => (
           <List.Item>
             <List.Item.Meta title={shift.sector} />
             <List.Item.Meta title={shift.shiftTime + ': '} />
-            {shift.doctorName? (
-            <List.Item.Meta title={shift.doctorName} /> )
-            : (
-              <Button key="assign-self" type="primary" onClick={() => handleSelectDoctor(shift)}>
-          Associar-se ao turno
-        </Button>
+            {shift.doctorName ? (
+              <List.Item.Meta title={shift.doctorName} />
+            ) : (
+              <Button
+                key="assign-self"
+                type="primary"
+                onClick={() => handleSelectDoctor(shift)}
+              >
+                Associar-se ao turno
+              </Button>
             )}
           </List.Item>
         )}

@@ -1,5 +1,5 @@
 import { Interest, Sector } from '@prisma/client'
-import { Badge, Calendar } from 'antd'
+import { Badge, Calendar, Tag, Tooltip } from 'antd'
 import { Moment } from 'moment'
 import { GetServerSidePropsContext } from 'next'
 import { useState } from 'react'
@@ -9,6 +9,7 @@ import InterestsModal from '../../components/InterestsModal'
 import isSameDay from '../../utils/datetime/isSameDay'
 import { TSessionUser } from '../api/auth/[...nextauth]'
 import withAuth from '../../utils/auth/withAuth'
+import styles from './styles.module.css'
 
 interface InterestProps {
   interests: Array<Interest>
@@ -41,9 +42,13 @@ export default function App({ interests, sectors }: InterestProps) {
         const text = `${sector?.abbreviation} - ${start} às ${end}`
 
         return (
-          <h4 key={fileredInterest.id}>
-            <Badge key={fileredInterest.id} color={'blue'} text={text} />
-          </h4>
+          <div>
+            <Tooltip title={text}>
+              <Tag className={styles.tag} color={'blue'}>
+                {text}
+              </Tag>
+            </Tooltip>
+          </div>
         )
       })
   }

@@ -1,0 +1,8 @@
+.tag {
+  width: 90%;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  margin: 0;
+  vertical-align: top;
+  margin-bottom: 0.1em;
+}

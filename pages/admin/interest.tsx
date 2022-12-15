@@ -1,5 +1,5 @@
 import { Doctor, Interest, Sector, User } from '@prisma/client'
-import { Badge, Calendar } from 'antd'
+import { Badge, Calendar, Tag, Tooltip } from 'antd'
 import { Moment } from 'moment'
 import { GetStaticProps } from 'next'
 import { useState } from 'react'
@@ -7,6 +7,7 @@ import { prisma } from '../../lib/prisma'
 
 import InterestsModal from '../../components/Admin/InterestModalAdmin'
 import isSameDay from '../../utils/datetime/isSameDay'
+import styles from './styles.module.css'
 
 interface InterestProps {
   interests: Array<Interest>
@@ -50,9 +51,13 @@ export default function App({
         const text = `${sector?.abbreviation} - ${start} às ${end} - ${users?.name}`
 
         return (
-          <h4 key={fileredInterest.id}>
-            <Badge key={fileredInterest.id} color={'blue'} text={text} />
-          </h4>
+          <div>
+            <Tooltip title={text}>
+              <Tag className={styles.tag} color={'blue'}>
+                {text}
+              </Tag>
+            </Tooltip>
+          </div>
         )
       })
   }
