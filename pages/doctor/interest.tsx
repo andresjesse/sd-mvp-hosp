@@ -1,14 +1,15 @@
 import { Interest, Sector } from '@prisma/client'
-import { Badge, Calendar } from 'antd'
+import { Calendar, Tag, Tooltip } from 'antd'
 import { Moment } from 'moment'
 import { GetServerSidePropsContext } from 'next'
 import { useState } from 'react'
 import { prisma } from '../../lib/prisma'
 
 import InterestsModal from '../../components/InterestsModal'
+import withAuth from '../../utils/auth/withAuth'
 import isSameDay from '../../utils/datetime/isSameDay'
 import { TSessionUser } from '../api/auth/[...nextauth]'
-import withAuth from '../../utils/auth/withAuth'
+import styles from './styles.module.css'
 
 interface InterestProps {
   interests: Array<Interest>
@@ -31,7 +32,7 @@ export default function App({ interests, sectors }: InterestProps) {
       .filter((interest) =>
         isSameDay(new Date(interest.startDate), calendarDate.toDate())
       )
-      .map((fileredInterest) => {
+      .map((fileredInterest, index) => {
         const sector = sectors.find((s) => s.id == fileredInterest.idSector)
 
         // UI in localtime (getHours instead of getUTCHours)
@@ -41,9 +42,13 @@ export default function App({ interests, sectors }: InterestProps) {
         const text = `${sector?.abbreviation} - ${start} às ${end}`
 
         return (
-          <h4 key={fileredInterest.id}>
-            <Badge key={fileredInterest.id} color={'blue'} text={text} />
-          </h4>
+          <div key={index}>
+            <Tooltip title={text}>
+              <Tag className={styles.tag} color={'blue'}>
+                {text}
+              </Tag>
+            </Tooltip>
+          </div>
         )
       })
   }

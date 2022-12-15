@@ -1,6 +1,6 @@
 import { prisma } from './../../lib/prisma'
 import { Doctor, Sector, Shift, User } from '@prisma/client'
-import { Calendar, Switch } from 'antd'
+import { Calendar, Space, Switch, Tag } from 'antd'
 import { Moment } from 'moment'
 import { GetServerSidePropsContext } from 'next'
 import ScheduleCell from '../../components/ScheduleCell'
@@ -85,6 +85,23 @@ export default function SchedulePage({
       ) : (
         <></>
       )}
+
+      <div className={styles.labelsContainer}>
+        <Space wrap>
+          <Tag className={styles.tag} color={'blue'}>
+            Fixo preenchido
+          </Tag>
+          <Tag className={styles.tag} color={'rgb(139, 214, 224)'}>
+            Fixo vago
+          </Tag>
+          <Tag className={styles.tag} color={'green'}>
+            Não fixo preenchido
+          </Tag>
+          <Tag className={styles.tag} color={'lightgrey'}>
+            Não fixo vago
+          </Tag>
+        </Space>
+      </div>
 
       <Calendar dateCellRender={dateCellRender} />
     </div>

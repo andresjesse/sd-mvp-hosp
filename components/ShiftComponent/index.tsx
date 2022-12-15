@@ -1,5 +1,6 @@
-import { Badge } from 'antd'
+import { Tag, Tooltip } from 'antd'
 import { CompositeShift } from '../../pages/schedule'
+import styles from './styles.module.css'
 
 interface ShiftProps {
   shift: CompositeShift
@@ -24,11 +25,10 @@ export default function ShiftComponent({ shift }: ShiftProps) {
   const text = `${shift.sector.abbreviation} ${startDate} - ${doctorName}`
 
   return (
-    <Badge
-      color={badgeColor}
-      text={text}
-      style={{ marginBottom: 5 }}
-      size="default"
-    />
+    <Tooltip title={text}>
+      <Tag className={styles.tag} color={badgeColor}>
+        {text}
+      </Tag>
+    </Tooltip>
   )
 }
