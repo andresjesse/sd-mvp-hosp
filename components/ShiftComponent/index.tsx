@@ -1,4 +1,4 @@
-import { Badge, Tag, Tooltip } from 'antd'
+import { Tag, Tooltip } from 'antd'
 import { CompositeShift } from '../../pages/schedule'
 import styles from './styles.module.css'
 

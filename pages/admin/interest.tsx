@@ -1,5 +1,5 @@
 import { Doctor, Interest, Sector, User } from '@prisma/client'
-import { Badge, Calendar, Tag, Tooltip } from 'antd'
+import { Calendar, Tag, Tooltip } from 'antd'
 import { Moment } from 'moment'
 import { GetStaticProps } from 'next'
 import { useState } from 'react'
@@ -37,7 +37,7 @@ export default function App({
       .filter((interest) =>
         isSameDay(new Date(interest.startDate), calendarDate.toDate())
       )
-      .map((fileredInterest) => {
+      .map((fileredInterest, index) => {
         const sector = sectors.find((s) => s.id == fileredInterest.idSector)
 
         const doctor = doctors.find((d) => d.id == fileredInterest.idDoctor)
@@ -51,7 +51,7 @@ export default function App({
         const text = `${sector?.abbreviation} - ${start} às ${end} - ${users?.name}`
 
         return (
-          <div>
+          <div key={index}>
             <Tooltip title={text}>
               <Tag className={styles.tag} color={'blue'}>
                 {text}
