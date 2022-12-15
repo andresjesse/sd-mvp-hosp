@@ -33,3 +33,9 @@
 .switchContainer > :not(:first-child) {
   margin-left: 16px;
 }
+
+.labelsContainer {
+  display: grid;
+  padding: 1em;
+  justify-items: center;
+}

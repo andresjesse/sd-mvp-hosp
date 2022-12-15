@@ -82,5 +82,7 @@ a {
   height: fit-content;
   min-height: 86px;
   padding: 0.5em 0;
+  white-space: nowrap;
   overflow: hidden;
+  text-overflow: ellipsis;
 }
