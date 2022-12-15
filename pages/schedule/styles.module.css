@@ -39,3 +39,8 @@
   padding: 1em;
   justify-items: center;
 }
+
+.tag {
+  width: 12em;
+  text-align: center;
+}

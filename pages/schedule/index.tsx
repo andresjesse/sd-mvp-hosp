@@ -87,11 +87,19 @@ export default function SchedulePage({
       )}
 
       <div className={styles.labelsContainer}>
-        <Space>
-          <Tag color={'blue'}>Fixo preenchido</Tag>
-          <Tag color={'rgb(139, 214, 224)'}>Fixo vago</Tag>
-          <Tag color={'green'}>Não fixo preenchido</Tag>
-          <Tag color={'lightgrey'}>Não fixo vago</Tag>
+        <Space wrap>
+          <Tag className={styles.tag} color={'blue'}>
+            Fixo preenchido
+          </Tag>
+          <Tag className={styles.tag} color={'rgb(139, 214, 224)'}>
+            Fixo vago
+          </Tag>
+          <Tag className={styles.tag} color={'green'}>
+            Não fixo preenchido
+          </Tag>
+          <Tag className={styles.tag} color={'lightgrey'}>
+            Não fixo vago
+          </Tag>
         </Space>
       </div>
 
