@@ -77,3 +77,10 @@ a {
 .ant-picker-header > * {
   flex: auto !important;
 }
+
+.ant-picker-calendar-full .ant-picker-panel .ant-picker-calendar-date-content {
+  height: fit-content;
+  min-height: 86px;
+  padding: 0.5em 0;
+  overflow: hidden;
+}
