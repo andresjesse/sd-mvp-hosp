@@ -4,6 +4,7 @@ import {
   LogoutOutlined,
   SecurityScanOutlined,
   UserOutlined,
+  ReconciliationOutlined,
 } from '@ant-design/icons'
 import { Button, Layout, Menu } from 'antd'
 import { signOut, useSession } from 'next-auth/react'
@@ -21,10 +22,10 @@ const siderItems = [
   {
     label: (
       <Link href="/profile">
-        <a>Médico</a>
+        <a>Perfil</a>
       </Link>
     ),
-    key: 'doctor',
+    key: 'profile',
     icon: <UserOutlined />,
   },
   {
@@ -44,6 +45,15 @@ const siderItems = [
     ),
     key: 'admin',
     icon: <SecurityScanOutlined />,
+  },
+  {
+    label: (
+      <Link href="/doctor">
+        <a>Médico</a>
+      </Link>
+    ),
+    key: 'doctor',
+    icon: <ReconciliationOutlined />,
   },
 ]
 
